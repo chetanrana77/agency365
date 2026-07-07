@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Project Portal — Agency 365</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f3f4f6; min-height: 100vh; }
+    .portal-header { background: linear-gradient(135deg, #0f1117, #1a1f2e); color: #fff; padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .portal-header h1 { font-size: 1.25rem; font-weight: 800; }
+    .portal-header .powered { font-size: 0.75rem; opacity: 0.5; }
+    .hero { background: linear-gradient(135deg, #12b76a, #0e9f5d); color: #fff; padding: 2.5rem 2rem; }
+    .hero h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .hero p { opacity: 0.85; font-size: 0.9rem; }
+    .status-pill { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 0.3rem 0.9rem; font-size: 0.82rem; font-weight: 700; margin-top: 0.75rem; }
+    .content { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .card { background: #fff; border-radius: 14px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: #0f1117; }
+    .timeline { display: flex; flex-direction: column; gap: 0.75rem; }
+    .timeline-item { display: flex; gap: 0.85rem; }
+    .tl-dot { width: 8px; height: 8px; border-radius: 50%; background: #12b76a; flex-shrink: 0; margin-top: 6px; }
+    .tl-dot.meeting { background: #6941c6; }
+    .tl-dot.payment { background: #f79009; }
+    .tl-content { flex: 1; }
+    .tl-label { font-size: 0.85rem; font-weight: 600; color: #0f1117; }
+    .tl-date { font-size: 0.75rem; color: #9ca3af; margin-top: 0.1rem; }
+    .tl-sub { font-size: 0.8rem; color: #6b7280; margin-top: 0.2rem; }
+    .progress-bar { background: #e5e7eb; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 0.5rem; }
+    .progress-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #12b76a, #0e9f5d); transition: width 0.6s ease; }
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .stat-item { text-align: center; }
+    .stat-item .val { font-size: 1.4rem; font-weight: 800; color: #0f1117; }
+    .stat-item .lbl { font-size: 0.72rem; color: #9ca3af; margin-top: 0.2rem; }
+    .empty { color: #9ca3af; font-size: 0.82rem; text-align: center; padding: 1.5rem 0; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    .badge-done { background: #d1fae5; color: #12b76a; }
+    .badge-progress { background: #fef3c7; color: #d97706; }
+    .badge-blocked { background: #fee2e2; color: #dc2626; }
+    .badge-milestone { background: #e0e7ff; color: #6941c6; }
+    .loading { text-align: center; padding: 4rem 2rem; color: #9ca3af; font-size: 0.9rem; }
+    .not-found { text-align: center; padding: 4rem 2rem; }
+    .not-found h2 { color: #f04438; margin-bottom: 0.5rem; }
+    @media (max-width: 480px) { .stat-row { grid-template-columns: 1fr 1fr; } .hero { padding: 1.75rem 1.25rem; } }
+  </style>
+</head>
+<body>
+<div class="portal-header">
+  <h1>📊 Project Portal</h1>
+  <span class="powered">Powered by Agency 365</span>
+</div>
+<div id="portal-content"><div class="loading">⏳ Loading your project...</div></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+const supabase = createClient('https://nytzlivcfiflqmqnjivd.supabase.co', 'sb_publishable_xwTbIz3WpbtJIgExXtCA8g_GFBDLzu9');
+
+const params = new URLSearchParams(window.location.search);
+const clientToken = params.get('client');
+const container = document.getElementById('portal-content');
+
+if (!clientToken) {
+  container.innerHTML = '<div class="not-found"><h2>Invalid Link</h2><p>This portal link is invalid or expired.</p></div>';
+} else {
+  loadPortal(clientToken);
+}
+
+async function loadPortal(token) {
+  try {
+    const { data: tokenData } = await supabase.from('portal_tokens').select('*').eq('token', token).single();
+    if (!tokenData) { container.innerHTML = '<div class="not-found"><h2>Link Not Found</h2><p>This portal link has expired or is invalid.</p></div>'; return; }
+    const { data: clientRow } = await supabase.from('clients').select('data').eq('item_id', tokenData.client_id).eq('user_id', tokenData.user_id).single();
+    if (!clientRow) { container.innerHTML = '<div class="not-found"><h2>Project Not Found</h2></div>'; return; }
+    renderPortal(clientRow.data, tokenData);
+  } catch(e) { container.innerHTML = '<div class="not-found"><h2>Something went wrong</h2><p>Please contact your agency for a fresh link.</p></div>'; }
+}
+
+function renderPortal(c, tokenData) {
+  const paid = (c.payments||[]).filter(p=>!p.refund).reduce((s,p)=>s+p.amount,0);
+  const pct = c.amount ? Math.round((paid/c.amount)*100) : 0;
+  const fmt = n => '₹' + Number(n||0).toLocaleString('en-IN');
+  const recentWork = [...(c.workUpdates||[])].sort((a,b)=>b.timestamp-a.timestamp).slice(0,5);
+  const recentMeetings = [...(c.meetings||[])].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,4);
+  const badgeClass = { done:'badge-done','in-progress':'badge-progress', blocked:'badge-blocked', milestone:'badge-milestone' };
+
+  container.innerHTML = `
+    <div class="hero">
+      <h2>${c.name}</h2>
+      <p>${c.work || 'Your Project'}</p>
+      <div class="status-pill">${c.status || 'Active'}</div>
+    </div>
+    <div class="content">
+      <div class="card">
+        <h3>💰 Financial Summary</h3>
+        <div class="stat-row">
+          <div class="stat-item"><div class="val">${fmt(c.amount)}</div><div class="lbl">Contract Value</div></div>
+          <div class="stat-item"><div class="val">${fmt(paid)}</div><div class="lbl">Paid</div></div>
+          <div class="stat-item"><div class="val">${fmt(c.amount-paid)}</div><div class="lbl">Balance</div></div>
+        </div>
+        <div class="progress-bar" style="margin-top:1rem;"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <p style="font-size:0.78rem;color:#9ca3af;margin-top:0.4rem;">${pct}% paid</p>
+      </div>
+      <div class="card">
+        <h3>🛠 Work Updates</h3>
+        \${recentWork.length === 0 ? '<div class="empty">No work updates yet</div>' : \`
+        <div class="timeline">
+          \${recentWork.map(w=>\`
+          <div class="timeline-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-label">\${w.text} <span class="badge \${badgeClass[w.category]||'badge-done'}">\${w.category}</span></div>
+              <div class="tl-date">\${w.date} · \${w.author||'Team'}</div>
+            </div>
+          </div>\`).join('')}
+        </div>\`}
+      </div>
+      <div class="card">
+        <h3>📅 Recent Meetings</h3>
+        \${recentMeetings.length === 0 ? '<div class="empty">No meetings recorded</div>' : \`
+        <div class="timeline">
+          \${recentMeetings.map(m=>\`
+          <div class="timeline-item">
+            <div class="tl-dot meeting"></div>
+            <div class="tl-content">
+              <div class="tl-label">\${m.title}</div>
+              <div class="tl-date">\${m.date} \${m.time||''}</div>
+              \${m.notes ? \`<div class="tl-sub">\${m.notes}</div>\` : ''}
+            </div>
+          </div>\`).join('')}
+        </div>\`}
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>

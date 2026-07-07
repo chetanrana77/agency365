@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #151e3a;
+            --secondary: #6d9539;
+            --text: #4d566d;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary);
+            margin: 0;
+            padding: 0;
+            background: #f3f5ee;
+            display: flex;
+            justify-content: center;
+        }
+        .invoice-wrapper {
+            background: #ffffff;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content {
+            padding: 40px;
+            flex: 1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-top: 10px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-img {
+            max-height: 50px;
+            object-fit: contain;
+        }
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+        .header-meta {
+            text-align: left;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .header-meta p {
+            margin: 5px 0;
+        }
+        
+        /* Divider */
+        .divider {
+            position: relative;
+            height: 2px;
+            background: var(--primary);
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        .divider-yellow {
+            position: absolute;
+            height: 6px;
+            background: var(--secondary);
+            width: 40%;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Client Info */
+        .invoice-to {
+            color: var(--secondary);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .client-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        .client-contact {
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--primary);
+            background: #e2e8f0;
+            border-radius: 50%;
+            padding: 4px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        th {
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        td {
+            padding: 15px;
+            border-bottom: none; /* No lines as per design */
+            font-size: 15px;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .text-center {
+            text-align: center;
+        }
+
+        /* Totals */
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .totals-box {
+            width: 300px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 15px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .due-row {
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 10px 15px;
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+
+        /* Footer & Sign */
+        .footer-content {
+            margin-top: 50px;
+            position: relative;
+        }
+        .thank-you {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+        .signature {
+            margin-top: 30px;
+        }
+        .signature img {
+            height: 60px;
+            display: block;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+        .signature p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Geometric elements */
+        .geometric {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 200px;
+            height: 150px;
+            pointer-events: none;
+        }
+        .geo-box {
+            position: absolute;
+            background: var(--secondary);
+        }
+
+        /* Bottom Footer */
+        .contact-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: auto;
+            border-top: 1px solid #e5e7eb;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .contact-item .icon {
+            background: transparent;
+            width: 20px;
+            height: 20px;
+            padding: 0;
+        }
+        .bottom-bar {
+            display: flex;
+            height: 20px;
+        }
+        .bottom-bar .yellow {
+            background: var(--secondary);
+            flex: 1;
+        }
+        .bottom-bar .blue {
+            background: var(--primary);
+            flex: 1;
+        }
+
+        /* Print btn */
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        @media print {
+            body { background: white; margin: 0; padding: 0; display: block; }
+            .invoice-wrapper { margin: 0; box-shadow: none; width: 100%; height: auto; }
+            .print-btn { display: none; }
+            .invoice-actions { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-actions" style="display:flex;gap:1rem;padding:1rem 2rem;background:var(--bg-secondary, #f9fafb);border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center;">
+  <button onclick="window.print()" style="padding:0.6rem 1.25rem;background:#12b76a;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">🖨️ Print Invoice</button>
+  <button id="pdf-download-btn" style="padding:0.6rem 1.25rem;background:#0f1117;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">⬇️ Download PDF</button>
+  <button id="whatsapp-invoice-btn" style="padding:0.6rem 1.25rem;background:#25d366;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">📱 Send via WhatsApp</button>
+  <a href="javascript:history.back()" style="padding:0.6rem 1rem;color:var(--text-secondary,#666);text-decoration:none;font-size:0.9rem;">← Back</a>
+</div>
+
+    <div class="invoice-wrapper">
+        <div class="content">
+            <div class="header">
+                <div class="logo-container">
+                    <img id="brand-logo" class="logo-img" style="display:none;">
+                    <div id="brand-text" class="logo-text">TECHMIZE</div>
+                </div>
+                <div class="header-meta">
+                    <p>Date : <span id="inv-date"></span></p>
+                    <p>Invoice No : <span id="inv-no"></span></p>
+                </div>
+            </div>
+
+            <div class="divider">
+                <div class="divider-yellow"></div>
+            </div>
+
+            <div class="invoice-to">INVOICE TO :</div>
+            <div class="client-name" id="c-name">Client Name</div>
+            
+            <div class="client-contact" id="c-phone-cont">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                <span id="c-phone">Phone Number : -</span>
+            </div>
+            <div class="client-contact" id="c-address-cont">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span id="c-address">Address : -</span>
+            </div>
+            <div class="client-contact" id="c-gst-cont">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v-2H4v6h2v-2h2v2h2v-2h2v-2z"/></svg>
+                <span id="c-gst">GST : -</span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%">No.</th>
+                        <th style="width: 45%">Service Name</th>
+                        <th class="text-right" style="width: 15%">Price</th>
+                        <th class="text-right" style="width: 15%">Discount</th>
+                        <th class="text-right" style="width: 15%">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center">01.</td>
+                        <td id="t-work">Project Services</td>
+                        <td class="text-right" id="t-price">₹0</td>
+                        <td class="text-right">₹0</td>
+                        <td class="text-right" id="t-total">₹0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="totals-section">
+                <div class="totals-box">
+                    <div class="total-row">
+                        <span>Sub Total -</span>
+                        <span id="st-total">₹0</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Received -</span>
+                        <span id="st-paid">₹0</span>
+                    </div>
+                    <div class="total-row due-row">
+                        <span>Due</span>
+                        <span id="st-due">₹0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-content">
+                <div class="thank-you">Thank you for your business with us</div>
+                <div class="signature">
+                    <!-- Placeholder signature -->
+                    <svg viewBox="0 0 200 60" width="150" height="40" style="margin-left: -10px;">
+                        <path d="M20,40 Q40,10 60,35 T90,30 T120,45 T160,25" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M50,20 L60,40" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <p>Authorised Sign</p>
+                </div>
+
+                <div class="geometric">
+                    <div class="geo-box" style="width: 30px; height: 30px; top: 0; left: 0;"></div>
+                    <div class="geo-box" style="width: 30px; height: 30px; top: -20px; left: 40px;"></div>
+                    <div class="geo-box" style="width: 30px; height: 30px; top: 40px; left: 25px;"></div>
+                    <div class="geo-box" style="width: 80px; height: 80px; bottom: 0; right: 0;"></div>
+                    <div class="geo-box" style="width: 120px; height: 20px; bottom: 60px; right: -50px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-footer">
+            <div class="contact-item">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                <span>+91 95285 46765</span>
+            </div>
+            <div class="contact-item">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                <span>contact@techmize.in</span>
+            </div>
+            <div class="contact-item">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                <span>www.techmize.in</span>
+            </div>
+        </div>
+        <div class="bottom-bar">
+            <div class="yellow"></div>
+            <div class="blue"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply Brand Settings
+            const primaryColor = localStorage.getItem('agency365_brand_primary') || '#151e3a';
+            const secondaryColor = localStorage.getItem('agency365_brand_secondary') || '#6d9539';
+            document.documentElement.style.setProperty('--primary', primaryColor);
+            document.documentElement.style.setProperty('--secondary', secondaryColor);
+
+            const savedLogo = localStorage.getItem('agency365_brand_logo');
+            if(savedLogo) {
+                document.getElementById('brand-logo').src = savedLogo;
+                document.getElementById('brand-logo').style.display = 'block';
+                document.getElementById('brand-text').style.display = 'none';
+            }
+
+            // Load Data
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if(!id) return;
+
+            const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+            const client = clients.find(c => c.id === id);
+            if(!client) return;
+
+            const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
+
+            // Generate TM id
+            document.getElementById('inv-no').textContent = `TM${id.slice(-4)}`;
+            
+            const dateStr = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+            document.getElementById('inv-date').textContent = dateStr;
+
+            document.getElementById('c-name').textContent = client.name;
+            
+            if(client.phone) document.getElementById('c-phone').textContent = `Phone Number : ${client.phone}`;
+            else document.getElementById('c-phone-cont').style.display = 'none';
+
+            if(client.address) document.getElementById('c-address').textContent = `Address : ${client.address}`;
+            else document.getElementById('c-address-cont').style.display = 'none';
+
+            if(client.gst) document.getElementById('c-gst').textContent = `GST : ${client.gst}`;
+            else document.getElementById('c-gst-cont').style.display = 'none';
+
+            document.getElementById('t-work').textContent = client.work || 'Project Services';
+            
+            const amountStr = fmt.format(client.amount || 0);
+            document.getElementById('t-price').textContent = amountStr;
+            document.getElementById('t-total').textContent = amountStr;
+            document.getElementById('st-total').textContent = amountStr;
+
+            const totalPaid = (client.payments || []).reduce((sum, p) => sum + p.amount, 0);
+            document.getElementById('st-paid').textContent = fmt.format(totalPaid);
+            
+            const due = (client.amount || 0) - totalPaid;
+            document.getElementById('st-due').textContent = fmt.format(due < 0 ? 0 : due);
+        });
+    </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+document.getElementById('pdf-download-btn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('pdf-download-btn');
+  const actionsBar = document.querySelector('.invoice-actions');
+  btn.textContent = '⏳ Generating…';
+  actionsBar.style.display = 'none';
+  try {
+    const { jsPDF } = window.jspdf;
+    const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const imgData = canvas.toDataURL('image/png');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = (canvas.height * pageWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
+    const clientName = document.getElementById('c-name')?.textContent || 'client';
+    const invoiceNum = document.getElementById('inv-no')?.textContent || 'invoice';
+    pdf.save(`${invoiceNum}-${clientName}.pdf`);
+  } catch(err) { console.error(err); alert('PDF generation failed. Try Print instead.'); }
+  actionsBar.style.display = 'flex';
+  btn.textContent = '⬇️ Download PDF';
+});
+
+document.getElementById('whatsapp-invoice-btn')?.addEventListener('click', () => {
+  const clientName = document.getElementById('c-name')?.textContent || '';
+  const invoiceNum = document.getElementById('inv-no')?.textContent || '';
+  const amount = document.getElementById('st-due')?.textContent || '';
+  const phone = document.getElementById('c-phone')?.textContent?.replace(/\D/g,'') || '';
+  const message = encodeURIComponent(`Hi ${clientName},\n\nPlease find your invoice ${invoiceNum} for ${amount}.\n\nThank you for your business! 🙏\n\n— Agency 365`);
+  window.open(phone ? `https://wa.me/91${phone}?text=${message}` : `https://wa.me/?text=${message}`, '_blank');
+});
+</script>
+</body>
+</html>

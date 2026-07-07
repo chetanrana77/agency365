@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency 365 - Client Details</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile-overrides.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Agency 365">
+    <meta name="theme-color" content="#12b76a">
+    <style>
+        /* ─── Hero Banner ─────────────────────────────────────── */
+        .client-hero-banner {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-color) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .client-hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-color), #8b5cf6, #f59e0b);
+        }
+        .hero-top {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .client-avatar {
+            width: 58px; height: 58px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-color), #0e9f5d);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; font-weight: 800;
+            color: white; flex-shrink: 0;
+            font-family: 'Newsreader', serif;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(18,183,106,0.25);
+        }
+        .client-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-info { flex: 1; }
+        .hero-info h1 {
+            font-size: 1.6rem; font-weight: 700;
+            color: var(--text-primary); margin-bottom: 0.35rem;
+            display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+        }
+        .hero-info .domain-badge {
+            font-size: 0.75rem; font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 0.2rem 0.55rem; border-radius: 20px;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+        }
+        .hero-meta-row {
+            display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .hero-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+
+        /* Client Type Toggle */
+        .type-toggle {
+            display: flex; align-items: center;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 2px;
+        }
+        .type-btn {
+            padding: 0.3rem 0.75rem; border-radius: 18px;
+            border: none; background: transparent;
+            font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; color: var(--text-secondary);
+            transition: all 0.2s ease; font-family: inherit;
+        }
+        .type-btn.active {
+            background: var(--text-primary); color: white;
+        }
+        [data-theme="dark"] .type-btn.active { background: var(--accent-color); }
+
+        /* Status pills */
+        .pill {
+            padding: 0.25rem 0.65rem; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 0.35rem;
+        }
+        .pill-green { background: rgba(18,183,106,0.12); color: #059669; }
+        .pill-yellow { background: rgba(245,158,11,0.12); color: #d97706; }
+        .pill-gray { background: rgba(107,114,128,0.12); color: #4b5563; }
+        .pill-red { background: rgba(239,68,68,0.12); color: #dc2626; }
+        .pill-purple { background: rgba(139,92,246,0.12); color: #7c3aed; }
+        .pill-blue { background: rgba(59,130,246,0.12); color: #2563eb; }
+        [data-theme="dark"] .pill-green { color: #6ee7b7; }
+        [data-theme="dark"] .pill-yellow { color: #fcd34d; }
+        [data-theme="dark"] .pill-gray { color: #d1d5db; }
+
+        /* Hero Stats Row */
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 900px) { .hero-stats { grid-template-columns: repeat(2,1fr); } }
+        .hero-stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 0.9rem 1rem;
+        }
+        .hero-stat-label {
+            font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.6px; color: var(--text-secondary); margin-bottom: 0.35rem;
+        }
+        .hero-stat-val {
+            font-size: 1.35rem; font-weight: 800;
+            color: var(--text-primary); line-height: 1;
+        }
+        .hero-stat-val.green { color: #059669; }
+        .hero-stat-val.red { color: #dc2626; }
+        .hero-stat-sub {
+            font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.25rem;
+        }
+
+        /* ─── Tab Navigation ────────────────────────────────────── */
+        .client-tabs {
+            display: flex; gap: 0; margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+        .client-tab {
+            padding: 0.7rem 1.25rem;
+            border: none; background: transparent;
+            font-size: 0.88rem; font-weight: 500;
+            color: var(--text-secondary); cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap; font-family: inherit;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .client-tab:hover { color: var(--text-primary); }
+        .client-tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            font-weight: 600;
+        }
+        .tab-count {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 0.1rem 0.45rem;
+            font-size: 0.7rem; font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        /* ─── Tab Content Panels ───────────────────────────────── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ─── Overview Tab ─────────────────────────────────────── */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 900px) { .overview-grid { grid-template-columns: 1fr; } }
+
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1.5rem;
+        }
+        .section-card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.1rem;
+        }
+        .section-card-title {
+            font-size: 0.88rem; font-weight: 700;
+            color: var(--text-primary); text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .info-row {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 0.6rem 0; border-bottom: 1px solid var(--border-color);
+            font-size: 0.88rem;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-secondary); font-weight: 500; flex-shrink: 0; }
+        .info-value { font-weight: 600; color: var(--text-primary); text-align: right; max-width: 65%; word-break: break-word; }
+
+        /* Tasks */
+        .task-item-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-color);
+            padding: 0.6rem 0.75rem; border-radius: 8px; margin-bottom: 0.4rem;
+            font-size: 0.87rem;
+        }
+        .task-left { display: flex; align-items: center; gap: 0.5rem; flex: 1; }
+        .task-text-done { text-decoration: line-through; color: var(--text-secondary); }
+        .task-due-chip {
+            font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 4px;
+            background: rgba(59,130,246,0.1); color: #2563eb; font-weight: 600;
+        }
+
+        /* ─── Meetings Tab ─────────────────────────────────────── */
+        .meeting-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1.25rem 1.5rem;
+            margin-bottom: 0.85rem;
+            position: relative; overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .meeting-card:hover { box-shadow: var(--card-shadow); }
+        .meeting-card-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        .meeting-title {
+            font-size: 1rem; font-weight: 700; color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+        .meeting-meta { font-size: 0.8rem; color: var(--text-secondary); }
+        .meeting-agenda {
+            font-size: 0.85rem; color: var(--text-secondary);
+            background: var(--bg-color);
+            border-left: 3px solid var(--accent-color);
+            padding: 0.6rem 0.85rem; border-radius: 0 6px 6px 0;
+            margin-bottom: 0.75rem; line-height: 1.5;
+            white-space: pre-line;
+        }
+        .meeting-footer {
+            display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+        }
+        .meeting-recording-link {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            font-size: 0.8rem; font-weight: 600; color: #7c3aed;
+            text-decoration: none; padding: 0.3rem 0.65rem;
+            background: rgba(139,92,246,0.1); border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .meeting-recording-link:hover { background: rgba(139,92,246,0.2); }
+        .meeting-attendees { font-size: 0.78rem; color: var(--text-secondary); }
+        .meeting-notes-text {
+            font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.5rem;
+            border-top: 1px solid var(--border-color); padding-top: 0.5rem;
+            white-space: pre-line;
+        }
+        .meeting-status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            display: inline-block; margin-right: 4px;
+        }
+
+        /* ─── Work Updates Tab ─────────────────────────────────── */
+        .timeline-group-label {
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.8px; color: var(--text-secondary);
+            margin: 1.25rem 0 0.6rem; padding: 0 0.1rem;
+        }
+        .timeline-group-label:first-child { margin-top: 0; }
+        .work-update-card {
+            display: flex; gap: 0.85rem; align-items: flex-start;
+            margin-bottom: 0.6rem;
+        }
+        .wu-dot-col {
+            display: flex; flex-direction: column; align-items: center;
+            padding-top: 0.1rem; width: 20px; flex-shrink: 0;
+        }
+        .wu-dot {
+            width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+        }
+        .wu-line {
+            width: 2px; flex: 1; background: var(--border-color);
+            margin-top: 4px; min-height: 20px;
+        }
+        .wu-body {
+            flex: 1; background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 0.85rem 1rem;
+            font-size: 0.88rem; line-height: 1.5;
+        }
+        .wu-text { color: var(--text-primary); font-weight: 500; }
+        .wu-footer {
+            display: flex; gap: 0.65rem; align-items: center; margin-top: 0.4rem; flex-wrap: wrap;
+        }
+        .wu-author { font-size: 0.75rem; color: var(--text-secondary); }
+        .wu-time { font-size: 0.72rem; color: var(--text-secondary); }
+        .wu-cat-chip {
+            font-size: 0.68rem; font-weight: 700; padding: 0.15rem 0.45rem;
+            border-radius: 4px; text-transform: uppercase; letter-spacing: 0.4px;
+        }
+
+        /* ─── Communication Tab ────────────────────────────────── */
+        .comm-card {
+            display: flex; gap: 0.85rem;
+            margin-bottom: 0.85rem;
+        }
+        .comm-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .comm-body {
+            flex: 1; background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 0.85rem 1rem;
+        }
+        .comm-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.4rem;
+        }
+        .comm-type-label { font-size: 0.75rem; font-weight: 700; }
+        .comm-time { font-size: 0.72rem; color: var(--text-secondary); }
+        .comm-text { font-size: 0.88rem; color: var(--text-primary); line-height: 1.5; }
+        .comm-author { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.3rem; }
+
+        /* ─── Finance Tab ──────────────────────────────────────── */
+        .finance-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-color); padding: 0.65rem 0.85rem;
+            border-radius: 8px; margin-bottom: 0.4rem; font-size: 0.88rem;
+        }
+        .finance-row-label { color: var(--text-secondary); font-size: 0.8rem; }
+        .finance-summary-bar {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1.25rem 1.5rem;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1rem; margin-bottom: 1.25rem; text-align: center;
+        }
+        .fin-sum-val { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+        .fin-sum-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+        /* ─── Suggestion Box ────────────────────────────────────── */
+        .suggestion-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 14px; padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem; color: white;
+            position: relative; overflow: hidden;
+        }
+        .suggestion-box::before {
+            content: '💡';
+            position: absolute; right: -10px; bottom: -15px;
+            font-size: 5rem; opacity: 0.15; line-height: 1;
+        }
+        [data-theme="light"] .suggestion-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 1px solid #c4b5fd;
+            color: var(--text-primary);
+        }
+        .suggestion-box h3 {
+            font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem;
+            color: inherit; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        [data-theme="light"] .suggestion-box h3 { color: #4c1d95; }
+        .suggestion-item {
+            display: flex; align-items: flex-start; gap: 0.6rem;
+            margin-bottom: 0.5rem; font-size: 0.84rem;
+            color: rgba(255,255,255,0.85);
+        }
+        [data-theme="light"] .suggestion-item { color: #5b21b6; }
+        .suggestion-item span { line-height: 1.4; }
+        .suggestion-dot { margin-top: 4px; flex-shrink: 0; color: #a78bfa; font-size: 0.6rem; }
+        [data-theme="light"] .suggestion-dot { color: #7c3aed; }
+        .suggestion-toggle {
+            background: none; border: none; cursor: pointer;
+            font-size: 0.78rem; font-weight: 600;
+            color: #a78bfa; padding: 0; margin-top: 0.5rem;
+            font-family: inherit;
+        }
+        [data-theme="light"] .suggestion-toggle { color: #7c3aed; }
+
+        /* ─── Add Buttons Row ───────────────────────────────────── */
+        .add-btn-row {
+            display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+        }
+        .add-entry-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.5rem 0.9rem; border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            background: transparent; color: var(--text-secondary);
+            font-size: 0.83rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; font-family: inherit;
+        }
+        .add-entry-btn:hover {
+            border-color: var(--accent-color); color: var(--accent-color);
+            background: rgba(18,183,106,0.06);
+        }
+
+        /* ─── Modals ────────────────────────────────────────────── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45); z-index: 999;
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: var(--card-bg); border-radius: 16px;
+            padding: 2rem; max-width: 540px; width: 92%;
+            position: relative; box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+            z-index: 1000; max-height: 90vh; overflow-y: auto;
+        }
+        .modal-box h2 {
+            margin-bottom: 1.25rem; font-size: 1.2rem; color: var(--text-primary);
+        }
+        .modal-close {
+            position: absolute; top: 1.1rem; right: 1.25rem;
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: var(--text-secondary);
+            line-height: 1; transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-form-group { margin-bottom: 0.9rem; }
+        .modal-form-group label {
+            display: block; font-size: 0.83rem; font-weight: 600;
+            color: var(--text-secondary); margin-bottom: 0.35rem;
+        }
+        .modal-form-group input,
+        .modal-form-group textarea,
+        .modal-form-group select {
+            width: 100%; padding: 0.65rem 0.85rem;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--input-bg); color: var(--text-primary);
+            font-size: 0.88rem; box-sizing: border-box;
+            font-family: inherit; transition: border-color 0.2s;
+        }
+        .modal-form-group input:focus,
+        .modal-form-group textarea:focus,
+        .modal-form-group select:focus {
+            outline: none; border-color: var(--accent-color);
+        }
+        .modal-form-group textarea { resize: vertical; min-height: 80px; }
+        .modal-row { display: flex; gap: 0.75rem; }
+        .modal-row .modal-form-group { flex: 1; }
+
+        /* ─── Back button ───────────────────────────────────────── */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.85rem; font-weight: 500; margin-bottom: 1.25rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--text-primary); }
+
+        /* ─── Empty states ──────────────────────────────────────── */
+        .empty-state {
+            text-align: center; padding: 2.5rem 1rem;
+            color: var(--text-secondary); font-size: 0.9rem;
+        }
+        .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+        /* ══════════════════════════════════════════════════════
+           MOBILE RESPONSIVE  (≤ 768px)
+        ══════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+
+            /* ── Hide desktop sidebars completely ── */
+            .sidebar-icons,
+            .sidebar-menu {
+                display: none !important;
+            }
+
+            /* ── App takes full width ── */
+            #app {
+                flex-direction: column;
+            }
+
+            /* ── Content area fills the screen ── */
+            .content-area {
+                padding: 1rem 1rem 6rem 1rem; /* bottom padding for mobile nav */
+                overflow-y: auto;
+                height: 100vh;
+                width: 100%;
+            }
+
+            /* ── Fixed bottom navigation bar ── */
+            .mobile-nav {
+                display: flex !important;
+            }
+
+            /* ── Hero Banner ── */
+            .client-hero-banner {
+                padding: 1.1rem 1rem;
+                border-radius: 12px;
+                margin-bottom: 1rem;
+            }
+            .hero-top {
+                flex-wrap: wrap;
+                gap: 0.85rem;
+                margin-bottom: 1rem;
+                align-items: flex-start;
+            }
+            .client-avatar {
+                width: 46px; height: 46px;
+                border-radius: 10px;
+                font-size: 1.1rem;
+            }
+            .hero-info h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.25rem;
+                flex-wrap: wrap;
+            }
+            .hero-actions {
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+            }
+            .type-toggle { width: 100%; justify-content: center; }
+            .type-btn { flex: 1; text-align: center; }
+
+            /* ── Hero Stats: 2×2 grid ── */
+            .hero-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.6rem;
+            }
+            .hero-stat-card { padding: 0.7rem 0.85rem; }
+            .hero-stat-val { font-size: 1.1rem; }
+            .hero-stat-label { font-size: 0.68rem; }
+
+            /* ── Suggestion box ── */
+            .suggestion-box { padding: 1rem; border-radius: 10px; margin-bottom: 1rem; }
+            .suggestion-box::before { display: none; }
+
+            /* ── Client tabs: horizontally scrollable ── */
+            .client-tabs {
+                gap: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                margin-bottom: 1rem;
+                border-radius: 0;
+            }
+            .client-tabs::-webkit-scrollbar { display: none; }
+            .client-tab {
+                padding: 0.6rem 0.9rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* ── Overview: single column ── */
+            .overview-grid {
+                grid-template-columns: 1fr;
+                gap: 0.85rem;
+            }
+            .section-card { padding: 1rem; border-radius: 10px; }
+
+            /* ── Task add row: stack vertically ── */
+            #tasks-list + div,
+            .section-card > div[style*="display:flex; gap:0.5rem; margin-top"] {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+
+            /* ── Meetings ── */
+            .meeting-card { padding: 1rem; border-radius: 10px; }
+            .meeting-card-header { flex-wrap: wrap; gap: 0.5rem; }
+            .meeting-title { font-size: 0.95rem; }
+
+            /* ── Work update cards ── */
+            .wu-body { padding: 0.75rem; }
+            .wu-footer { flex-wrap: wrap; gap: 0.4rem; }
+
+            /* ── Finance: single column ── */
+            .finance-summary-bar {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+            .fin-sum-val { font-size: 1rem; }
+            .fin-sum-label { font-size: 0.68rem; }
+
+            /* Finance payment/expense grids → single column */
+            #panel-finance > div[style*="grid-template-columns:1fr 1fr"] {
+                display: flex !important;
+                flex-direction: column;
+            }
+
+            /* ── Add buttons row: wrap ── */
+            .add-btn-row { flex-wrap: wrap; }
+            .add-entry-btn { font-size: 0.78rem; padding: 0.45rem 0.7rem; }
+
+            /* ── Modals: full-width from bottom ── */
+            .modal-overlay {
+                align-items: flex-end;
+            }
+            .modal-box {
+                border-radius: 20px 20px 0 0;
+                width: 100%;
+                max-width: 100%;
+                padding: 1.5rem 1rem 2rem;
+                max-height: 88vh;
+            }
+
+            /* ── Modal rows: stack on mobile ── */
+            .modal-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            /* ── Back link ── */
+            .back-link { font-size: 0.82rem; margin-bottom: 1rem; }
+        }
+
+        /* ── Extra-small phones (< 400px) ── */
+        @media (max-width: 400px) {
+            .hero-stats { grid-template-columns: 1fr 1fr; }
+            .hero-stat-val { font-size: 0.95rem; }
+            .client-tab { padding: 0.55rem 0.7rem; font-size: 0.75rem; }
+            .finance-summary-bar { grid-template-columns: 1fr; }
+        }
+
+        /* ── Mobile bottom navigation bar ── */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            z-index: 200;
+            padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+        }
+        .mobile-nav-item {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 0.2rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.62rem; font-weight: 600;
+            padding: 0.3rem 0.5rem;
+            border-radius: 8px;
+            transition: color 0.2s;
+            min-width: 48px;
+        }
+        .mobile-nav-item.active { color: var(--accent-color); }
+        .mobile-nav-item svg { width: 22px; height: 22px; }
+        .mobile-nav-fab {
+            background: var(--accent-color);
+            color: white;
+            border: none; border-radius: 50%;
+            width: 46px; height: 46px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 14px rgba(18,183,106,0.4);
+            font-size: 1.4rem; line-height: 1;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .mobile-nav-fab:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(18,183,106,0.5); }
+
+        /* ── FAB quick-action sheet ── */
+        .fab-sheet {
+            display: none;
+            position: fixed; bottom: 80px; left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px; padding: 0.5rem;
+            z-index: 300; min-width: 200px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        .fab-sheet.open { display: block; }
+        .fab-sheet-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem; border-radius: 10px;
+            cursor: pointer; font-size: 0.88rem; font-weight: 600;
+            color: var(--text-primary); transition: background 0.15s;
+        }
+        .fab-sheet-item:hover { background: var(--bg-color); }
+
+        /* ─── Progress bar ────────────────────────────────────────── */
+        .progress-bar-container {
+            background: var(--bg-color); border-radius: 4px;
+            height: 6px; overflow: hidden; margin-top: 0.5rem;
+        }
+        .progress-bar-fill {
+            height: 100%; border-radius: 4px;
+            background: linear-gradient(90deg, var(--accent-color), #0e9f5d);
+            transition: width 0.5s ease;
+        }
+
+        /* ─── Quick action bottom bar ─────────────────────────────── */
+        .quick-actions-bar {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Team badge */
+        .team-badge {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            font-size: 0.7rem; font-weight: 600;
+            padding: 0.15rem 0.5rem; border-radius: 20px;
+            background: rgba(18,183,106,0.1); color: var(--accent-color);
+        }
+        .del-btn {
+            background: none; border: none; cursor: pointer;
+            color: var(--text-secondary); font-size: 0.8rem; padding: 0.2rem;
+            transition: color 0.2s; line-height: 1;
+        }
+        .del-btn:hover { color: #ef4444; }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Sidebar 1: Slim Icons Bar -->
+    <nav class="sidebar-icons">
+        <div class="sidebar-logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                <path d="M2 12h20"></path>
+            </svg>
+        </div>
+        <ul class="icon-links">
+            <li><a href="dashboard.html" title="Dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </a></li>
+            <li><a href="clients.html" title="Clients" class="active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </a></li>
+            <li><a href="crm.html" title="CRM Leads">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            </a></li>
+            <li><a href="calendar.html" title="Calendar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </a></li>
+            <li><a href="proposals.html" title="Proposals">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </a></li>
+            <li><a href="finance.html" title="Billing & Invoices">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+            </a></li>
+            <li><a href="account.html" title="Account Settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </a></li>
+        </ul>
+        <div class="sidebar-icons-footer">
+            <button id="theme-toggle-btn" class="theme-toggle-icon-btn" title="Toggle Theme">
+                <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+            <div class="user-avatar" id="sidebar-avatar-container">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Avatar" class="avatar-img">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar 2: Detailed Text Menu -->
+    <nav class="sidebar-menu">
+        <div class="sidebar-brand">
+            <img id="brand-logo" class="logo-img" style="display:none; max-height:30px; margin-bottom:0.5rem; object-fit:contain;">
+            <span class="brand-text-span" id="brand-text">Agency 365</span>
+        </div>
+        <div class="menu-sections-wrapper">
+            <div class="menu-section">
+                <h4 class="menu-section-title">Workspace</h4>
+                <ul class="menu-links">
+                    <li><a href="dashboard.html">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                        <span>Overview</span>
+                    </a></li>
+                    <li><a href="clients.html" class="active">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        <span>Clients</span>
+                        <span class="menu-badge" id="badge-clients-count">0</span>
+                    </a></li>
+                    <li><a href="crm.html">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <span>Leads Pipeline</span>
+                    </a></li>
+                    <li><a href="calendar.html">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+                        <span>Calendar</span>
+                    </a></li>
+                </ul>
+            </div>
+            <div class="menu-section">
+                <h4 class="menu-section-title">Documents & Finance</h4>
+                <ul class="menu-links">
+                    <li><a href="proposals.html">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        <span>Proposals</span>
+                        <span class="menu-badge badge-orange" id="badge-proposals-count">0</span>
+                    </a></li>
+                    <li><a href="finance.html">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        <span>Billing</span>
+                    </a></li>
+                </ul>
+            </div>
+            <div class="menu-section">
+                <h4 class="menu-section-title">Settings</h4>
+                <ul class="menu-links">
+                    <li><a href="account.html">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>Account</span>
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="sidebar-menu-footer">
+            <div class="menu-user-card">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Avatar" class="menu-user-avatar">
+                <div class="menu-user-info">
+                    <span class="user-name" id="menu-user-name">Admin</span>
+                    <span class="user-email" id="menu-user-email">admin@agency365.com</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ─── Main Content ──────────────────────────────────────── -->
+    <main class="content-area" id="main-content">
+        <a href="clients.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Back to Clients
+        </a>
+
+        <!-- Hero Banner -->
+        <div class="client-hero-banner">
+            <div class="hero-top">
+                <div class="client-avatar" id="client-avatar-el">A</div>
+                <div class="hero-info">
+                    <h1 id="client-name-el">
+                        Loading...
+                        <a id="client-domain-link" href="#" class="domain-badge" target="_blank" style="display:none;"></a>
+                    </h1>
+                    <div class="hero-meta-row" id="hero-meta-row">
+                        <span id="status-pill" class="pill pill-green">● Active</span>
+                        <span id="priority-pill" class="pill pill-yellow">Medium</span>
+                        <span id="type-pill" class="pill pill-blue" style="display:none;"></span>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <!-- Recurring / One-time Toggle -->
+                    <div class="type-toggle" id="type-toggle">
+                        <button class="type-btn active" data-type="recurring" id="type-recurring-btn">🔄 Recurring</button>
+                        <button class="type-btn" data-type="one-time" id="type-onetime-btn">📦 One-Time</button>
+                    </div>
+                    <button class="secondary-btn" id="edit-client-btn" style="font-size:0.83rem;">✏️ Edit</button>
+                    <button class="primary-btn" id="raise-invoice-btn" style="font-size:0.83rem; padding:0.5rem 1rem;">📄 Invoice</button>
+                    <button id="whatsapp-client-btn" class="secondary-btn" title="Send via WhatsApp" style="display:flex;align-items:center;gap:0.4rem;font-size:0.83rem;">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                      WhatsApp
+                    </button>
+                    <button id="portal-link-btn" class="secondary-btn" title="Share Client Portal" style="display:flex;align-items:center;gap:0.4rem;font-size:0.83rem;">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                      Share Portal
+                    </button>
+                    <button id="onboarding-link-btn" class="secondary-btn" title="Send Onboarding Form" style="display:flex;align-items:center;gap:0.4rem;font-size:0.83rem;">
+                      📋 Onboarding
+                    </button>
+                </div>
+            </div>
+            <div class="hero-stats" id="hero-stats">
+                <div class="hero-stat-card">
+                    <div class="hero-stat-label">Project Value</div>
+                    <div class="hero-stat-val" id="stat-value">—</div>
+                    <div class="hero-stat-sub">Total contract</div>
+                </div>
+                <div class="hero-stat-card">
+                    <div class="hero-stat-label">Received</div>
+                    <div class="hero-stat-val green" id="stat-received">—</div>
+                    <div class="hero-stat-sub" id="stat-received-pct">0% collected</div>
+                    <div class="progress-bar-container"><div class="progress-bar-fill" id="stat-progress" style="width:0%"></div></div>
+                </div>
+                <div class="hero-stat-card">
+                    <div class="hero-stat-label">Balance Due</div>
+                    <div class="hero-stat-val red" id="stat-due">—</div>
+                    <div class="hero-stat-sub">Outstanding</div>
+                </div>
+                <div class="hero-stat-card">
+                    <div class="hero-stat-label">Days Active</div>
+                    <div class="hero-stat-val" id="stat-days">—</div>
+                    <div class="hero-stat-sub" id="stat-since">Since —</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestion Box -->
+        <div class="suggestion-box" id="suggestion-box">
+            <h3>💡 Smart Suggestions for this Client</h3>
+            <div id="suggestions-list"></div>
+            <button class="suggestion-toggle" id="add-suggestion-btn">+ Add custom suggestion</button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="client-tabs" id="client-tabs">
+            <button class="client-tab active" data-tab="overview">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                Overview
+            </button>
+            <button class="client-tab" data-tab="meetings">
+                📅 Meetings <span class="tab-count" id="tab-count-meetings">0</span>
+            </button>
+            <button class="client-tab" data-tab="work-updates">
+                🛠 Work Updates <span class="tab-count" id="tab-count-work">0</span>
+            </button>
+            <button class="client-tab" data-tab="communication">
+                💬 Communication <span class="tab-count" id="tab-count-comm">0</span>
+            </button>
+            <button class="client-tab" data-tab="finance">
+                💰 Finance
+            </button>
+        </div>
+
+        <!-- ─── Tab: Overview ─────────────────────────────────── -->
+        <div class="tab-panel active" id="panel-overview">
+            <div class="overview-grid">
+                <!-- Contact Info -->
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                            Contact Info
+                        </div>
+                        <button class="secondary-btn" id="edit-contact-btn" style="font-size:0.78rem; padding:0.3rem 0.65rem;">Edit</button>
+                    </div>
+                    <div id="client-info-rows"></div>
+                </div>
+
+                <!-- Project Details -->
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            Project Details
+                        </div>
+                    </div>
+                    <div id="project-info-rows"></div>
+                </div>
+
+                <!-- Tasks -->
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                            Pending Tasks
+                        </div>
+                        <span class="pill pill-blue" id="tasks-count-badge">0</span>
+                    </div>
+                    <div id="tasks-list"></div>
+                    <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+                        <input type="text" id="new-task-text" placeholder="Add a task..." style="flex:2; padding:0.5rem 0.75rem; border:1px solid var(--border-color); border-radius:8px; background:var(--input-bg); color:var(--text-primary); font-family:inherit; font-size:0.85rem;">
+                        <input type="date" id="new-task-date" style="flex:1; padding:0.5rem; border:1px solid var(--border-color); border-radius:8px; background:var(--input-bg); color:var(--text-primary); font-size:0.85rem;">
+                        <button class="primary-btn" id="add-task-btn" style="padding:0.5rem 1rem; font-size:0.83rem;">Add</button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            Quick Actions
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                        <button class="secondary-btn" id="schedule-meet-btn" style="text-align:left;">📅 Schedule a Meeting</button>
+                        <button class="secondary-btn" id="add-work-update-quick-btn" style="text-align:left;">🛠 Add Work Update</button>
+                        <button class="secondary-btn" id="add-comm-quick-btn" style="text-align:left;">💬 Log Communication</button>
+                        <button class="secondary-btn" id="send-invoice-btn" style="text-align:left;">📧 Send Invoice by Email</button>
+                        <button class="secondary-btn" id="open-proposal-btn" style="text-align:left; border-color:#8b5cf6; color:#8b5cf6;">📝 View Proposal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Tab: Meetings ─────────────────────────────────── -->
+        <div class="tab-panel" id="panel-meetings">
+            <div class="add-btn-row">
+                <button class="add-entry-btn" id="add-meeting-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add Meeting
+                </button>
+            </div>
+            <div id="meetings-list">
+                <div class="empty-state">
+                    <div class="empty-icon">📅</div>
+                    <div>No meetings logged yet.</div>
+                    <div style="font-size:0.82rem; margin-top:0.35rem;">Add your first meeting with agenda and recording link.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Tab: Work Updates ──────────────────────────────── -->
+        <div class="tab-panel" id="panel-work-updates">
+            <div class="add-btn-row">
+                <button class="add-entry-btn" id="add-work-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add Update
+                </button>
+                <button class="add-entry-btn" id="filter-today-btn" style="border-style:solid;">Today</button>
+                <button class="add-entry-btn" id="filter-week-btn" style="border-style:solid;">This Week</button>
+                <button class="add-entry-btn" id="filter-all-btn" style="border-style:solid;">All</button>
+            </div>
+            <div id="work-updates-list">
+                <div class="empty-state">
+                    <div class="empty-icon">🛠</div>
+                    <div>No work updates yet.</div>
+                    <div style="font-size:0.82rem; margin-top:0.35rem;">Log what was done today, milestones reached, or blockers.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Tab: Communication ────────────────────────────── -->
+        <div class="tab-panel" id="panel-communication">
+            <div class="add-btn-row">
+                <button class="add-entry-btn" id="add-note-btn">📝 Note</button>
+                <button class="add-entry-btn" id="add-email-btn">📧 Email</button>
+                <button class="add-entry-btn" id="add-call-btn">📞 Call Log</button>
+                <button class="add-entry-btn" id="add-message-btn">💬 Message</button>
+            </div>
+            <div id="communication-list">
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <div>No communication logs yet.</div>
+                    <div style="font-size:0.82rem; margin-top:0.35rem;">Log notes, emails, calls, or messages from your team.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Tab: Finance ──────────────────────────────────── -->
+        <div class="tab-panel" id="panel-finance">
+            <!-- Summary bar -->
+            <div class="finance-summary-bar">
+                <div>
+                    <div class="fin-sum-val green" id="fin-total-received">—</div>
+                    <div class="fin-sum-label">Total Received</div>
+                </div>
+                <div>
+                    <div class="fin-sum-val red" id="fin-total-expenses">—</div>
+                    <div class="fin-sum-label">Total Expenses</div>
+                </div>
+                <div>
+                    <div class="fin-sum-val" id="fin-net-profit">—</div>
+                    <div class="fin-sum-label">Net Profit</div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+                <!-- Payments -->
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">💳 Payments Received</div>
+                    </div>
+                    <div id="payments-list"></div>
+                    <div style="margin-top:1rem; padding-top:0.75rem; border-top:1px solid var(--border-color);">
+                        <div style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Add Payment</div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="date" id="new-pay-date" style="flex:1; padding:0.5rem; border:1px solid var(--border-color); border-radius:8px; background:var(--input-bg); color:var(--text-primary); font-size:0.83rem;">
+                            <input type="number" id="new-pay-amount" placeholder="₹ Amount" style="flex:1; padding:0.5rem; border:1px solid var(--border-color); border-radius:8px; background:var(--input-bg); color:var(--text-primary); font-size:0.83rem;">
+                            <button class="primary-btn" id="add-pay-btn" style="padding:0.5rem 0.85rem; font-size:0.83rem;">Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expenses -->
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">📉 Client Expenses</div>
+                    </div>
+                    <div id="expenses-list"></div>
+                    <div style="margin-top:1rem; padding-top:0.75rem; border-top:1px solid var(--border-color);">
+                        <div style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Add Expense</div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="text" id="new-exp-desc" placeholder="Description" style="flex:2; padding:0.5rem; border:1px solid var(--border-color); border-radius:8px; background:var(--input-bg); color:var(--text-primary); font-size:0.83rem;">
+                            <input type="number" id="new-exp-amount" placeholder="₹" style="flex:1; padding:0.5rem; border:1px solid var(--border-color); border-radius:8px; background:var(--input-bg); color:var(--text-primary); font-size:0.83rem;">
+                            <button class="primary-btn" id="add-exp-btn" style="padding:0.5rem 0.85rem; font-size:0.83rem; background:#ef4444; border:none;">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  MODALS                                                         -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<!-- Edit Client Modal -->
+<div class="modal-overlay" id="edit-modal">
+    <div class="modal-box" style="max-width:560px;">
+        <button class="modal-close" id="close-edit-modal">&times;</button>
+        <h2>✏️ Edit Client Details</h2>
+        <form id="edit-client-form">
+            <div class="modal-form-group"><label>Client Name *</label><input type="text" id="edit-name" required></div>
+            <div class="modal-row">
+                <div class="modal-form-group"><label>Contact Person</label><input type="text" id="edit-contact-person"></div>
+                <div class="modal-form-group"><label>Contact Email</label><input type="email" id="edit-contact-email"></div>
+            </div>
+            <div class="modal-row">
+                <div class="modal-form-group"><label>Phone</label><input type="text" id="edit-phone"></div>
+                <div class="modal-form-group"><label>GST Number</label><input type="text" id="edit-gst"></div>
+            </div>
+            <div class="modal-row">
+                <div class="modal-form-group"><label>Website</label><input type="text" id="edit-website" placeholder="https://"></div>
+                <div class="modal-form-group"><label>Industry</label><input type="text" id="edit-industry" placeholder="e.g. E-commerce"></div>
+            </div>
+            <div class="modal-form-group"><label>Address</label><textarea id="edit-address" rows="2"></textarea></div>
+            <div class="modal-row">
+                <div class="modal-form-group"><label>Project Amount (₹)</label><input type="number" id="edit-amount"></div>
+                <div class="modal-form-group"><label>Status</label>
+                    <select id="edit-status"><option value="Active">Active</option><option value="Closed">Closed</option><option value="Lead">Lead</option></select>
+                </div>
+                <div class="modal-form-group"><label>Priority</label>
+                    <select id="edit-priority"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select>
+                </div>
+            </div>
+            <div class="modal-form-group"><label>Project Scope / Services</label><textarea id="edit-work" rows="2"></textarea></div>
+            <div class="modal-form-group"><label>Referral Source</label><input type="text" id="edit-referral"></div>
+            <button type="submit" class="primary-btn full-width" style="margin-top:0.5rem;">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add Meeting Modal -->
+<div class="modal-overlay" id="add-meeting-modal">
+    <div class="modal-box">
+        <button class="modal-close" id="close-meeting-modal">&times;</button>
+        <h2>📅 Add Meeting</h2>
+        <form id="add-meeting-form">
+            <div class="modal-form-group"><label>Meeting Title *</label><input type="text" id="meet-title" required placeholder="e.g. Q1 Review Call"></div>
+            <div class="modal-row">
+                <div class="modal-form-group"><label>Date *</label><input type="date" id="meet-date" required></div>
+                <div class="modal-form-group"><label>Time</label><input type="time" id="meet-time"></div>
+                <div class="modal-form-group"><label>Status</label>
+                    <select id="meet-status"><option value="completed">✅ Completed</option><option value="scheduled">📆 Scheduled</option><option value="cancelled">❌ Cancelled</option></select>
+                </div>
+            </div>
+            <div class="modal-form-group"><label>Meeting Agenda</label><textarea id="meet-agenda" rows="3" placeholder="• Topic 1&#10;• Topic 2&#10;• Topic 3"></textarea></div>
+            <div class="modal-form-group"><label>Recording URL</label><input type="url" id="meet-recording" placeholder="https://drive.google.com/..."></div>
+            <div class="modal-form-group"><label>Attendees</label><input type="text" id="meet-attendees" placeholder="John, Jane, Client Name"></div>
+            <div class="modal-form-group"><label>Notes / Action Items</label><textarea id="meet-notes" rows="3" placeholder="Key decisions, follow-ups..."></textarea></div>
+            <button type="submit" class="primary-btn full-width" style="margin-top:0.5rem;">Save Meeting</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add Work Update Modal -->
+<div class="modal-overlay" id="add-work-modal">
+    <div class="modal-box">
+        <button class="modal-close" id="close-work-modal">&times;</button>
+        <h2>🛠 Add Work Update</h2>
+        <form id="add-work-form">
+            <div class="modal-row">
+                <div class="modal-form-group"><label>Category</label>
+                    <select id="work-category">
+                        <option value="done">✅ Done</option>
+                        <option value="in-progress">🔄 In Progress</option>
+                        <option value="milestone">🏆 Milestone</option>
+                        <option value="blocked">🚫 Blocked</option>
+                    </select>
+                </div>
+                <div class="modal-form-group"><label>Date</label><input type="date" id="work-date"></div>
+            </div>
+            <div class="modal-form-group"><label>Update Details *</label><textarea id="work-text" rows="4" required placeholder="e.g. Completed homepage design, fixed mobile responsiveness on contact page..."></textarea></div>
+            <button type="submit" class="primary-btn full-width" style="margin-top:0.5rem;">Log Update</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add Communication Modal -->
+<div class="modal-overlay" id="add-comm-modal">
+    <div class="modal-box">
+        <button class="modal-close" id="close-comm-modal">&times;</button>
+        <h2>💬 Log Communication</h2>
+        <form id="add-comm-form">
+            <div class="modal-row">
+                <div class="modal-form-group"><label>Type</label>
+                    <select id="comm-type">
+                        <option value="note">📝 Note</option>
+                        <option value="email">📧 Email</option>
+                        <option value="call">📞 Call Log</option>
+                        <option value="message">💬 Message</option>
+                    </select>
+                </div>
+                <div class="modal-form-group"><label>Date</label><input type="date" id="comm-date"></div>
+            </div>
+            <div class="modal-form-group"><label>Details *</label><textarea id="comm-text" rows="4" required placeholder="What was discussed, agreed upon, or sent..."></textarea></div>
+            <button type="submit" class="primary-btn full-width" style="margin-top:0.5rem;">Save</button>
+        </form>
+    </div>
+</div>
+
+<!-- Custom Suggestion Modal -->
+<div class="modal-overlay" id="add-suggestion-modal">
+    <div class="modal-box" style="max-width:420px;">
+        <button class="modal-close" id="close-suggestion-modal">&times;</button>
+        <h2>💡 Add Suggestion</h2>
+        <form id="add-suggestion-form">
+            <div class="modal-form-group"><label>Suggestion</label><textarea id="suggestion-text" rows="3" required placeholder="e.g. Offer annual maintenance plan for ₹15,000/year..."></textarea></div>
+            <button type="submit" class="primary-btn full-width" style="margin-top:0.5rem;">Add Suggestion</button>
+        </form>
+    </div>
+</div>
+
+
+<script type="module" src="app.js?v=1778909200"></script>
+<script type="module" src="client-detail.js?v=2"></script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MOBILE BOTTOM NAVIGATION BAR
+═══════════════════════════════════════════════════════════ -->
+<nav class="mobile-nav" id="mobile-nav">
+    <a href="dashboard.html" class="mobile-nav-item" title="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Home
+    </a>
+    <a href="clients.html" class="mobile-nav-item active" title="Clients">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        Clients
+    </a>
+    <!-- FAB in the center -->
+    <button class="mobile-nav-fab" id="mobile-fab" title="Quick Add" aria-label="Quick actions">
+        +
+    </button>
+    <a href="calendar.html" class="mobile-nav-item" title="Calendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Calendar
+    </a>
+    <a href="finance.html" class="mobile-nav-item" title="Finance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        Finance
+    </a>
+</nav>
+
+<!-- FAB Quick-Action Sheet -->
+<div class="fab-sheet" id="fab-sheet">
+    <div class="fab-sheet-item" id="fab-add-meeting">📅 <span>Add Meeting</span></div>
+    <div class="fab-sheet-item" id="fab-add-work">🛠 <span>Log Work Update</span></div>
+    <div class="fab-sheet-item" id="fab-add-note">📝 <span>Add Note</span></div>
+    <div class="fab-sheet-item" id="fab-add-payment">💳 <span>Log Payment</span></div>
+    <div class="fab-sheet-item" id="fab-edit-client">✏️ <span>Edit Client</span></div>
+</div>
+
+<script>
+(function() {
+    // FAB toggle
+    const fab     = document.getElementById('mobile-fab');
+    const sheet   = document.getElementById('fab-sheet');
+    let fabOpen   = false;
+
+    function toggleFab() {
+        fabOpen = !fabOpen;
+        sheet.classList.toggle('open', fabOpen);
+        fab.textContent = fabOpen ? '✕' : '+';
+        fab.style.transform = fabOpen ? 'rotate(45deg)' : '';
+    }
+    function closeFab() {
+        if (!fabOpen) return;
+        fabOpen = false;
+        sheet.classList.remove('open');
+        fab.textContent = '+';
+        fab.style.transform = '';
+    }
+
+    fab?.addEventListener('click', e => { e.stopPropagation(); toggleFab(); });
+    document.addEventListener('click', closeFab);
+    sheet?.addEventListener('click', e => e.stopPropagation());
+
+    // Wire FAB actions to existing modal openers
+    document.getElementById('fab-add-meeting')?.addEventListener('click', () => {
+        closeFab();
+        // Switch to meetings tab first, then open modal
+        document.querySelector('.client-tab[data-tab="meetings"]')?.click();
+        setTimeout(() => document.getElementById('add-meeting-btn')?.click(), 50);
+    });
+    document.getElementById('fab-add-work')?.addEventListener('click', () => {
+        closeFab();
+        document.querySelector('.client-tab[data-tab="work-updates"]')?.click();
+        setTimeout(() => document.getElementById('add-work-btn')?.click(), 50);
+    });
+    document.getElementById('fab-add-note')?.addEventListener('click', () => {
+        closeFab();
+        document.querySelector('.client-tab[data-tab="communication"]')?.click();
+        setTimeout(() => document.getElementById('add-note-btn')?.click(), 50);
+    });
+    document.getElementById('fab-add-payment')?.addEventListener('click', () => {
+        closeFab();
+        document.querySelector('.client-tab[data-tab="finance"]')?.click();
+        setTimeout(() => document.getElementById('new-pay-date')?.focus(), 100);
+    });
+    document.getElementById('fab-edit-client')?.addEventListener('click', () => {
+        closeFab();
+        setTimeout(() => document.getElementById('edit-client-btn')?.click(), 50);
+    });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

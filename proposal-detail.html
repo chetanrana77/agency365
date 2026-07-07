@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Detail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Newsreader:opsz,wght@6..72,400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6d9539;
+            --secondary: #e5eed7;
+            --text: #151e3a;
+            --text-muted: #4d566d;
+            --border: #e0e6d5;
+            --bg-page: #f3f5ee;
+            --bg-card: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #111726;
+            --bg-card: #1a2238;
+            --text: #f3f5ee;
+            --text-muted: #a0aabf;
+            --border: #2b354d;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            background: var(--bg-page);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Top control bar */
+        .control-bar {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border-color: var(--border);
+            color: var(--text);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-page);
+        }
+
+        /* Status banner */
+        .status-banner {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            box-sizing: border-box;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border-left: 5px solid transparent;
+        }
+        .status-banner.banner-draft { background: rgba(107, 114, 128, 0.1); border-color: #6b7280; }
+        .status-banner.banner-sent { background: rgba(59, 130, 246, 0.1); border-color: #2563eb; }
+        .status-banner.banner-accepted { background: rgba(16, 185, 129, 0.1); border-color: #059669; }
+        .status-banner.banner-declined { background: rgba(239, 68, 68, 0.1); border-color: #dc2626; }
+
+        /* Document Wrapper */
+        .document-wrapper {
+            background: var(--bg-card);
+            width: 210mm;
+            min-height: 297mm;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            position: relative;
+            box-sizing: border-box;
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Document typography */
+        h1.proposal-title {
+            font-family: 'Newsreader', serif;
+            font-size: 2.8rem;
+            font-weight: 500;
+            margin: 1.5rem 0;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo-text {
+            font-family: 'Newsreader', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .header-meta {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .section-title {
+            font-family: 'Newsreader', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-block h4 {
+            margin: 0 0 5px 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-block p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .notes-block {
+            background: rgba(0,0,0,0.01);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--text);
+            white-space: pre-line;
+        }
+
+        /* Deliverables Table */
+        table.items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        table.items-table th {
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: left;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        table.items-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+
+        /* Totals */
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+        .totals-box {
+            width: 320px;
+            font-size: 0.9rem;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            font-weight: 500;
+        }
+        .grand-total-row {
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            margin-top: 5px;
+        }
+
+        /* Terms */
+        .terms-section {
+            margin-top: auto;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        /* Client Actions Panel */
+        .client-actions-box {
+            background: var(--bg-page);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+        }
+        .client-actions-box h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .client-actions-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+        .client-action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn-success { background: #059669; color: white; }
+        .btn-success:hover { background: #047857; }
+        .btn-danger { background: #dc2626; color: white; }
+        .btn-danger:hover { background: #b91c1c; }
+
+        /* Confetti Effect */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        /* Print styling */
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; }
+            .no-print { display: none !important; }
+            .document-wrapper {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                min-height: auto !important;
+                background: #ffffff !important;
+            }
+            :root {
+                --primary: #6d9539 !important;
+                --secondary: #e5eed7 !important;
+            }
+        }
+
+        @media (max-width: 215mm) {
+            .document-wrapper {
+                width: 95% !important;
+                padding: 20px !important;
+                min-height: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Navigation Control Bar -->
+    <div class="control-bar no-print">
+        <a href="proposals.html" class="btn btn-secondary" id="back-link" style="display: none;">← Dashboard</a>
+        <div style="display:flex; gap:0.5rem; margin-left:auto;">
+            <button class="btn btn-secondary" id="edit-proposal-btn" style="display: none;">✏️ Edit</button>
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Print PDF</button>
+        </div>
+    </div>
+
+    <!-- Client Interactive Acceptance Panel -->
+    <div class="client-actions-box no-print" id="client-acceptance-panel" style="display: none;">
+        <h3 id="acceptance-title">Review & Approve Proposal</h3>
+        <p id="acceptance-desc">If everything looks good, approve the proposal to begin the project.</p>
+        <div class="client-action-buttons">
+            <button class="btn btn-success" id="btn-approve">✓ Approve & Accept</button>
+            <button class="btn btn-danger" id="btn-decline">✗ Decline Proposal</button>
+        </div>
+    </div>
+
+    <!-- Document Page -->
+    <div class="document-wrapper" id="proposal-doc">
+        <div class="header">
+            <div>
+                <img id="brand-logo" style="display:none; max-height:50px; margin-bottom:10px;">
+                <div id="brand-text" class="logo-text">Agency 365</div>
+            </div>
+            <div class="header-meta">
+                <p style="margin: 0; font-weight: 600;">PROPOSAL</p>
+                <p style="margin: 4px 0 0 0;" id="prop-meta-id">ID: PR-000000</p>
+            </div>
+        </div>
+
+        <h1 class="proposal-title" id="prop-title">Proposal Title</h1>
+
+        <div class="info-grid">
+            <div class="info-block">
+                <h4>Proposed By</h4>
+                <strong id="agency-name">Agency 365</strong>
+                <p id="agency-org">Modern Agency Solutions</p>
+            </div>
+            <div class="info-block" style="text-align: right;">
+                <h4>Proposal Dates</h4>
+                <p><strong>Issued:</strong> <span id="prop-date">--</span></p>
+                <p><strong>Valid Until:</strong> <span id="prop-expiry">--</span></p>
+            </div>
+        </div>
+
+        <div class="info-grid" style="border-top: 1px dashed var(--border); padding-top: 20px;">
+            <div class="info-block">
+                <h4>Prepared For</h4>
+                <strong id="client-name">Client Name</strong>
+                <p id="client-phone">--</p>
+                <p id="client-gst">--</p>
+            </div>
+            <div class="info-block" style="text-align: right;">
+                <h4>Billing Address</h4>
+                <p id="client-address" style="white-space: pre-line;">--</p>
+            </div>
+        </div>
+
+        <div class="section-title">Project Overview & Scope</div>
+        <div class="notes-block" id="prop-notes">
+            No description provided.
+        </div>
+
+        <div class="section-title">Deliverables & Pricing</div>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 8%; text-align: center;">No.</th>
+                    <th style="width: 57%;">Service / Deliverable Description</th>
+                    <th class="text-right" style="width: 15%;">Rate</th>
+                    <th class="text-center" style="width: 8%;">Qty</th>
+                    <th class="text-right" style="width: 12%;">Total</th>
+                </tr>
+            </thead>
+            <tbody id="items-list">
+                <!-- Populated dynamically -->
+            </tbody>
+        </table>
+
+        <div class="totals-section">
+            <div class="totals-box">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span id="prop-subtotal">₹0</span>
+                </div>
+                <div class="total-row" id="discount-row" style="color: #dc2626;">
+                    <span>Discount:</span>
+                    <span id="prop-discount">-₹0</span>
+                </div>
+                <div class="total-row">
+                    <span>GST/Tax (<span id="tax-percentage">18</span>%):</span>
+                    <span id="prop-tax">₹0</span>
+                </div>
+                <div class="total-row grand-total-row">
+                    <span>Grand Total:</span>
+                    <span id="prop-total">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Terms & Conditions</div>
+        <div class="terms-section" id="prop-terms" style="white-space: pre-line; margin-bottom: 40px;">
+            Terms and conditions go here.
+        </div>
+
+        <!-- Authorized Signature -->
+        <div style="display: flex; justify-content: flex-end; margin-top: auto; padding-top: 30px;">
+            <div style="text-align: center;">
+                <svg viewBox="0 0 200 60" width="160" height="45" style="opacity: 0.85; margin-bottom: 5px;">
+                    <path d="M25,45 Q50,15 70,40 T100,35 T130,48 T170,22" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M55,25 L65,48" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div style="border-top: 1px solid var(--border); width: 180px; margin: 0 auto; padding-top: 5px; font-size: 0.8rem; font-weight: 600;">
+                    Authorized Signature
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply Brand Styling
+            const primaryColor = localStorage.getItem('agency365_brand_primary') || '#6d9539';
+            const secondaryColor = localStorage.getItem('agency365_brand_secondary') || '#e5eed7';
+            document.documentElement.style.setProperty('--primary', primaryColor);
+            document.documentElement.style.setProperty('--secondary', secondaryColor);
+
+            const savedLogo = localStorage.getItem('agency365_brand_logo');
+            if (savedLogo) {
+                const img = document.getElementById('brand-logo');
+                img.src = savedLogo;
+                img.style.display = 'block';
+                document.getElementById('brand-text').style.display = 'none';
+            }
+
+            // Hide/Show Agency controls based on session
+            const isUnlocked = sessionStorage.getItem('agency365_unlocked');
+            if (isUnlocked === 'true') {
+                document.getElementById('back-link').style.display = 'inline-flex';
+                document.getElementById('edit-proposal-btn').style.display = 'inline-flex';
+            }
+
+            // Load Proposal Data
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) {
+                alert('No Proposal ID specified.');
+                return;
+            }
+
+            // Bind Edit Button
+            document.getElementById('edit-proposal-btn').addEventListener('click', () => {
+                window.location.href = `proposals.html?edit=${id}`;
+            });
+
+            let proposals = JSON.parse(localStorage.getItem('agency365_proposals')) || [];
+            let proposal = proposals.find(p => p.id === id);
+            if (!proposal) {
+                alert('Proposal not found.');
+                return;
+            }
+
+            // Render Values
+            const shortId = proposal.id.slice(-6).toUpperCase();
+            document.getElementById('prop-meta-id').textContent = `ID: PR-${shortId}`;
+            document.title = `Proposal - ${proposal.title}`;
+            document.getElementById('prop-title').textContent = proposal.title;
+            document.getElementById('prop-date').textContent = new Date(proposal.date).toLocaleDateString('en-IN', { dateStyle: 'long' });
+            document.getElementById('prop-expiry').textContent = proposal.validUntil ? new Date(proposal.validUntil).toLocaleDateString('en-IN', { dateStyle: 'long' }) : 'N/A';
+            
+            // Client Name & Details
+            document.getElementById('client-name').textContent = proposal.clientName;
+            if (proposal.clientPhone) document.getElementById('client-phone').textContent = `Phone: ${proposal.clientPhone}`;
+            else document.getElementById('client-phone').style.display = 'none';
+
+            if (proposal.clientGst) document.getElementById('client-gst').textContent = `GSTIN: ${proposal.clientGst}`;
+            else document.getElementById('client-gst').style.display = 'none';
+
+            if (proposal.clientAddress) document.getElementById('client-address').textContent = proposal.clientAddress;
+            else document.getElementById('client-address').textContent = '--';
+
+            // Message/Notes
+            if (proposal.notes) document.getElementById('prop-notes').textContent = proposal.notes;
+            else document.getElementById('prop-notes').style.display = 'none';
+
+            // Terms
+            document.getElementById('prop-terms').textContent = proposal.terms || 'No custom terms specified.';
+
+            // Deliverables list
+            const tbody = document.getElementById('items-list');
+            tbody.innerHTML = '';
+            
+            const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
+
+            if (proposal.items && proposal.items.length) {
+                proposal.items.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    const num = String(index + 1).padStart(2, '0');
+                    const rate = parseFloat(item.rate) || 0;
+                    const qty = parseFloat(item.quantity) || 1;
+                    const itemTotal = rate * qty;
+                    
+                    tr.innerHTML = `
+                        <td class="text-center" style="color:var(--text-muted);">${num}.</td>
+                        <td><strong>${item.description}</strong></td>
+                        <td class="text-right">${fmt.format(rate)}</td>
+                        <td class="text-center">${qty}</td>
+                        <td class="text-right" style="font-weight:600;">${fmt.format(itemTotal)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No deliverables list provided.</td></tr>`;
+            }
+
+            // Calculations
+            const subtotal = proposal.subtotal || 0;
+            const discount = proposal.discount || 0;
+            const taxRate = proposal.taxRate !== undefined ? proposal.taxRate : 18;
+            
+            let afterDiscount = subtotal - discount;
+            if (afterDiscount < 0) afterDiscount = 0;
+            const taxAmount = (afterDiscount * taxRate) / 100;
+            const grandTotal = afterDiscount + taxAmount;
+
+            document.getElementById('prop-subtotal').textContent = fmt.format(subtotal);
+            
+            if (discount > 0) {
+                document.getElementById('prop-discount').textContent = `- ${fmt.format(discount)}`;
+            } else {
+                document.getElementById('discount-row').style.display = 'none';
+            }
+
+            document.getElementById('tax-percentage').textContent = taxRate;
+            document.getElementById('prop-tax').textContent = fmt.format(taxAmount);
+            document.getElementById('prop-total').textContent = fmt.format(grandTotal);
+
+            // Handle Client Acceptance Interactive UI
+            const acceptancePanel = document.getElementById('client-acceptance-panel');
+            const statusBanner = document.createElement('div');
+            statusBanner.className = `status-banner banner-${proposal.status.toLowerCase()}`;
+            
+            let bannerText = '';
+            if (proposal.status === 'Draft') {
+                bannerText = `<span>⚠️ <strong>Draft Proposal</strong> — This proposal has not been sent to the client yet.</span>`;
+            } else if (proposal.status === 'Sent') {
+                bannerText = `<span>✉️ <strong>Reviewing Proposal</strong> — Sent to client. Pending approval.</span>`;
+                // Show acceptance buttons for client
+                acceptancePanel.style.display = 'block';
+            } else if (proposal.status === 'Accepted') {
+                bannerText = `<span>🎉 <strong>Accepted Proposal</strong> — This proposal was approved and accepted.</span>`;
+                acceptancePanel.style.display = 'block';
+                acceptancePanel.className = 'client-actions-box success';
+                acceptancePanel.style.borderColor = '#059669';
+                acceptancePanel.style.background = 'rgba(16, 185, 129, 0.05)';
+                document.getElementById('acceptance-title').innerHTML = '🏆 Proposal Approved!';
+                document.getElementById('acceptance-desc').innerHTML = 'Thank you! You have approved this proposal. We will contact you shortly to begin the project.';
+                document.querySelector('.client-action-buttons').style.display = 'none';
+            } else if (proposal.status === 'Declined') {
+                bannerText = `<span>❌ <strong>Declined Proposal</strong> — This proposal was declined.</span>`;
+                acceptancePanel.style.display = 'block';
+                acceptancePanel.style.borderColor = '#dc2626';
+                acceptancePanel.style.background = 'rgba(239, 68, 68, 0.05)';
+                document.getElementById('acceptance-title').innerHTML = 'Proposal Declined';
+                const reasonStr = proposal.declineReason ? `<br><small style="display:block; margin-top:8px; color: #dc2626;">Feedback: "${proposal.declineReason}"</small>` : '';
+                document.getElementById('acceptance-desc').innerHTML = `This proposal has been declined.${reasonStr}`;
+                document.querySelector('.client-action-buttons').style.display = 'none';
+            }
+
+            statusBanner.innerHTML = bannerText;
+            
+            // Add Print action button for agency in status banner
+            if (isUnlocked === 'true') {
+                const badge = document.createElement('span');
+                badge.style.cssText = 'font-size:0.75rem; padding:0.25rem 0.5rem; background:rgba(0,0,0,0.05); border-radius:4px; font-weight:600; text-transform:uppercase;';
+                badge.textContent = `Status: ${proposal.status}`;
+                statusBanner.appendChild(badge);
+            }
+
+            // Insert status banner before the document
+            document.getElementById('proposal-doc').parentNode.insertBefore(statusBanner, document.getElementById('proposal-doc'));
+
+            // Client Button Click Handlers
+            document.getElementById('btn-approve').addEventListener('click', () => {
+                proposal.status = 'Accepted';
+                saveProposalState();
+                showConfetti();
+                // Reload after confetti animation starts
+                setTimeout(() => window.location.reload(), 2500);
+            });
+
+            document.getElementById('btn-decline').addEventListener('click', () => {
+                const reason = prompt('Please let us know the reason for declining (optional):') || '';
+                proposal.status = 'Declined';
+                proposal.declineReason = reason;
+                saveProposalState();
+                window.location.reload();
+            });
+
+            function saveProposalState() {
+                const index = proposals.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    proposals[index] = proposal;
+                    localStorage.setItem('agency365_proposals', JSON.stringify(proposals));
+                }
+            }
+        });
+
+        // Simple SVG-based Confetti Animation
+        function showConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#facc15', '#2563eb', '#059669', '#3b82f6', '#ec4899', '#f97316'];
+
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+                    tiltAngle: 0
+                });
+            }
+
+            let animationId;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let remaining = 0;
+
+                particles.forEach(p => {
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.x += Math.sin(p.tiltAngle);
+                    p.tilt = Math.sin(p.tiltAngle - remaining / 3) * 15;
+
+                    if (p.y <= canvas.height) {
+                        remaining++;
+                    } else {
+                        // recycle particle
+                        p.x = Math.random() * canvas.width;
+                        p.y = -20;
+                        p.tilt = Math.random() * 10 - 5;
+                    }
+
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                    ctx.stroke();
+                });
+
+                animationId = requestAnimationFrame(draw);
+            }
+
+            draw();
+            setTimeout(() => {
+                cancelAnimationFrame(animationId);
+                canvas.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

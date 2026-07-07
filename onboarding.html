@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Onboarding — Agency 365</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1rem; }
+    .card { background: #fff; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.1); width: 100%; max-width: 520px; overflow: hidden; }
+    .header { background: linear-gradient(135deg, #12b76a, #0e9f5d); padding: 2rem; color: #fff; text-align: center; }
+    .header h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .header p { font-size: 0.88rem; opacity: 0.85; }
+    .step-indicator { display: flex; justify-content: center; gap: 0.5rem; padding: 1.25rem 2rem 0; }
+    .step-dot { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: #999; background: #fff; transition: all 0.3s; }
+    .step-dot.active { background: #12b76a; border-color: #12b76a; color: #fff; }
+    .step-dot.done { background: #e5eed7; border-color: #12b76a; color: #12b76a; }
+    .step-line { flex: 1; height: 2px; background: #e0e0e0; margin-top: 15px; border-radius: 2px; }
+    .step-line.done { background: #12b76a; }
+    .body { padding: 1.75rem 2rem 2rem; }
+    .step-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 1.25rem; color: #0f1117; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #374151; margin-bottom: 0.4rem; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 0.7rem 0.85rem; border: 1.5px solid #e0e0e0; border-radius: 10px;
+      font-size: 0.9rem; font-family: inherit; transition: border-color 0.2s; background: #fff; color: #0f1117;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #12b76a; box-shadow: 0 0 0 3px rgba(18,183,106,0.12); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .btn-row { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .btn-primary { flex: 1; padding: 0.8rem; background: #12b76a; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; }
+    .btn-primary:hover { background: #0e9f5d; }
+    .btn-back { padding: 0.8rem 1.25rem; background: #f3f4f6; color: #374151; border: none; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+    .success { text-align: center; padding: 3rem 2rem; display: none; }
+    .success .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .success h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; color: #12b76a; }
+    .success p { color: #6b7280; font-size: 0.9rem; }
+    .error-msg { background: #fef2f2; color: #f04438; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+    @media (max-width: 480px) { .body { padding: 1.25rem; } .header { padding: 1.5rem; } }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>Welcome Aboard! 🎉</h1>
+    <p>Please fill in your business details so we can get started.</p>
+  </div>
+  <div class="step-indicator">
+    <div class="step-dot active" id="dot-1">1</div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-dot" id="dot-2">2</div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-dot" id="dot-3">3</div>
+  </div>
+  <div class="body">
+    <div id="error-msg" class="error-msg"></div>
+    <!-- Step 1 -->
+    <div id="step-1">
+      <div class="step-title">🏢 Business Details</div>
+      <div class="form-group"><label>Company Name *</label><input type="text" id="ob-company" placeholder="e.g. The Car Laundry" required></div>
+      <div class="form-group"><label>Contact Person *</label><input type="text" id="ob-contact" placeholder="Your name" required></div>
+      <div class="form-group"><label>GST Number</label><input type="text" id="ob-gst" placeholder="22AAAAA0000A1Z5"></div>
+      <div class="form-group"><label>Industry</label>
+        <select id="ob-industry">
+          <option value="">Select Industry</option>
+          <option>Automotive</option><option>E-commerce</option><option>Healthcare</option>
+          <option>Food & Beverage</option><option>Real Estate</option><option>Technology</option>
+          <option>Education</option><option>Fashion</option><option>Other</option>
+        </select>
+      </div>
+      <div class="btn-row"><button class="btn-primary" onclick="goStep(2)">Next →</button></div>
+    </div>
+    <!-- Step 2 -->
+    <div id="step-2" style="display:none;">
+      <div class="step-title">📞 Contact Information</div>
+      <div class="form-group"><label>Phone Number *</label><input type="tel" id="ob-phone" placeholder="+91 98765 43210" required></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="ob-email" placeholder="you@company.com"></div>
+      <div class="form-group"><label>Website</label><input type="url" id="ob-website" placeholder="https://yoursite.com"></div>
+      <div class="form-group"><label>Office Address</label><textarea id="ob-address" placeholder="Street, City, State, PIN"></textarea></div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-primary" onclick="goStep(3)">Next →</button>
+      </div>
+    </div>
+    <!-- Step 3 -->
+    <div id="step-3" style="display:none;">
+      <div class="step-title">🎯 Project Details</div>
+      <div class="form-group"><label>What services do you need?</label><textarea id="ob-scope" placeholder="e.g. Website redesign, Social media management, SEO..."></textarea></div>
+      <div class="form-group"><label>Expected Timeline</label>
+        <select id="ob-timeline">
+          <option value="">Select</option>
+          <option>Urgent (&lt; 1 month)</option><option>1–3 months</option><option>3–6 months</option>
+          <option>6–12 months</option><option>Ongoing / Retainer</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Additional Notes</label><textarea id="ob-notes" placeholder="Any specific requirements, preferences, or questions?"></textarea></div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn-primary" id="submit-btn" onclick="submitOnboarding()">✅ Submit</button>
+      </div>
+    </div>
+    <!-- Success -->
+    <div class="success" id="success-screen">
+      <div class="icon">🎉</div>
+      <h2>You're all set!</h2>
+      <p>We've received your details and will be in touch very soon. Looking forward to working with you!</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+const supabase = createClient('https://nytzlivcfiflqmqnjivd.supabase.co', 'sb_publishable_xwTbIz3WpbtJIgExXtCA8g_GFBDLzu9');
+
+const urlParams = new URLSearchParams(window.location.search);
+const token = urlParams.get('token');
+
+window.goStep = function(step) {
+  // Validate current step
+  if (step === 2) {
+    if (!document.getElementById('ob-company').value.trim()) { showError('Please enter your company name.'); return; }
+    if (!document.getElementById('ob-contact').value.trim()) { showError('Please enter your name.'); return; }
+  }
+  if (step === 3) {
+    if (!document.getElementById('ob-phone').value.trim()) { showError('Please enter your phone number.'); return; }
+  }
+  hideError();
+  [1,2,3].forEach(s => document.getElementById(`step-${s}`).style.display = s === step ? 'block' : 'none');
+  [1,2,3].forEach(s => {
+    const dot = document.getElementById(`dot-${s}`);
+    dot.className = 'step-dot' + (s < step ? ' done' : s === step ? ' active' : '');
+  });
+  [1,2].forEach(s => {
+    const line = document.getElementById(`line-${s}`);
+    line.className = 'step-line' + (s < step ? ' done' : '');
+  });
+};
+
+window.submitOnboarding = async function() {
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Submitting…'; btn.disabled = true;
+  const formData = {
+    name: document.getElementById('ob-company').value.trim(),
+    contactPerson: document.getElementById('ob-contact').value.trim(),
+    gst: document.getElementById('ob-gst').value.trim(),
+    industry: document.getElementById('ob-industry').value,
+    phone: document.getElementById('ob-phone').value.trim(),
+    contactEmail: document.getElementById('ob-email').value.trim(),
+    website: document.getElementById('ob-website').value.trim(),
+    address: document.getElementById('ob-address').value.trim(),
+    work: document.getElementById('ob-scope').value.trim(),
+    notes: document.getElementById('ob-notes').value.trim(),
+    onboardingCompleted: true,
+    onboardingCompletedAt: new Date().toISOString(),
+  };
+  try {
+    if (token) {
+      // Get the token record to find client_id and user_id
+      const { data: tokenData } = await supabase.from('onboarding_tokens').select('*').eq('token', token).single();
+      if (tokenData) {
+        // Get existing client data
+        const { data: existing } = await supabase.from('clients').select('data').eq('item_id', tokenData.client_id).eq('user_id', tokenData.user_id).single();
+        if (existing) {
+          const updatedData = { ...existing.data, ...formData };
+          await supabase.from('clients').update({ data: updatedData }).eq('item_id', tokenData.client_id).eq('user_id', tokenData.user_id);
+        }
+        // Mark token as used
+        await supabase.from('onboarding_tokens').update({ used: true }).eq('token', token);
+      }
+    } else {
+      // No token — just log submission (fallback)
+      await supabase.from('onboarding_submissions').insert({ data: formData, submitted_at: new Date().toISOString() });
+    }
+    // Show success
+    document.getElementById('step-3').style.display = 'none';
+    document.getElementById('success-screen').style.display = 'block';
+    document.querySelector('.step-indicator').style.display = 'none';
+  } catch(err) {
+    console.error(err);
+    showError('Something went wrong. Please try again.');
+    btn.textContent = '✅ Submit'; btn.disabled = false;
+  }
+};
+
+function showError(msg) { const el = document.getElementById('error-msg'); el.textContent = msg; el.style.display = 'block'; }
+function hideError() { document.getElementById('error-msg').style.display = 'none'; }
+</script>
+</body>
+</html>

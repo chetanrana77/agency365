@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency 365 - Team Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile-overrides.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#12b76a">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar 1: Slim Icons Bar -->
+        <nav class="sidebar-icons">
+            <div class="sidebar-logo">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    <path d="M2 12h20"></path>
+                </svg>
+            </div>
+            <ul class="icon-links">
+                <li><a href="dashboard.html" title="Dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a></li>
+                <li><a href="clients.html" title="Clients"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></a></li>
+                <li><a href="crm.html" title="CRM Leads"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></a></li>
+                <li><a href="calendar.html" title="Calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></a></li>
+                <li><a href="proposals.html" title="Proposals"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></a></li>
+                <li><a href="finance.html" title="Billing & Invoices"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="12" y1="4" x2="12" y2="20"/></svg></a></li>
+                <li><a href="account.html" class="active" title="Account Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a></li>
+            </ul>
+            <div class="sidebar-icons-footer">
+                <button id="theme-toggle-btn" class="theme-toggle-icon-btn" title="Toggle Theme">
+                    <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Sidebar 2: Detailed Text Menu -->
+        <nav class="sidebar-menu">
+            <div class="sidebar-brand">
+                <span class="brand-text-span" id="brand-text">Agency 365</span>
+            </div>
+            <div class="menu-sections-wrapper">
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Workspace</h4>
+                    <ul class="menu-links">
+                        <li><a href="dashboard.html"><span>Overview</span></a></li>
+                        <li><a href="clients.html"><span>Clients</span></a></li>
+                        <li><a href="crm.html"><span>Leads Pipeline</span></a></li>
+                        <li><a href="calendar.html"><span>Calendar</span></a></li>
+                    </ul>
+                </div>
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Settings</h4>
+                    <ul class="menu-links">
+                        <li><a href="account.html"><span>Account Settings</span></a></li>
+                        <li><a href="team.html" class="active"><span>Team Access</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="content-area">
+            <div class="view-header">
+                <div>
+                    <h1>👥 Team & Permissions</h1>
+                    <p style="color:var(--text-secondary); font-size:0.88rem; margin-top:2px;">Invite your team members and manage role permissions.</p>
+                </div>
+                <button class="primary-btn" id="invite-btn">+ Invite Member</button>
+            </div>
+
+            <div class="tracker-container" style="max-width:800px; margin-top:1.5rem;">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h2>Team Members</h2>
+                    </div>
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="team-list">
+                                <tr>
+                                    <td colspan="5" class="empty-state" style="text-align:center; padding:2rem; color:var(--text-secondary);">Loading team list...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="dash-card" style="margin-top:1.5rem;">
+                    <div class="dash-card-header">
+                        <h2>🔑 Role Permissions Matrix</h2>
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.5rem; line-height:1.6;">
+                        <p><strong>Admin:</strong> Full access to edit client details, log payments, delete events, invite/remove team members.</p>
+                        <p style="margin-top:0.4rem;"><strong>Manager:</strong> Can add work updates, notes, schedule meetings, and create proposals. Cannot delete data or manage team.</p>
+                        <p style="margin-top:0.4rem;"><strong>Member:</strong> Can add work updates and notes. Read-only access to client billing, settings, and other areas.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Invite Modal -->
+    <div class="modal-overlay" id="invite-modal">
+        <div class="modal-box" style="max-width:400px;">
+            <button class="modal-close" id="close-invite-modal">&times;</button>
+            <h2>👥 Invite Team Member</h2>
+            <form id="invite-form" style="margin-top:1rem;">
+                <div class="modal-form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="invite-email" placeholder="name@company.com" required style="width:100%; padding:0.6rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-secondary); color:var(--text-primary);">
+                </div>
+                <div class="modal-form-group" style="margin-top:1rem;">
+                    <label>Role</label>
+                    <select id="invite-role" style="width:100%; padding:0.6rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-secondary); color:var(--text-primary);">
+                        <option value="member">Member</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="primary-btn full-width" style="margin-top:1.5rem;">Send Invite</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mobile Nav Bar -->
+    <nav class="mob-nav" id="mob-nav">
+        <a href="dashboard.html" class="mob-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></a>
+        <a href="clients.html" class="mob-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Clients</span></a>
+        <button class="mob-nav-fab" id="mob-fab" aria-label="Quick Add">+</button>
+        <a href="calendar.html" class="mob-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a>
+        <a href="finance.html" class="mob-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Finance</span></a>
+    </nav>
+
+    <div class="mob-fab-sheet" id="mob-fab-sheet">
+        <a href="clients.html" class="mob-sheet-item">👤 <span>Add Client</span></a>
+        <a href="proposals.html" class="mob-sheet-item">📝 <span>Proposals</span></a>
+        <a href="crm.html" class="mob-sheet-item">📈 <span>Leads Pipeline</span></a>
+        <a href="account.html" class="mob-sheet-item">⚙️ <span>Settings</span></a>
+    </div>
+
+    <script type="module" src="app.js"></script>
+    <script type="module">
+        import { inviteTeamMember, getTeamMembers } from './supabaseClient.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const list = document.getElementById('team-list');
+            const modal = document.getElementById('invite-modal');
+            const closeBtn = document.getElementById('close-invite-modal');
+            const inviteBtn = document.getElementById('invite-btn');
+            const form = document.getElementById('invite-form');
+
+            inviteBtn?.addEventListener('click', () => modal.classList.add('show'));
+            closeBtn?.addEventListener('click', () => modal.classList.remove('show'));
+
+            async function renderTeam() {
+                const members = await getTeamMembers();
+                if (members.length === 0) {
+                    list.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-secondary);">No team members invited yet. Add one above!</td></tr>`;
+                    return;
+                }
+                list.innerHTML = members.map(m => `
+                    <tr>
+                        <td><strong>${m.name || 'Invited User'}</strong></td>
+                        <td>${m.email}</td>
+                        <td><span style="font-size:0.78rem; font-weight:600; text-transform:uppercase; background:var(--bg-secondary); padding:0.2rem 0.5rem; border-radius:4px;">${m.role}</span></td>
+                        <td><span style="font-size:0.75rem; font-weight:600; color:${m.status === 'active' ? '#12b76a' : '#f79009'};">${m.status}</span></td>
+                        <td><button class="secondary-btn" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Cancel</button></td>
+                    </tr>
+                `).join('');
+            }
+
+            form?.addEventListener('submit', async e => {
+                e.preventDefault();
+                const email = document.getElementById('invite-email').value;
+                const role = document.getElementById('invite-role').value;
+                const submit = form.querySelector('button[type="submit"]');
+                submit.disabled = true; submit.textContent = 'Sending...';
+                const { data, error } = await inviteTeamMember(email, role);
+                if (error) {
+                    alert('Error: ' + error.message);
+                } else {
+                    alert('✅ Invitation sent to ' + email);
+                    modal.classList.remove('show');
+                    form.reset();
+                    renderTeam();
+                }
+                submit.disabled = false; submit.textContent = 'Send Invite';
+            });
+
+            renderTeam();
+        });
+    </script>
+</body>
+</html>

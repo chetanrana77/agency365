@@ -1,0 +1,157 @@
+/* ══════════════════════════════════════════════════════════════════
+   mobile-overrides.css — Per-page critical mobile fixes
+   Loaded after styles.css on every page.
+══════════════════════════════════════════════════════════════════ */
+
+/* ─── Dashboard ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* Finance stat cards: 3-col → 1-col */
+    .finance-stats {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem;
+    }
+    /* Period filter: wrap */
+    .period-filter {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    .period-btn { flex: 1; text-align: center; min-width: 60px; }
+
+    /* Date range controls */
+    #custom-date-wrap { flex-wrap: wrap; }
+    .balance-amount { font-size: 1.9rem; }
+    .balance-amount-row { flex-wrap: wrap; gap: 0.5rem; }
+    .change-badge { align-self: center; }
+    .dash-card { padding: 1rem; border-radius: 10px; }
+    .list-item { flex-wrap: wrap; gap: 0.35rem; }
+}
+
+/* ─── Finance Page ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* The critical 4-column inline grid → 2-col → 1-col */
+    [style*="grid-template-columns: repeat(4, 1fr)"],
+    [style*="grid-template-columns:repeat(4,1fr)"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+    }
+    /* Finance header button row */
+    .fin-header-actions { flex-wrap: wrap; gap: 0.5rem; }
+    .pay-row { flex-wrap: wrap; gap: 0.25rem; }
+}
+@media (max-width: 420px) {
+    [style*="grid-template-columns: repeat(4, 1fr)"],
+    [style*="grid-template-columns:repeat(4,1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ─── Clients Page ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* View header search + buttons */
+    .view-header { flex-wrap: wrap; }
+    .search-input { width: 100% !important; min-width: 0; }
+
+    /* Modal: Amount/Status/Priority row  (flex row → column) */
+    .modal-row,
+    [style*="display:flex; gap:0.5rem"],
+    [style*="display: flex; gap: 0.5rem"] {
+        flex-wrap: wrap;
+    }
+    .modal-row .modal-form-group { width: 100%; }
+
+    /* Client cards grid */
+    [style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ─── CRM / Leads ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .crm-header { flex-wrap: wrap; gap: 0.5rem; }
+    .crm-search { width: 100%; }
+    .half-width { width: 100% !important; flex: none !important; }
+}
+
+/* ─── Calendar ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* FullCalendar: hide week/day grid views, show list instead */
+    .fc-timeGridWeek-view .fc-col-header,
+    .fc-timeGridDay-view .fc-col-header {
+        font-size: 0.65rem;
+    }
+    .fc-toolbar { flex-wrap: wrap !important; gap: 0.5rem !important; }
+    .fc-toolbar-chunk { display: flex; align-items: center; gap: 0.25rem; }
+    .fc-button { font-size: 0.78rem !important; padding: 0.3rem 0.55rem !important; }
+    .fc-button-group .fc-button { font-size: 0.72rem !important; padding: 0.25rem 0.4rem !important; }
+    #calendar { min-height: 420px !important; }
+    .fc-daygrid-day-number { font-size: 0.78rem; }
+    .fc-event { font-size: 0.7rem !important; }
+    .fc-event-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* ─── Proposals ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* Side panel fixed width override */
+    .side-panel {
+        width: 100% !important;
+        right: -100% !important;
+        max-width: 100%;
+        border-radius: 20px 20px 0 0 !important;
+        bottom: 0; top: auto !important;
+        height: 90vh;
+        overflow-y: auto;
+    }
+    /* Search input fixed width */
+    .proposals-search,
+    input[type="search"],
+    input[placeholder*="Search"] {
+        width: 100% !important;
+        min-width: 0;
+        flex: 1;
+    }
+    /* Proposal item rows inside side panel */
+    .item-row {
+        flex-wrap: wrap !important;
+        gap: 0.4rem !important;
+        align-items: flex-start !important;
+    }
+    .item-row input[type="text"],
+    .item-row input[type="number"] {
+        min-width: 0;
+    }
+    /* Proposal action header */
+    .proposal-header-actions { flex-wrap: wrap; gap: 0.5rem; }
+}
+
+/* ─── Revenue ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .rev-hero {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+    }
+    .pay-row { flex-wrap: wrap; }
+}
+
+/* ─── Account ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .tracker-container { max-width: 100% !important; }
+    .timeline-item { flex-wrap: wrap; gap: 0.5rem; }
+    .timeline-item > div:last-child { width: 100%; display: flex; justify-content: flex-end; }
+}
+
+/* ─── Global form row fix ─────────────────────────────────────── */
+@media (max-width: 480px) {
+    /* Any 3-col inline grid → single col on very small screens */
+    [style*="grid-template-columns: repeat(3, 1fr)"],
+    [style*="grid-template-columns:repeat(3,1fr)"] {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+    }
+    /* Finance stats 2-col → 1-col on tiny phones */
+    .finance-stats { grid-template-columns: 1fr !important; }
+
+    /* Dashboard period filter on tiny screens */
+    .period-btn { padding: 0.3rem 0.5rem; font-size: 0.72rem; }
+}
