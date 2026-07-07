@@ -6,17 +6,17 @@
     <title>Agency 365 - Secure Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:opsz,wght@6..72,400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f3f5ee;
+            --bg-color: #f9fbfc;
             --bg-card: #ffffff;
-            --text-primary: #151e3a;
-            --text-secondary: #4d566d;
-            --border-color: #e0e6d5;
-            --accent-color: #6d9539;
-            --accent-hover: #54752b;
-            --input-bg: #f9fbf7;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #0f172a;
+            --accent-hover: #334155;
+            --input-bg: #f8fafc;
         }
 
         [data-theme="dark"] {
@@ -31,7 +31,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(109, 149, 57, 0.12), transparent 70%);
+            /* Clean background */
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
@@ -71,23 +71,23 @@
             border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 3.2rem 2.5rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
             text-align: center;
             box-sizing: border-box;
             width: 100%;
         }
 
         .auth-box h1 {
-            font-family: 'Newsreader', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 1.8rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: var(--text-primary);
             margin: 0 0 0.5rem 0;
             letter-spacing: -0.02em;
         }
 
         .auth-box h2 {
-            font-family: 'Newsreader', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 1.6rem;
             font-weight: 600;
             margin: 1.5rem 0 0.5rem 0;
@@ -131,7 +131,7 @@
 
         .form-group input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(109, 149, 57, 0.06);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
         }
 
         .primary-btn {
