@@ -26,12 +26,23 @@ We follow an **Evolution Strategy** rather than a "big bang" rewrite.
 
 ---
 
-### Sprint 2 — Database Normalization & Tenant Layers
-- **Goal:** Establish multi-tenant boundaries and split the giant Client JSONB blob.
-- [ ] Create `organizations` and `profiles` tables.
-- [ ] Map Client's nested arrays to individual tables: `tasks`, `meetings`, `payments`, `expenses`, `communications`.
-- [ ] Enforce database-level Foreign Keys, unique keys, and composite indexes.
-- [ ] Implement soft delete columns (`deleted_at`, `deleted_by`) across all tables.
+### Sprint 2A — Database Normalization
+- **Goal:** Design and migrate from the giant Client JSON blob to a relational schema.
+- [ ] Deliverable: Entity Relationship Diagram (ERD) & Database Blueprint
+- [ ] Deliverable: Table Definitions (clients, tasks, meetings, payments, expenses)
+- [ ] Deliverable: Foreign Keys & Relational Constraints
+- [ ] Deliverable: Index Strategy & Soft Deletion schema
+- [ ] Deliverable: Migration SQL Scripts
+
+---
+
+### Sprint 2B — Organization Layer
+- **Goal:** Establish multi-tenant boundaries, teams, and role-based access.
+- [ ] Deliverable: Organizations and Profiles Tables
+- [ ] Deliverable: Team Members, Roles, and Permissions matrix
+- [ ] Deliverable: Invitation Flow architecture
+- [ ] Deliverable: Tenant Isolation mechanisms
+- [ ] Deliverable: Row-Level Security (RLS) Policies
 
 ---
 
