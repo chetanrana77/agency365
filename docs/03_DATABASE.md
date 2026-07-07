@@ -122,3 +122,29 @@ To maintain optimal search performance:
 - `idx_proposals_user` on `proposals(user_id)`
 - `idx_expenses_user` on `expenses(user_id)`
 - `idx_events_user` on `events(user_id)`
+
+---
+
+## 4. SaaS Scaling Database Evolution (Critical)
+
+To grow the platform from 1 user to 10,000+ organizations, we are phasing out the single JSONB client blob and migrating to normalized relational tables with relational integrity rules.
+
+### A. Required Missing Tables (V2 Redesign)
+- **`organizations`**: Workspace boundary grouping multiple team members.
+- **`profiles`**: Individual user profiles containing metadata, avatars, and application preferences.
+- **`activity_logs`**: System event timeline for audit records.
+- **`files`**: Scoped references to digital documents stored in Supabase Storage.
+- **`comments`**: Threaded conversations associated with client profiles or tasks.
+
+### B. Relational Schema Normalization (Sprint 2 & 4)
+Nested arrays currently stored in JSONB will be separated into standalone relational tables:
+1. `tasks` (Foreign key: `client_id` references `clients.id`)
+2. `meetings` (Foreign key: `client_id` references `clients.id`)
+3. `payments` (Foreign key: `client_id` references `clients.id`)
+4. `expenses` (Foreign key: `client_id` references `clients.id`)
+5. `communications` (Foreign key: `client_id` references `clients.id`)
+
+### C. Scalability Enhancements
+- **Multi-Tenant Indexing:** Add composite indexes on `(organization_id, client_id, status)` and `(created_at, due_date)` to optimize pagination and search results.
+- **Relational Constraints:** Enforce Database-level `Foreign Keys`, `Unique Constraints`, and `Check Constraints` to prevent data corruption.
+- **Soft Deletion:** Implement soft-deletes using `deleted_at` and `deleted_by` columns instead of raw deletion commands to preserve audit compliance.

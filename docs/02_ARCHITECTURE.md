@@ -53,3 +53,38 @@ To maintain simplicity and prevent sync conflicts:
 ## 4. Key Architectural Restrictions
 - **No Shared State Across Modules:** Modules must load state directly from the centralized `localStorage` keys or session caches during initialization.
 - **No UI-Blocking API Requests:** Network database writes must always run in the background. The interface must transition states instantly based on successful local cache mutations.
+
+---
+
+## 5. Architectural Debt & Scaling Redesign (P0/P1)
+
+### A. Current Architectural Technical Debt
+- **LocalStorage as Database:** LocalStorage is the primary source of truth, causing sync conflicts and making multi-device/team collaboration fragile.
+- **Giant Client Object:** Nested tables (`tasks[]`, `meetings[]`, `payments[]`, `expenses[]`) are stored inside a single client JSONB column, leading to bloated payloads, slow updates, and un-indexable queries.
+- **Mixed Concerns:** UI rendering, calculation rules, storage logic, validation, and notifications are coupled inside files like `client-detail.js`.
+
+### B. Target SaaS Architecture (Sprints 3 & 4)
+We are migrating to a decoupled architecture utilizing the **Repository Pattern** and **Service Layer**:
+
+```text
+[UI Layer / Modules]
+       ↓
+[Service Layer] (ClientService, FinanceService, etc. - holds business logic)
+       ↓
+[Repository Layer] (Handles localStorage caching + Supabase queries)
+       ↓
+[Data Store] (Supabase Database as Central Source of Truth)
+```
+
+1. **Repository Pattern:** Page scripts must not make direct Supabase calls. All database reads and writes go through localized repository classes (e.g. `ClientRepository`) which manage local caching and network synchronization transparently.
+2. **Service Layer:** Houses reusable business logic (e.g. calculating health scores, invoicing counters, routing updates).
+3. **Decomposition:** Large files must be split into single-responsibility scripts. No Javascript file should exceed 500 lines.
+4. **Domain-Driven Directory Structure:** Legacy root scripts must be grouped by module boundary:
+   ```text
+   modules/
+     ├── clients/
+     ├── finance/
+     ├── calendar/
+     └── crm/
+   ```
+
