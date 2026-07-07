@@ -416,8 +416,8 @@ function renderCharts(tf) {
         
         const ctx2d = ctx1.getContext('2d');
         const gradient = ctx2d.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
-        gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+        gradient.addColorStop(0, 'rgba(18, 183, 106, 0.18)');
+        gradient.addColorStop(1, 'rgba(18, 183, 106, 0.0)');
         
         balanceChart = new Chart(ctx1, {
             type: 'line',
@@ -426,14 +426,14 @@ function renderCharts(tf) {
                 datasets: [{
                     label: 'Running Balance (₹)',
                     data: balanceData,
-                    borderColor: '#2563eb',
-                    borderWidth: 2.5,
-                    tension: 0,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
-                    pointBackgroundColor: '#2563eb',
+                    borderColor: '#12b76a',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: '#12b76a',
                     pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
+                    pointBorderWidth: 1.5,
                     fill: true,
                     backgroundColor: gradient
                 }]
@@ -445,11 +445,11 @@ function renderCharts(tf) {
                 scales: {
                     y: {
                         beginAtZero: false,
-                        grid: { color: 'rgba(0, 0, 0, 0.02)', drawBorder: false },
+                        grid: { color: 'rgba(0, 0, 0, 0.03)' },
                         ticks: { font: { family: 'Inter', size: 10 } }
                     },
                     x: {
-                        grid: { display: false, drawBorder: false },
+                        grid: { display: false },
                         ticks: { font: { family: 'Inter', size: 10 } }
                     }
                 }
