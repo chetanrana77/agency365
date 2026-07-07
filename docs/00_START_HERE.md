@@ -13,7 +13,7 @@ Our architectural philosophy is focused on building a scalable, maintainable, pr
 
 ## 2. Directory Structure
 ```
-/project-365          # Workspace root
+/agency365            # Workspace root
   ├── docs/           # Engineering documentation (this directory)
   ├── icons/          # App assets and PWA icons
   ├── app.js          # Core app lifecycle, routing, global event hooks
