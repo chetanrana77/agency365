@@ -24,9 +24,21 @@ Before modifying any line of code in the repository, you must write a brief expl
 
 ### 3. The Core Development Flow
 Documentation is a living asset, not a one-time task. Every time a significant architectural decision is made, the relevant document in `/docs` must be updated. The development pipeline must follow this order:
-> **Documentation → Architecture → Database → Code → Review → Merge**
+> **Documentation → Design Freeze → Database → Code → Review → Merge**
 
 Never the other way around. If the code changes but the documentation doesn't, the implementation has failed.
+
+### 4. The Design Freeze Protocol
+Every major subsystem must go through this lifecycle:
+`Draft → Architecture Review → Revision → Design Freeze ✅ → Implementation → Testing → Production`
+Once a design is **frozen**, you **cannot change it during implementation** without opening a new RFC or ADR.
+
+### 5. Issue Resolution (Bug Fixing Rule)
+Every issue discovered during operational validation must answer three questions:
+1. **Root Cause:** Why did this happen?
+2. **Immediate Fix:** What solves the current problem?
+3. **Long-Term Solution:** What architectural change prevents this class of problem from recurring?
+*Do not just fix bugs. Eliminate categories of bugs.*
 
 ---
 *Refer to [00_START_HERE.md](file:///Users/chetanrana/Antigravity%20Codes/project-365/docs/00_START_HERE.md) for onboarding details.*
