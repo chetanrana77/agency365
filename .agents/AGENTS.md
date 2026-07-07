@@ -40,5 +40,12 @@ Every issue discovered during operational validation must answer three questions
 3. **Long-Term Solution:** What architectural change prevents this class of problem from recurring?
 *Do not just fix bugs. Eliminate categories of bugs.*
 
+### 6. Deployment Protocol (Production Gates)
+Never push code directly to the `main` branch or trigger a live deployment without explicit CTO approval. 
+Every deployment is treated as a major operation, following enterprise SaaS standards.
+- Develop and commit on feature branches (e.g., `feat/ui-redesign`).
+- Wait for explicit CTO approval.
+- Merge and push to `main` ONLY when instructed.
+
 ---
 *Refer to [00_START_HERE.md](file:///Users/chetanrana/Antigravity%20Codes/project-365/docs/00_START_HERE.md) for onboarding details.*
