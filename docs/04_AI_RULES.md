@@ -15,9 +15,15 @@ Before modifying any line of code, the AI agent must explain in its reasoning/re
 > [!CRITICAL]
 > Never sacrifice architectural health for short-term completion speed. Quick fixes or patches over patches are unacceptable.
 
+## 2. Core Development Pipeline Flow
+Documentation is a living asset, not a one-time task. If the code changes but the documentation doesn't, the implementation has failed. The pipeline must follow:
+> **Documentation → Architecture → Database → Code → Review → Merge**
+
+Never the other way around.
+
 ---
 
-## 2. Code Review & Dependency Mandates
+## 3. Code Review & Dependency Mandates
 - **Read the module:** Review the entire target Javascript module and its DOM hooks in the corresponding HTML file before writing code.
 - **Identify side effects:** Explicitly trace what other pages are affected by changing the schema (e.g. changing fields inside `agency365_clients` will break rendering in `finance.js` and `dashboard.js`).
 - **No placeholder implementations:** Write production-ready, completed functions. Never output comment blocks like `// TODO: Implement later`.
