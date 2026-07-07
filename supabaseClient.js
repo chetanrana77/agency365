@@ -41,24 +41,56 @@ const SYNC_TABLES = {
 
 const _origSet = localStorage.setItem.bind(localStorage);
 
-// Override localStorage.setItem to auto-sync to Supabase
+// Mutex queues for debounced, non-blocking syncs
+const syncMutex = {};
+const pendingSyncData = {};
+
+export function isSyncing() {
+    return Object.values(syncMutex).some(isLocked => isLocked) || Object.values(pendingSyncData).some(data => data !== null);
+}
+
+// Override localStorage.setItem to auto-sync safely to Supabase
 localStorage.setItem = async function(key, value) {
     _origSet(key, value); // instant local save
+    
     const table = SYNC_TABLES[key];
     if (!table) return;
-    const user = await getUser();
-    if (!user) return;
+    
+    // Store latest value into the queue
+    pendingSyncData[table] = value;
+    
+    // If a sync for this table is already running, return.
+    // The active loop will pick up this newest pendingSyncData value.
+    if (syncMutex[table]) return;
+    
+    // Otherwise, start the sync loop
+    syncMutex[table] = true;
+    
     try {
-        const arr = JSON.parse(value) || [];
-        // Upsert strategy: delete all user rows then insert fresh
-        await supabase.from(table).delete().eq('user_id', user.id);
-        if (arr.length > 0) {
-            await supabase.from(table).insert(
-                arr.map(item => ({ user_id: user.id, data: item, item_id: item.id || null }))
-            );
+        const user = await getUser();
+        if (!user) {
+            syncMutex[table] = false;
+            return;
+        }
+
+        while (pendingSyncData[table]) {
+            const currentData = pendingSyncData[table];
+            pendingSyncData[table] = null; // consume it from queue
+            
+            const arr = JSON.parse(currentData) || [];
+            
+            // Atomic-ish write: delete old and insert new state
+            await supabase.from(table).delete().eq('user_id', user.id);
+            if (arr.length > 0) {
+                await supabase.from(table).insert(
+                    arr.map(item => ({ user_id: user.id, data: item, item_id: item.id || null }))
+                );
+            }
         }
     } catch (err) {
-        console.error(`Supabase sync error (${key}):`, err);
+        console.error(`Supabase Mutex sync error (${key}):`, err);
+    } finally {
+        syncMutex[table] = false;
     }
 };
 

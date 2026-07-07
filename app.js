@@ -2,7 +2,7 @@ import { initCRM } from './crm.js?v=20260605';
 import { initCalendar } from './calendar.js?v=20260605';
 import { initDashboard } from './dashboard.js?v=20260615';
 import { initProposals } from './proposals.js?v=20260615';
-import { supabase, syncFromSupabase, signIn, signUp, signOut, getNotifications, markNotificationRead } from './supabaseClient.js';
+import { supabase, syncFromSupabase, signIn, signUp, signOut, getNotifications, markNotificationRead, isSyncing } from './supabaseClient.js';
 
 const USERS_KEY = 'agency365_users';
 
@@ -219,7 +219,12 @@ function initPullToRefresh() {
             pullEl.style.cssText = 'position:fixed;top:15px;left:50%;transform:translateX(-50%);background:var(--accent-color);color:#fff;border-radius:20px;padding:0.4rem 1.1rem;font-size:0.8rem;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-weight:600;display:flex;align-items:center;gap:0.4rem;pointer-events:none;';
             pullEl.innerHTML = '🔄 Refreshing…';
             document.body.append(pullEl);
-            setTimeout(() => window.location.reload(), 600);
+            // Wait for any active syncs to finish before reloading safely
+            const tryReload = () => {
+                if (isSyncing()) setTimeout(tryReload, 100);
+                else window.location.reload();
+            };
+            setTimeout(tryReload, 600);
         }
     }, { passive: true });
 }
