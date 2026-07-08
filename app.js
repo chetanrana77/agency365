@@ -8,12 +8,6 @@ const USERS_KEY = 'agency365_users';
 
 // ── Brand Settings ────────────────────────────────────────────
 export function applyBrandSettings() {
-    const primaryColor = localStorage.getItem('agency365_brand_primary') || '#12b76a';
-    const secondaryColor = localStorage.getItem('agency365_brand_secondary') || '#e5eed7';
-    document.documentElement.style.setProperty('--accent-color', primaryColor);
-    document.documentElement.style.setProperty('--accent-hover', primaryColor === '#12b76a' ? '#0e9f5d' : primaryColor);
-    document.documentElement.style.setProperty('--secondary-color', secondaryColor);
-    
     const logoHeight = localStorage.getItem('agency365_logo_height') || '30';
     document.documentElement.style.setProperty('--logo-height', logoHeight + 'px');
 
