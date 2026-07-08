@@ -13,23 +13,24 @@ export function applyBrandSettings() {
     document.documentElement.style.setProperty('--accent-color', primaryColor);
     document.documentElement.style.setProperty('--accent-hover', primaryColor === '#12b76a' ? '#0e9f5d' : primaryColor);
     document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+    
+    const logoHeight = localStorage.getItem('agency365_logo_height') || '30';
+    document.documentElement.style.setProperty('--logo-height', logoHeight + 'px');
 
-    const logoImg   = document.getElementById('brand-logo');
-    const brandText = document.getElementById('brand-text');
+    const brandContainer = document.querySelector('.sidebar-brand');
     const savedLogo = localStorage.getItem('agency365_brand_logo');
     let orgName = 'Agency 365';
     try {
         const user = JSON.parse(sessionStorage.getItem('agency365_current_user'));
         if (user?.orgName) orgName = user.orgName;
     } catch(e) {}
-    if (savedLogo && logoImg) {
-        logoImg.src = savedLogo;
-        logoImg.style.display = 'block';
-        if (brandText) brandText.style.display = 'none';
-    } else if (brandText) {
-        if (logoImg) logoImg.style.display = 'none';
-        brandText.textContent = orgName;
-        brandText.style.display = 'block';
+    
+    if (brandContainer) {
+        if (savedLogo) {
+            brandContainer.innerHTML = `<img id="brand-logo" class="logo-img" src="${savedLogo}" style="max-height: var(--logo-height, 30px); margin-bottom:0.5rem; object-fit:contain;">`;
+        } else {
+            brandContainer.innerHTML = `<span class="brand-text-span" id="brand-text">${orgName}</span>`;
+        }
     }
 }
 applyBrandSettings();
@@ -197,6 +198,7 @@ function initTheme() {
 
 // ── App Init ──────────────────────────────────────────────────
 async function initApp() {
+    document.body.classList.remove('preload');
     initTheme();
     await syncFromSupabase();
     checkAuthAndInit();

@@ -43,8 +43,19 @@ export function initDashboard() {
     renderConnectList();
     initCharts();
     initPeriodFilter();
+    initHeaderTabs();
     renderTodaysFocus();
     renderDeadlines();
+}
+
+function initHeaderTabs() {
+    document.querySelectorAll('.header-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.header-tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            // Currently mock functionality - would load specific account data here
+        });
+    });
 }
 
 function initPeriodFilter() {

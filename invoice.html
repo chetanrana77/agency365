@@ -264,8 +264,27 @@
             .invoice-actions { display: none !important; }
         }
     </style>
+    <script>
+        // Prevent FOUC by applying theme & brand settings synchronously before first paint
+        (function() {
+            // Theme
+            const savedTheme = localStorage.getItem('agency365_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // Colors
+            const primaryColor = localStorage.getItem('agency365_brand_primary') || '#12b76a';
+            const secondaryColor = localStorage.getItem('agency365_brand_secondary') || '#e5eed7';
+            document.documentElement.style.setProperty('--accent-color', primaryColor);
+            document.documentElement.style.setProperty('--accent-hover', primaryColor === '#12b76a' ? '#0e9f5d' : primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            
+            // Logo Size
+            const logoHeight = localStorage.getItem('agency365_logo_height') || '30';
+            document.documentElement.style.setProperty('--logo-height', logoHeight + 'px');
+        })();
+    </script>
 </head>
-<body>
+<body class="preload">
 <div class="invoice-actions" style="display:flex;gap:1rem;padding:1rem 2rem;background:var(--bg-secondary, #f9fafb);border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center;">
   <button onclick="window.print()" style="padding:0.6rem 1.25rem;background:#12b76a;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">🖨️ Print Invoice</button>
   <button id="pdf-download-btn" style="padding:0.6rem 1.25rem;background:#0f1117;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">⬇️ Download PDF</button>

@@ -40,8 +40,27 @@
     .error-msg { background: #fef2f2; color: #f04438; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
     @media (max-width: 480px) { .body { padding: 1.25rem; } .header { padding: 1.5rem; } }
   </style>
+    <script>
+        // Prevent FOUC by applying theme & brand settings synchronously before first paint
+        (function() {
+            // Theme
+            const savedTheme = localStorage.getItem('agency365_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // Colors
+            const primaryColor = localStorage.getItem('agency365_brand_primary') || '#12b76a';
+            const secondaryColor = localStorage.getItem('agency365_brand_secondary') || '#e5eed7';
+            document.documentElement.style.setProperty('--accent-color', primaryColor);
+            document.documentElement.style.setProperty('--accent-hover', primaryColor === '#12b76a' ? '#0e9f5d' : primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            
+            // Logo Size
+            const logoHeight = localStorage.getItem('agency365_logo_height') || '30';
+            document.documentElement.style.setProperty('--logo-height', logoHeight + 'px');
+        })();
+    </script>
 </head>
-<body>
+<body class="preload">
 <div class="card">
   <div class="header">
     <h1>Welcome Aboard! 🎉</h1>
