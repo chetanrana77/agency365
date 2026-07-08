@@ -266,7 +266,8 @@ function checkAuthAndInit() {
     }
     if (isPublicPage) {
         if (isUnlocked && (path.endsWith('login.html') || path.endsWith('signup.html'))) {
-            window.location.href = 'dashboard.html';
+            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+            window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
             return;
         }
         if (path.endsWith('login.html'))  initLogin();
@@ -282,6 +283,7 @@ function checkAuthAndInit() {
 }
 
 function initNavigationHighlighting() {
+    applyRBAC();
     const path = window.location.pathname;
     document.querySelectorAll('.icon-links a, .menu-links a').forEach(link => {
         link.classList.remove('active');
@@ -331,14 +333,16 @@ function initLogin() {
                 role: data.user.user_metadata?.role || 'admin',
             }));
             await syncFromSupabase();
-            window.location.href = 'dashboard.html';
+            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+            window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
             return;
         }
 
         // Fallback: local dev backdoor
         if (email === 'admin@agency365.com' && pass === 'password') {
             sessionStorage.setItem('agency365_unlocked', 'true');
-            window.location.href = 'dashboard.html';
+            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+            window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
             return;
         }
 
@@ -378,7 +382,8 @@ function initSignup() {
             sessionStorage.setItem('agency365_current_user', JSON.stringify({
                 id: data.user.id, email, name, orgName, role: 'admin'
             }));
-            window.location.href = 'dashboard.html';
+            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+            window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
         } else {
             errorMsg.textContent = '✅ Check your email to confirm your account, then log in.';
             errorMsg.classList.add('show');
@@ -437,5 +442,79 @@ function initDataManagement() {
                 window.location.href = 'login.html';
             }
         });
+    }
+}
+
+
+// ── RBAC Logic ──────────────────────────────────────────────
+function applyRBAC() {
+    const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+    const path = window.location.pathname;
+    
+    // Inject Role Switcher (Mock UI)
+    const userInfoEl = document.querySelector('.menu-user-info');
+    if (userInfoEl && !document.getElementById('mock-role-switcher')) {
+        const select = document.createElement('select');
+        select.id = 'mock-role-switcher';
+        select.innerHTML = `
+            <option value="Admin">👑 Admin</option>
+            <option value="Manager">💼 Manager</option>
+            <option value="Finance">💰 Finance</option>
+            <option value="Employee">👷 Employee</option>
+        `;
+        select.value = role;
+        select.style.cssText = 'margin-top: 4px; font-size: 0.7rem; padding: 2px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); cursor: pointer;';
+        select.addEventListener('change', (e) => {
+            localStorage.setItem('agency365_mock_role', e.target.value);
+            // On switch, redirect to the safe default page
+            if (e.target.value === 'Employee') window.location.href = 'clients.html';
+            else if (e.target.value === 'Finance') window.location.href = 'finance.html';
+            else window.location.href = 'dashboard.html';
+        });
+        userInfoEl.appendChild(select);
+    }
+
+    // Role Policies
+    // Keys match href values in the sidebar
+    const policies = {
+        'Admin': { hide: [], allowAll: true },
+        'Manager': { hide: ['account.html', 'team.html'], allowAll: false },
+        'Finance': { hide: ['crm.html', 'clients.html', 'calendar.html', 'team.html'], allowAll: false },
+        'Employee': { hide: ['dashboard.html', 'proposals.html', 'finance.html', 'account.html'], allowAll: false }
+    };
+    
+    const policy = policies[role] || policies['Admin'];
+
+    // Update Sidebar Navigation
+    document.querySelectorAll('.menu-links a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        
+        let shouldHide = false;
+        policy.hide.forEach(blockedRoute => {
+            if (href.includes(blockedRoute)) shouldHide = true;
+        });
+
+        if (shouldHide) {
+            link.parentElement.style.display = 'none'; // hide the <li>
+        } else {
+            link.parentElement.style.display = '';
+        }
+    });
+
+    // Enforce Route Guard
+    // Don't guard public pages or the current allowed pages
+    const isPublicPage = ['index.html','login.html','signup.html','portal.html'].some(p => path.endsWith(p)) || path.endsWith('/');
+    if (!isPublicPage && !policy.allowAll) {
+        let blocked = false;
+        policy.hide.forEach(blockedRoute => {
+            if (path.includes(blockedRoute)) blocked = true;
+        });
+        
+        if (blocked) {
+            if (role === 'Employee') window.location.href = 'clients.html';
+            else if (role === 'Finance') window.location.href = 'finance.html';
+            else window.location.href = 'dashboard.html';
+        }
     }
 }

@@ -38,70 +38,147 @@
         <!-- Sidebar 2: Detailed Text Menu -->
         <nav class="sidebar-menu">
             <div class="sidebar-brand">
-                <span class="brand-text-span" id="brand-text">Agency 365</span>
+                                <script>
+                    (function(){
+                        const savedLogo = localStorage.getItem('agency365_brand_logo');
+                        let orgName = 'Agency 365';
+                        try {
+                            const user = JSON.parse(sessionStorage.getItem('agency365_current_user'));
+                            if (user && user.orgName) orgName = user.orgName;
+                        } catch(e) {}
+                        
+                        if (savedLogo) {
+                            document.write('<img id="brand-logo" class="logo-img" src="' + savedLogo + '" style="max-height: var(--logo-height, 30px); margin-bottom:0.5rem; object-fit:contain;">');
+                        } else {
+                            document.write('<span class="brand-text-span" id="brand-text">' + orgName + '</span>');
+                        }
+                    })();
+                </script>
             </div>
+            
             <div class="menu-sections-wrapper">
                 <div class="menu-section">
                     <h4 class="menu-section-title">Workspace</h4>
                     <ul class="menu-links">
-                        <li><a href="dashboard.html"><span>Overview</span></a></li>
-                        <li><a href="clients.html"><span>Clients</span></a></li>
-                        <li><a href="crm.html"><span>Leads Pipeline</span></a></li>
-                        <li><a href="calendar.html"><span>Calendar</span></a></li>
+                        <li>
+                            <a href="dashboard.html">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                                <span>Overview</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="clients.html">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                                <span>Clients</span>
+                                <span class="menu-badge" id="badge-clients-count">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="crm.html">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                <span>Leads Pipeline</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="calendar.html">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+                                <span>Calendar</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
+                
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Documents & Finance</h4>
+                    <ul class="menu-links">
+                        <li>
+                            <a href="proposals.html">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                <span>Proposals</span>
+                                <span class="menu-badge badge-orange" id="badge-proposals-count">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="finance.html">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                <span>Billing</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
                 <div class="menu-section">
                     <h4 class="menu-section-title">Settings</h4>
                     <ul class="menu-links">
-                        <li><a href="account.html"><span>Account Settings</span></a></li>
-                        <li><a href="team.html" class="active"><span>Team Access</span></a></li>
+                        <li>
+                            <a href="account.html">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                <span>Account</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="team.html" class="active">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                <span>Team Access</span>
+                            </a>
+                        </li>
                     </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu-footer">
+                <div class="menu-user-card">
+                    <img src="https://ui-avatars.com/api/?name=Chetan+Rana&background=12b76a&color=fff" alt="Avatar" class="menu-user-avatar">
+                    <div class="menu-user-info">
+                        <span class="user-name" id="menu-user-name">Joséphine Dubois</span>
+                        <span class="user-email" id="menu-user-email">josephine@untitledui.com</span>
+                    </div>
+                <button id="theme-toggle-btn" class="theme-toggle-icon-btn" title="Toggle Theme" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:0.5rem; display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; margin-left:auto;">
+                    <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
                 </div>
             </div>
         </nav>
 
         <main class="content-area">
-            <div class="view-header">
+            <header class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
                 <div>
-                    <h1>👥 Team & Permissions</h1>
-                    <p style="color:var(--text-secondary); font-size:0.88rem; margin-top:2px;">Invite your team members and manage role permissions.</p>
+                    <h1 style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em;">👥 Team & Permissions</h1>
+                    <p style="color:var(--text-secondary); font-size:0.9rem; margin-top:4px;">Invite your team members and manage role permissions.</p>
                 </div>
                 <button class="primary-btn" id="invite-btn">+ Invite Member</button>
+            </header>
+
+            <div style="margin-bottom: 2rem;">
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team-list">
+                            <tr>
+                                <td colspan="5" class="empty-state" style="text-align:center; padding:2rem; color:var(--text-secondary);">Loading team list...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="tracker-container" style="max-width:800px; margin-top:1.5rem;">
-                <div class="dash-card">
-                    <div class="dash-card-header">
-                        <h2>Team Members</h2>
-                    </div>
-                    <div class="data-table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="team-list">
-                                <tr>
-                                    <td colspan="5" class="empty-state" style="text-align:center; padding:2rem; color:var(--text-secondary);">Loading team list...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="dash-card" style="margin-top:1.5rem;">
-                    <div class="dash-card-header">
-                        <h2>🔑 Role Permissions Matrix</h2>
-                    </div>
-                    <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.5rem; line-height:1.6;">
-                        <p><strong>Admin:</strong> Full access to edit client details, log payments, delete events, invite/remove team members.</p>
-                        <p style="margin-top:0.4rem;"><strong>Manager:</strong> Can add work updates, notes, schedule meetings, and create proposals. Cannot delete data or manage team.</p>
-                        <p style="margin-top:0.4rem;"><strong>Member:</strong> Can add work updates and notes. Read-only access to client billing, settings, and other areas.</p>
+            <div style="margin-top: 3rem;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary);">🔑 Role Permissions Matrix</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem;">
+                    <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.7;">
+                        <p style="margin-bottom: 0.75rem;"><strong>Admin:</strong> Full access to edit client details, log payments, delete events, invite/remove team members.</p>
+                        <p style="margin-bottom: 0.75rem;"><strong>Manager:</strong> Can add work updates, notes, schedule meetings, and create proposals. Cannot delete data or manage team.</p>
+                        <p style="margin-bottom: 0.75rem;"><strong>Finance:</strong> Can manage billing, invoices, and expenses. Cannot see client projects or work updates.</p>
+                        <p><strong>Employee:</strong> Can add work updates and notes. Read-only access to client billing, settings, and other areas.</p>
                     </div>
                 </div>
             </div>
@@ -121,9 +198,10 @@
                 <div class="modal-form-group" style="margin-top:1rem;">
                     <label>Role</label>
                     <select id="invite-role" style="width:100%; padding:0.6rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-secondary); color:var(--text-primary);">
-                        <option value="member">Member</option>
-                        <option value="manager">Manager</option>
-                        <option value="admin">Admin</option>
+                        <option value="Employee">Employee</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Admin">Admin</option>
                     </select>
                 </div>
                 <button type="submit" class="primary-btn full-width" style="margin-top:1.5rem;">Send Invite</button>
