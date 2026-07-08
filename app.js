@@ -473,6 +473,26 @@ function applyRBAC() {
         });
         userInfoEl.appendChild(select);
     }
+    
+    // Inject Logout Button
+    const userCard = document.querySelector('.menu-user-card');
+    if (userCard && !document.getElementById('logout-btn')) {
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'logout-btn';
+        logoutBtn.title = 'Log Out';
+        logoutBtn.style.cssText = 'background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:0.5rem; display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%;';
+        logoutBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`;
+        
+        logoutBtn.addEventListener('mouseenter', () => { logoutBtn.style.color = '#ef4444'; logoutBtn.style.background = 'rgba(239, 68, 68, 0.1)'; });
+        logoutBtn.addEventListener('mouseleave', () => { logoutBtn.style.color = 'var(--text-secondary)'; logoutBtn.style.background = 'none'; });
+        
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('agency365_unlocked');
+            sessionStorage.removeItem('agency365_current_user');
+            window.location.href = 'login.html';
+        });
+        userCard.appendChild(logoutBtn);
+    }
 
     // Role Policies
     // Keys match href values in the sidebar

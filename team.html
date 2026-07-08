@@ -141,44 +141,70 @@
             </div>
         </nav>
 
+        <!-- Main Content Area -->
         <main class="content-area">
-            <header class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+            <header class="view-header" style="margin-bottom: 2rem;">
                 <div>
-                    <h1 style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em;">👥 Team & Permissions</h1>
+                    <h1>Team & Permissions</h1>
                     <p style="color:var(--text-secondary); font-size:0.9rem; margin-top:4px;">Invite your team members and manage role permissions.</p>
                 </div>
-                <button class="primary-btn" id="invite-btn">+ Invite Member</button>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                    <button class="primary-btn" id="invite-btn">+ Invite Member</button>
+                </div>
             </header>
 
-            <div style="margin-bottom: 2rem;">
-                <div class="data-table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="team-list">
-                            <tr>
-                                <td colspan="5" class="empty-state" style="text-align:center; padding:2rem; color:var(--text-secondary);">Loading team list...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="tabs-container" style="margin-bottom: 1rem;">
+                <button class="tab-btn active">Active Team</button>
+                <button class="tab-btn" style="opacity: 0.5; cursor: not-allowed;">Pending Invites</button>
+            </div>
+
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="team-list">
+                        <tr>
+                            <td colspan="5" class="empty-state" style="text-align:center; padding:2rem; color:var(--text-secondary);">Loading team list...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div style="margin-top: 3rem;">
-                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary);">🔑 Role Permissions Matrix</h3>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem;">
-                    <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.7;">
-                        <p style="margin-bottom: 0.75rem;"><strong>Admin:</strong> Full access to edit client details, log payments, delete events, invite/remove team members.</p>
-                        <p style="margin-bottom: 0.75rem;"><strong>Manager:</strong> Can add work updates, notes, schedule meetings, and create proposals. Cannot delete data or manage team.</p>
-                        <p style="margin-bottom: 0.75rem;"><strong>Finance:</strong> Can manage billing, invoices, and expenses. Cannot see client projects or work updates.</p>
-                        <p><strong>Employee:</strong> Can add work updates and notes. Read-only access to client billing, settings, and other areas.</p>
+                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); font-family: 'Outfit', sans-serif;">🔑 Role Permissions Matrix</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; box-shadow: var(--card-shadow);">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size:0.75rem; font-weight:600; text-transform:uppercase; background:rgba(18, 183, 106, 0.1); color:#12b76a; padding:0.2rem 0.5rem; border-radius:4px;">Admin</span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Full access to edit client details, log payments, delete events, invite/remove team members.</p>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size:0.75rem; font-weight:600; text-transform:uppercase; background:rgba(37, 99, 235, 0.1); color:#2563eb; padding:0.2rem 0.5rem; border-radius:4px;">Manager</span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Can add work updates, notes, schedule meetings, and create proposals. Cannot delete data.</p>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size:0.75rem; font-weight:600; text-transform:uppercase; background:rgba(245, 158, 11, 0.1); color:#f59e0b; padding:0.2rem 0.5rem; border-radius:4px;">Finance</span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Can manage billing, invoices, and expenses. Cannot see client projects or work updates.</p>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size:0.75rem; font-weight:600; text-transform:uppercase; background:rgba(100, 116, 139, 0.1); color:#64748b; padding:0.2rem 0.5rem; border-radius:4px;">Employee</span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Can add work updates and notes. Read-only access to client billing and settings.</p>
+                        </div>
                     </div>
                 </div>
             </div>
