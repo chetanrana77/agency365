@@ -172,15 +172,15 @@ function renderHero() {
     priorityPill.className = `pill ${pMap[client.priority] || 'pill-yellow'}`;
     priorityPill.textContent = (client.priority || 'Medium') + ' Priority';
 
-    // Client type toggle
-    const recurBtn = document.getElementById('type-recurring-btn');
-    const onetimeBtn = document.getElementById('type-onetime-btn');
-    if (client.clientType === 'recurring') {
-        recurBtn.classList.add('active');
-        onetimeBtn.classList.remove('active');
-    } else {
-        onetimeBtn.classList.add('active');
-        recurBtn.classList.remove('active');
+    // Contact Info in Hero
+    const heroContactRow = document.getElementById('hero-contact-row');
+    if (heroContactRow) {
+        let contactHtml = '';
+        if (client.contactPerson) contactHtml += `<span title="Founder / Contact Person">👤 <strong>${client.contactPerson}</strong></span>`;
+        if (client.phone) contactHtml += `<span title="Contact Number">📞 ${client.phone}</span>`;
+        if (client.address) contactHtml += `<span title="Office Address">📍 ${client.address}</span>`;
+        if (client.gst) contactHtml += `<span title="GST Number">🧾 GST: ${client.gst}</span>`;
+        heroContactRow.innerHTML = contactHtml;
     }
 
     // Stats
@@ -600,15 +600,7 @@ function bindModalClose(overlayId, closeId) {
 // ─── Bind All Events ──────────────────────────────────────────────
 function bindEvents() {
 
-    // ── Client Type Toggle ──────────────────────────────────────
-    document.getElementById('type-recurring-btn')?.addEventListener('click', () => {
-        client.clientType = 'recurring';
-        saveClients(); renderHero(); renderOverview(); renderSuggestions();
-    });
-    document.getElementById('type-onetime-btn')?.addEventListener('click', () => {
-        client.clientType = 'one-time';
-        saveClients(); renderHero(); renderOverview(); renderSuggestions();
-    });
+
 
     // ── Add Task ────────────────────────────────────────────────
     document.getElementById('add-task-btn')?.addEventListener('click', () => {

@@ -825,13 +825,11 @@
                         <span id="priority-pill" class="pill pill-yellow">Medium</span>
                         <span id="type-pill" class="pill pill-blue" style="display:none;"></span>
                     </div>
+                    <div class="hero-contact-row" id="hero-contact-row" style="margin-top: 0.8rem; display: flex; flex-wrap: wrap; gap: 1rem; color: var(--text-secondary); font-size: 0.85rem; align-items: center;">
+                        <!-- Filled by JS -->
+                    </div>
                 </div>
                 <div class="hero-actions">
-                    <!-- Recurring / One-time Toggle -->
-                    <div class="type-toggle" id="type-toggle">
-                        <button class="type-btn active" data-type="recurring" id="type-recurring-btn">🔄 Recurring</button>
-                        <button class="type-btn" data-type="one-time" id="type-onetime-btn">📦 One-Time</button>
-                    </div>
                     <button class="secondary-btn" id="edit-client-btn" style="font-size:0.83rem;">✏️ Edit</button>
                     <button class="primary-btn" id="raise-invoice-btn" style="font-size:0.83rem; padding:0.5rem 1rem;">📄 Invoice</button>
                     <button id="whatsapp-client-btn" class="secondary-btn" title="Send via WhatsApp" style="display:flex;align-items:center;gap:0.4rem;font-size:0.83rem;">
@@ -872,12 +870,6 @@
             </div>
         </div>
 
-        <!-- Suggestion Box -->
-        <div class="suggestion-box" id="suggestion-box">
-            <h3>💡 Smart Suggestions for this Client</h3>
-            <div id="suggestions-list"></div>
-            <button class="suggestion-toggle" id="add-suggestion-btn">+ Add custom suggestion</button>
-        </div>
 
         <!-- Tab Navigation -->
         <div class="client-tabs" id="client-tabs">
