@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add Payment header button → opens payment panel with client selection
     document.getElementById('add-payment-header-btn')?.addEventListener('click', () => {
         const activeClients = clients.filter(c => c.status === 'Active' || c.status === 'Inactive');
-        if (activeClients.length === 0) { alert('No active clients. Convert a lead first.'); return; }
+        if (activeClients.length === 0) { alert('Add a Client First !'); return; }
         openPaymentPanel(activeClients[0].id);
     });
 
