@@ -43,6 +43,11 @@ body {
     margin: 0;
     padding: 0;
 }
+
+/* Lock body scroll only on dashboard pages (pages with #app wrapper) */
+body:has(#app) {
+    overflow: hidden;
+}
 .preload * {
     transition: none !important;
 }
