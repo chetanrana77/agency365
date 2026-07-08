@@ -243,7 +243,7 @@ function renderConnectList() {
     el.innerHTML = top.map((c, i) => {
         const badgeClass = c.status === 'Active' ? 'badge-senior' : (c.status === 'Lead' ? 'badge-middle' : 'badge-junior');
         const badgeLabel = c.status === 'Active' ? 'Client' : (c.status === 'Lead' ? 'Lead' : 'Past');
-        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=${i%2===0?'7c3aed':'3b82f6'}&color=fff`;
+        const avatarUrl = c.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=${i%2===0?'7c3aed':'3b82f6'}&color=fff`;
         
         return `<div class="connect-item">
             <img src="${avatarUrl}" class="connect-avatar">

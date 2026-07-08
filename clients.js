@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('add-client-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
+        
         const newClient = {
             id: Date.now().toString(),
             name: document.getElementById('add-client-name').value,
@@ -83,16 +84,52 @@ document.addEventListener('DOMContentLoaded', () => {
             tasks: [],
             order: clients.length
         };
-        clients.push(newClient);
+        
+        const fileInput = document.getElementById('add-client-image');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Resize to max 150px to save localStorage space
+                    const MAX_WIDTH = 150;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    newClient.image = canvas.toDataURL(file.type || 'image/jpeg', 0.8);
+                    saveAndRenderNewClient(newClient);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            saveAndRenderNewClient(newClient);
+        }
+    });
+
+    function saveAndRenderNewClient(clientData) {
+        clients.push(clientData);
         localStorage.setItem('agency365_clients', JSON.stringify(clients));
         document.getElementById('add-client-modal').classList.remove('show');
         // Switch tab to the new client's status if needed
-        activeFilter = newClient.status;
+        activeFilter = clientData.status;
         document.querySelectorAll('.tab-btn').forEach(t => {
             t.classList.toggle('active', t.dataset.filter === activeFilter);
         });
         renderClients();
-    });
+    }
     
     document.getElementById('add-meeting-btn').addEventListener('click', () => {
         if(!currentClientId) return;
@@ -203,9 +240,12 @@ function renderClients() {
         // List View Row
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>
-                <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none;"><strong>${c.name}</strong></a> ${healthBadge(c)}<br>
-                <small style="color:var(--text-secondary)">${c.phone || ''}</small>
+            <td style="display: flex; align-items: center; gap: 0.75rem;">
+                <img src="${c.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=f1f5f9&color=64748b`}" alt="avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                <div>
+                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none;"><strong>${c.name}</strong></a> ${healthBadge(c)}<br>
+                    <small style="color:var(--text-secondary)">${c.phone || ''}</small>
+                </div>
             </td>
             <td>${c.work}</td>
             <td>
@@ -232,7 +272,10 @@ function renderClients() {
         card.style.cssText = 'background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:1.25rem; display:flex; flex-direction:column; position:relative;';
         card.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem;">
-                <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none; font-size:1.1rem;"><strong>${c.name}</strong></a>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <img src="${c.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=f1f5f9&color=64748b`}" alt="avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none; font-size:1.1rem;"><strong>${c.name}</strong></a>
+                </div>
                 <span class="status-badge ${statusClass}" style="font-size:0.7rem;">${c.status}</span>
             </div>
             <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
