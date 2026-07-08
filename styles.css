@@ -1130,3 +1130,160 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     .data-table td { font-size: 0.78rem; padding: 0.6rem 0.7rem; }
 }
 
+
+/* Custom Income Tracker Graph */
+.income-graph-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 2rem;
+    height: 180px;
+    padding-bottom: 20px;
+}
+.income-graph-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+    width: 30%;
+}
+.income-graph-left .percent {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+.income-graph-left .desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+.custom-graph {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 100%;
+    width: 65%;
+    position: relative;
+}
+.graph-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    position: relative;
+    width: 30px;
+    cursor: pointer;
+}
+.graph-line {
+    width: 2px;
+    background: #e2e8f0;
+    position: relative;
+    border-radius: 2px;
+    transition: height 0.4s ease;
+}
+.graph-dot {
+    width: 8px;
+    height: 8px;
+    background: #94a3b8;
+    border-radius: 50%;
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: background 0.2s ease;
+}
+.graph-label {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f1f5f9;
+    transition: all 0.2s ease;
+}
+
+/* Hover / Active Pill State */
+.graph-col:hover .graph-line {
+    background: var(--text-primary);
+}
+.graph-col:hover .graph-dot {
+    background: var(--accent-color);
+}
+.graph-col:hover .graph-label {
+    background: var(--text-primary);
+    color: #ffffff;
+}
+
+/* Top Clients Connect List */
+.connect-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 100px;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+.connect-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transform: translateY(-1px);
+}
+.connect-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+}
+.connect-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.connect-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.connect-role {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+.connect-badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+.badge-senior { background: rgba(240, 68, 56, 0.1); color: #f04438; }
+.badge-middle { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.badge-junior { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+.connect-add-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.connect-add-btn:hover {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}

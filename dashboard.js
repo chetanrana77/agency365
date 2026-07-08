@@ -40,7 +40,7 @@ export function initDashboard() {
     expenses = JSON.parse(localStorage.getItem('agency365_expenses')) || [];
 
     calculateCards();
-    renderLeaderboard();
+    renderConnectList();
     initCharts();
     initPeriodFilter();
     renderTodaysFocus();
@@ -63,6 +63,7 @@ function initPeriodFilter() {
             else if (activePeriod === 'all') tf = 'year';
             
             renderCharts(tf);
+            renderConnectList();
         });
     });
 }
@@ -212,13 +213,50 @@ function renderDeadlines() {
     }).join('');
 }
 
-function renderLeaderboard() {
-    const el = document.getElementById('top-revenue-list'); if (!el) return;
-    const stats = clients.filter(c => c.status === 'Active' || c.status === 'Closed').map(c => ({ name: c.name, id: c.id, rev: (c.payments || []).filter(p => !p.refund).reduce((s, p) => s + p.amount, 0) }));
-    const top = [...stats].sort((a, b) => b.rev - a.rev).slice(0, 5);
-    const medals = ['🥇', '🥈', '🥉', '4.', '5.'];
+function renderConnectList() {
+    const el = document.getElementById('connect-client-list'); 
+    if (!el) return;
+    
+    // Filter clients based on activity in the active period
+    const bounds = getPeriodBounds(activePeriod);
+    const activeClients = [];
+    
+    clients.forEach(c => {
+        let hasActivity = false;
+        if (c.payments) c.payments.forEach(p => { const pd = new Date(p.date); if (pd >= bounds.start && pd <= bounds.end) hasActivity = true; });
+        if (c.expenses) c.expenses.forEach(ex => { const ed = ex.date ? new Date(ex.date) : new Date(); if (ed >= bounds.start && ed <= bounds.end) hasActivity = true; });
+        if (c.meetings) c.meetings.forEach(m => { const md = new Date(m.date); if (md >= bounds.start && md <= bounds.end) hasActivity = true; });
+        if (hasActivity || activePeriod === 'all' || activePeriod === 'yearly') {
+            activeClients.push(c);
+        }
+    });
+    
+    // Get top 3
+    const top = activeClients.slice(0, 3);
     const slug = n => encodeURIComponent(n.toLowerCase().replace(/\s+/g, '-'));
-    el.innerHTML = top.length ? top.map((c, i) => `<div class="list-item"><div class="list-item-left"><a href="client-detail.html?id=${c.id}&slug=${slug(c.name)}" class="client-link"><strong>${medals[i]} ${c.name}</strong></a></div><span style="color:#10b981; font-weight:600;">${fmt.format(c.rev)}</span></div>`).join('') : '<span style="color:var(--text-secondary); font-size:0.85rem;">No data available</span>';
+    
+    if (!top.length) {
+        el.innerHTML = '<span style="color:var(--text-secondary); font-size:0.85rem;">No active clients in this period</span>';
+        return;
+    }
+    
+    el.innerHTML = top.map((c, i) => {
+        const badgeClass = c.status === 'Active' ? 'badge-senior' : (c.status === 'Lead' ? 'badge-middle' : 'badge-junior');
+        const badgeLabel = c.status === 'Active' ? 'Client' : (c.status === 'Lead' ? 'Lead' : 'Past');
+        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=${i%2===0?'7c3aed':'3b82f6'}&color=fff`;
+        
+        return `<div class="connect-item">
+            <img src="${avatarUrl}" class="connect-avatar">
+            <div class="connect-info">
+                <div style="display:flex; align-items:center;">
+                    <a href="client-detail.html?id=${c.id}&slug=${slug(c.name)}" class="connect-name" style="text-decoration:none;">${c.name}</a>
+                    <span class="connect-badge ${badgeClass}">${badgeLabel}</span>
+                </div>
+                <span class="connect-role">${c.email || 'No email provided'}</span>
+            </div>
+            <a href="client-detail.html?id=${c.id}&slug=${slug(c.name)}" class="connect-add-btn" style="text-decoration:none;">+</a>
+        </div>`;
+    }).join('');
 }
 
 let balanceChart = null;
@@ -457,57 +495,63 @@ function renderCharts(tf) {
         });
     }
 
-    // 2. Render Cash Flow Bar Chart
-    const ctx2 = document.getElementById('cashflow-bar-chart');
-    if (ctx2) {
-        if (cashflowChart) cashflowChart.destroy();
-        
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const cashOutColor = isDark ? '#344054' : '#151e3a';
-        
-        cashflowChart = new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels,
-                datasets: [
-                    {
-                        label: 'Cash In (₹)',
-                        data: cashIn,
-                        backgroundColor: '#12b76a',
-                        borderRadius: 4,
-                        maxBarThickness: 16
-                    },
-                    {
-                        label: 'Cash Out (₹)',
-                        data: cashOut,
-                        backgroundColor: cashOutColor,
-                        borderRadius: 4,
-                        maxBarThickness: 16
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { 
-                        display: true, 
-                        position: 'top',
-                        labels: { boxWidth: 12, font: { family: 'Inter', size: 11, weight: 500 } } 
-                    } 
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(0, 0, 0, 0.03)' },
-                        ticks: { font: { family: 'Inter', size: 10 } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { family: 'Inter', size: 10 } }
-                    }
-                }
-            }
-        });
+    // Render Custom Income Tracker (Twisty Style)
+    renderIncomeTracker(tf, labels, cashIn);
+}
+
+function renderIncomeTracker(tf, labels, cashIn) {
+    const container = document.getElementById('custom-income-graph');
+    if (!container) return;
+    
+    // Update labels and percentage
+    document.getElementById('income-tracker-period').textContent = tf.charAt(0).toUpperCase() + tf.slice(1);
+    
+    // We want maximum 7 columns for the Twisty look. If we have more data, we'll chunk it or take the last 7
+    let displayLabels = labels;
+    let displayData = cashIn;
+    
+    if (labels.length > 7) {
+        displayLabels = labels.slice(-7);
+        displayData = cashIn.slice(-7);
     }
+    
+    // Calculate percentage change (current period total vs previous period total)
+    // For simplicity of this UI component, we'll calculate change between first half and second half of displayed data
+    const mid = Math.floor(displayData.length / 2);
+    const prevSum = displayData.slice(0, mid).reduce((a, b) => a + b, 0);
+    const currSum = displayData.slice(mid).reduce((a, b) => a + b, 0);
+    
+    let pct = "+0%";
+    let pctColor = "var(--text-primary)";
+    if (prevSum > 0) {
+        const change = ((currSum - prevSum) / prevSum) * 100;
+        pct = `${change >= 0 ? '+' : ''}${change.toFixed(0)}%`;
+        if (change < 0) pctColor = "#f04438"; // red if negative
+    } else if (currSum > 0) {
+        pct = "+100%";
+    }
+    
+    const pctEl = document.getElementById('income-tracker-percent');
+    pctEl.textContent = pct;
+    pctEl.style.color = pctColor;
+    
+    // Find max value to determine bar height percentages
+    const maxVal = Math.max(...displayData, 1000); // minimum scale
+    
+    const html = displayLabels.map((lbl, i) => {
+        const val = displayData[i];
+        // Height between 10% and 90%
+        const hPct = Math.max(10, (val / maxVal) * 90);
+        const shortLbl = lbl.length > 3 ? lbl.substring(0,3) : lbl;
+        const initial = shortLbl.charAt(0).toUpperCase();
+        
+        return `<div class="graph-col" title="${lbl}: ₹${val.toLocaleString()}">
+            <div class="graph-line" style="height: ${hPct}%">
+                <div class="graph-dot"></div>
+            </div>
+            <div class="graph-label">${initial}</div>
+        </div>`;
+    }).join('');
+    
+    container.innerHTML = html;
 }
