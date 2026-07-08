@@ -281,6 +281,18 @@ function initCharts() {
     });
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    renderDashboard();
+    
+    // Customize button redirect to account settings
+    const customizeBtn = document.getElementById('dashboard-customize-btn');
+    if (customizeBtn) {
+        customizeBtn.addEventListener('click', () => {
+            window.location.href = 'account.html';
+        });
+    }
+});
+
 function getCashflowData(tf) {
     let labels = [];
     let cashIn = [];
