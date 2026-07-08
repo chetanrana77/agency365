@@ -148,14 +148,7 @@ function setupTabs() {
             e.target.classList.add('active');
             activeTab = e.target.dataset.filter;
             activeCatFilter = 'all';
-            if (filterBar) {
-                filterBar.style.display = activeTab === 'Expenses' ? 'flex' : 'none';
-                filterBar.querySelectorAll('.cat-filter-btn').forEach(b => {
-                    b.classList.toggle('active', b.dataset.cat === 'all');
-                    b.style.background = b.dataset.cat === 'all' ? 'var(--accent-color)' : 'var(--bg-secondary)';
-                    b.style.color = b.dataset.cat === 'all' ? '#fff' : '';
-                });
-            }
+            
             renderTable();
         });
     });
@@ -257,27 +250,6 @@ function renderTable() {
         // Apply category filter
         if (activeCatFilter && activeCatFilter !== 'all') {
             allExpenses = allExpenses.filter(e => (e.category || 'General') === activeCatFilter);
-        }
-
-        // Wire filter buttons
-        const filterBar = document.getElementById('category-filter-bar');
-        if (filterBar) {
-            filterBar.style.display = 'flex';
-            filterBar.querySelectorAll('.cat-filter-btn').forEach(btn => {
-                // Remove old listeners by replacing node
-                const newBtn = btn.cloneNode(true);
-                btn.parentNode.replaceChild(newBtn, btn);
-                newBtn.addEventListener('click', () => {
-                    activeCatFilter = newBtn.dataset.cat;
-                    filterBar.querySelectorAll('.cat-filter-btn').forEach(b => {
-                        const isActive = b.dataset.cat === activeCatFilter;
-                        b.classList.toggle('active', isActive);
-                        b.style.background = isActive ? 'var(--accent-color)' : 'var(--bg-secondary)';
-                        b.style.color = isActive ? '#fff' : '';
-                    });
-                    renderTable();
-                });
-            });
         }
 
         const catColors = { Design:'#6941c6', Tools:'#2563eb', Ads:'#f79009', Salaries:'#12b76a', Office:'#0ea5e9', Travel:'#f04438', Misc:'#64748b', General:'#94a3b8' };
