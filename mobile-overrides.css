@@ -155,3 +155,40 @@
     /* Dashboard period filter on tiny screens */
     .period-btn { padding: 0.3rem 0.5rem; font-size: 0.72rem; }
 }
+
+/* ─── Team Page ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* Role permissions grid → single column on mobile */
+    [style*="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))"] {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+}
+
+/* ─── Tablet (769px – 1024px) ─────────────────────────────────── */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Compress sidebar on tablet to give more room to content */
+    .sidebar-menu {
+        width: 200px !important;
+        padding: 1.25rem 0.75rem !important;
+    }
+    .sidebar-brand { padding: 0.5rem 0.25rem 1rem 0.25rem; }
+    .brand-text-span { font-size: 1.15rem; }
+    .menu-section-title { font-size: 0.68rem; }
+    .menu-links a { font-size: 0.82rem; padding: 0.5rem 0.6rem; }
+
+    /* Finance 4-col → 2-col on tablet */
+    [style*="grid-template-columns: repeat(4, 1fr)"],
+    [style*="grid-template-columns:repeat(4,1fr)"] {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* Dashboard finance stats → 3-col still works */
+    .finance-stats { grid-template-columns: repeat(3, 1fr); }
+
+    /* Content area slightly tighter padding */
+    .content-area { padding: 2rem 1.5rem; }
+
+    /* Steps / features grids on index page */
+    .steps-container { gap: 1.5rem; }
+}

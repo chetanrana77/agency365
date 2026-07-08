@@ -998,8 +998,8 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     /* Show mobile nav */
     .mob-nav { display: flex; }
 
-    /* Body: allow scroll, kill horizontal overflow */
-    body {
+    /* Body: allow scroll on mobile, kill horizontal overflow */
+    body, body:has(#app) {
         overflow: auto;
         overflow-x: hidden;
     }
@@ -1110,6 +1110,24 @@ h1, h2, h3, h4, h5, h6, .serif-font {
 
     /* ── Row groups → stack ── */
     .row-group { flex-direction: column; gap: 0; }
+    /* ── Income Tracker Graph ── */
+    .income-graph-wrap {
+        flex-direction: column;
+        height: auto;
+        gap: 1.5rem;
+    }
+    .income-graph-left {
+        width: 100%;
+        padding-bottom: 0;
+    }
+    .income-graph-left .percent { font-size: 2rem; }
+    .custom-graph {
+        width: 100%;
+        height: 140px;
+    }
+
+    /* ── Connect list items ── */
+    .connect-item { border-radius: 14px; padding: 0.6rem 0.75rem; }
 }
 
 /* ── @media: ≤ 480px (small phones) ─────────────────────────── */
