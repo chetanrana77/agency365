@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!client.expenses)       client.expenses       = [];
     if (!client.suggestions)    client.suggestions    = [];
     if (!client.clientType)     client.clientType     = 'one-time';
+    if (!client.phases)         client.phases         = [];
 
     // Update URL slug
     const slug = encodeURIComponent(client.name.toLowerCase().replace(/\s+/g, '-'));
@@ -216,14 +217,29 @@ function renderOverview() {
         `<div class="info-row"><span class="info-label">${l}</span><span class="info-value">${v}</span></div>`
     ).join('');
 
-    // Project Details
+    // Projects & Phases
+    const phasesList = document.getElementById('project-phases-list');
+    if (client.phases && client.phases.length > 0) {
+        phasesList.innerHTML = client.phases.map(p => `
+            <div style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:8px; padding:0.75rem; display:flex; flex-direction:column; gap:0.25rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:var(--text-primary); font-size:0.95rem;">${p.name}</strong>
+                    <span style="color:#059669; font-weight:700;">${fmt.format(p.amount)}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-secondary); margin-top:0.2rem;">
+                    <span>Closing: ${p.closingDate ? dateLabel(p.closingDate) : '—'}</span>
+                    <span>Delivery: ${p.deliveryDate ? dateLabel(p.deliveryDate) : '—'}</span>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        phasesList.innerHTML = `<div style="color:var(--text-secondary); font-size:0.85rem;">No phases added yet.</div>`;
+    }
+
     const totalPaid = (client.payments || []).reduce((s, p) => s + p.amount, 0);
     const totalExp  = (client.expenses  || []).reduce((s, e) => s + e.amount, 0);
     const profit    = totalPaid - totalExp;
     const projRows = [
-        ['Project Scope',  client.work || '—'],
-        ['Contract Value', fmt.format(client.amount || 0)],
-        ['Client Type',    client.clientType === 'recurring' ? '🔄 Recurring' : '📦 One-Time'],
         ['Total Received', `<span style="color:#059669;font-weight:700;">${fmt.format(totalPaid)}</span>`],
         ['Total Expenses', `<span style="color:#dc2626;font-weight:700;">-${fmt.format(totalExp)}</span>`],
         ['Net Profit',     `<span style="color:${profit >= 0 ? '#059669' : '#dc2626'};font-weight:700;">${fmt.format(profit)}</span>`],
@@ -702,7 +718,33 @@ function bindEvents() {
         window.open(phone ? `https://wa.me/91${phone}?text=${msg}` : `https://wa.me/?text=${msg}`, '_blank');
     });
 
-
+    // ── Add Phase ───────────────────────────────────────────────
+    document.getElementById('add-phase-btn')?.addEventListener('click', () => {
+        openModal('add-phase-modal');
+    });
+    bindModalClose('add-phase-modal', 'close-phase-modal');
+    
+    document.getElementById('add-phase-form')?.addEventListener('submit', e => {
+        e.preventDefault();
+        const phase = {
+            id: uid(),
+            name: document.getElementById('phase-name').value.trim(),
+            amount: parseFloat(document.getElementById('phase-amount').value) || 0,
+            closingDate: document.getElementById('phase-closing-date').value || null,
+            deliveryDate: document.getElementById('phase-delivery-date').value || null,
+            addedAt: Date.now()
+        };
+        client.phases.push(phase);
+        
+        // Optionally update the total client amount to sum of phases
+        client.amount = client.phases.reduce((sum, p) => sum + p.amount, 0);
+        
+        saveClients();
+        document.getElementById('add-phase-form').reset();
+        closeModal('add-phase-modal');
+        renderHero();
+        renderOverview();
+    });
 
     document.getElementById('edit-client-form')?.addEventListener('submit', e => {
         e.preventDefault();

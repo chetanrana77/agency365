@@ -178,23 +178,58 @@ function setupViewToggles() {
     });
 }
 
-window.moveClient = function(id, direction) {
-    const filtered = clients.filter(c => c.status === activeFilter).sort((a,b) => (a.order||0) - (b.order||0));
-    const idx = filtered.findIndex(c => c.id === id);
-    if(idx === -1) return;
-    
-    if(direction === -1 && idx > 0) {
-        const temp = filtered[idx].order || idx;
-        filtered[idx].order = filtered[idx-1].order || (idx-1);
-        filtered[idx-1].order = temp;
-    } else if(direction === 1 && idx < filtered.length - 1) {
-        const temp = filtered[idx].order || idx;
-        filtered[idx].order = filtered[idx+1].order || (idx+1);
-        filtered[idx+1].order = temp;
+let draggedIndex = null;
+let draggedStatus = null;
+
+function handleDragStart(e) {
+    draggedIndex = parseInt(e.currentTarget.dataset.index);
+    draggedStatus = e.currentTarget.dataset.status;
+    e.currentTarget.style.opacity = '0.5';
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleDragEnter(e) {
+    const tr = e.target.closest('tr');
+    if (tr && tr.dataset.status === draggedStatus) {
+        tr.classList.add('drag-over');
     }
-    localStorage.setItem('agency365_clients', JSON.stringify(clients));
-    renderClients();
-};
+}
+
+function handleDragLeave(e) {
+    const tr = e.target.closest('tr');
+    if (tr) {
+        tr.classList.remove('drag-over');
+    }
+}
+
+function handleDrop(e) {
+    e.stopPropagation();
+    const tr = e.target.closest('tr');
+    if (!tr) return false;
+    tr.classList.remove('drag-over');
+    const targetIndex = parseInt(tr.dataset.index);
+    if (draggedIndex !== targetIndex && tr.dataset.status === draggedStatus) {
+        const filtered = clients.filter(c => c.status === draggedStatus).sort((a,b) => (a.order||0) - (b.order||0));
+        const item = filtered.splice(draggedIndex, 1)[0];
+        filtered.splice(targetIndex, 0, item);
+        filtered.forEach((c, i) => c.order = i);
+        localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        renderClients();
+    }
+    return false;
+}
+
+function handleDragEnd(e) {
+    e.currentTarget.style.opacity = '1';
+    document.querySelectorAll('#client-list tr').forEach(row => row.classList.remove('drag-over'));
+}
 
 function formatAmount(amount) {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(amount || 0);
@@ -239,15 +274,25 @@ function renderClients() {
         
         // List View Row
         const tr = document.createElement('tr');
+        tr.draggable = true;
+        tr.dataset.id = c.id;
+        tr.dataset.index = idx;
+        tr.dataset.status = activeFilter;
+        tr.addEventListener('dragstart', handleDragStart);
+        tr.addEventListener('dragenter', handleDragEnter);
+        tr.addEventListener('dragover', handleDragOver);
+        tr.addEventListener('dragleave', handleDragLeave);
+        tr.addEventListener('drop', handleDrop);
+        tr.addEventListener('dragend', handleDragEnd);
         tr.innerHTML = `
-            <td style="display: flex; align-items: center; gap: 0.75rem;">
+            <td style="display: flex; align-items: center; gap: 0.75rem; cursor: grab;">
+                <span style="color:var(--text-secondary); opacity:0.5; font-size:1.2rem;">⋮⋮</span>
                 <img src="${c.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=f1f5f9&color=64748b`}" alt="avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
                 <div>
                     <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none;"><strong>${c.name}</strong></a><br>
                     <small style="color:var(--text-secondary)">${c.phone || ''}</small>
                 </div>
             </td>
-            <td>${c.work}</td>
             <td>
                 ${formatAmount(c.amount)}<br>
                 <small style="color:#10b981;">Paid: ${formatAmount(totalPaid)}</small>
@@ -258,10 +303,6 @@ function renderClients() {
             </td>
             <td><span class="status-badge ${statusClass}">${c.status}</span></td>
             <td style="display:flex; gap:0.25rem; align-items:center;">
-                <div style="display:flex; flex-direction:column; gap:2px; margin-right:0.5rem;">
-                    <button onclick="window.moveClient('${c.id}', -1)" style="background:none; border:none; cursor:pointer; font-size:1rem; line-height:1;" title="Move Up" ${idx===0?'disabled opacity="0.3"':''}>🔼</button>
-                    <button onclick="window.moveClient('${c.id}', 1)" style="background:none; border:none; cursor:pointer; font-size:1rem; line-height:1;" title="Move Down" ${idx===filtered.length-1?'disabled opacity="0.3"':''}>🔽</button>
-                </div>
                 <a href="client-detail.html?id=${c.id}&slug=${slug}" class="action-btn view-btn">View Details</a>
             </td>
         `;

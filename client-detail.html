@@ -836,7 +836,7 @@
             </div>
             <div class="hero-stats" id="hero-stats">
                 <div class="hero-stat-card">
-                    <div class="hero-stat-label">Project Value</div>
+                    <div class="hero-stat-label">Total Revenue</div>
                     <div class="hero-stat-val" id="stat-value">—</div>
                     <div class="hero-stat-sub">Total contract</div>
                 </div>
@@ -895,15 +895,17 @@
                     <div id="client-info-rows"></div>
                 </div>
 
-                <!-- Project Details -->
+                <!-- Projects & Phases -->
                 <div class="section-card">
                     <div class="section-card-header">
                         <div class="section-card-title">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                            Project Details
+                            Projects & Phases
                         </div>
+                        <button class="secondary-btn" id="add-phase-btn" style="font-size:0.78rem; padding:0.3rem 0.65rem;">+ Add Phase</button>
                     </div>
-                    <div id="project-info-rows"></div>
+                    <div id="project-phases-list" style="margin-top:0.75rem; display:flex; flex-direction:column; gap:0.5rem;"></div>
+                    <div id="project-info-rows" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;"></div>
                 </div>
 
                 <!-- Tasks -->
@@ -1098,7 +1100,36 @@
     </div>
 </div>
 
-<!-- Add Meeting Modal -->
+    <!-- ── Add Phase Modal ── -->
+    <div class="modal-overlay" id="add-phase-modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="modal-close" id="close-phase-modal">&times;</button>
+            <h2>➕ Add Project / Phase</h2>
+            <form id="add-phase-form">
+                <div class="modal-form-group">
+                    <label>Phase Name *</label>
+                    <input type="text" id="phase-name" placeholder="e.g. Phase 1, Website Design" required>
+                </div>
+                <div class="modal-form-group">
+                    <label>Amount (₹) *</label>
+                    <input type="number" id="phase-amount" required min="0">
+                </div>
+                <div class="modal-row">
+                    <div class="modal-form-group">
+                        <label>Closing Date</label>
+                        <input type="date" id="phase-closing-date">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Delivery Date</label>
+                        <input type="date" id="phase-delivery-date">
+                    </div>
+                </div>
+                <button type="submit" class="primary-btn" style="width: 100%; margin-top: 1rem;">Save Phase</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── Add Meeting Modal ── -->
 <div class="modal-overlay" id="add-meeting-modal">
     <div class="modal-box">
         <button class="modal-close" id="close-meeting-modal">&times;</button>
