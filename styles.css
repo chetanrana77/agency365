@@ -376,11 +376,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
 }
 
 .user-email {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: none;
 }
 
 /* Main Content Area */
