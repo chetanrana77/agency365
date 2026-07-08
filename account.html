@@ -158,6 +158,16 @@
                     <label>Role</label>
                     <input type="text" value="Administrator" disabled>
                 </div>
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <img id="profile-pic-preview" src="https://ui-avatars.com/api/?name=Admin&background=12b76a&color=fff" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);">
+                        <div style="flex: 1;">
+                            <input type="file" id="profile-pic-upload" accept="image/*" class="secondary-btn" style="width:100%; border:1px dashed var(--border-color); padding: 0.5rem; font-size: 0.8rem;">
+                            <button id="clear-profile-pic-btn" class="secondary-btn" style="font-size:0.75rem; margin-top: 0.5rem; color:#ef4444; display: none; padding: 0.3rem 0.6rem;">Remove Picture</button>
+                        </div>
+                    </div>
+                </div>
                 <button class="primary-btn" onclick="sessionStorage.clear(); window.location.href='login.html'">Log Out</button>
             </div>
 
@@ -275,14 +285,53 @@
             }
 
             const currentUserStr = sessionStorage.getItem('agency365_current_user');
+            let userName = 'Admin';
             if (currentUserStr) {
                 try {
                     const user = JSON.parse(currentUserStr);
+                    userName = user.name || user.orgName || 'Admin';
                     document.getElementById('profile-email').value = user.email || 'admin@agency365.com';
                 } catch(e) {}
             } else {
                 document.getElementById('profile-email').value = 'admin@agency365.com';
             }
+
+            // Profile Picture Logic
+            const profileInput = document.getElementById('profile-pic-upload');
+            const profilePreview = document.getElementById('profile-pic-preview');
+            const clearProfileBtn = document.getElementById('clear-profile-pic-btn');
+            
+            const savedProfilePic = localStorage.getItem('agency365_profile_pic');
+            if (savedProfilePic) {
+                profilePreview.src = savedProfilePic;
+                clearProfileBtn.style.display = 'inline-block';
+            } else {
+                profilePreview.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=12b76a&color=fff`;
+            }
+
+            profileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        const base64Str = evt.target.result;
+                        profilePreview.src = base64Str;
+                        clearProfileBtn.style.display = 'inline-block';
+                        localStorage.setItem('agency365_profile_pic', base64Str);
+                        // Update avatars instantly on the current page
+                        document.querySelectorAll('.menu-user-avatar').forEach(img => img.src = base64Str);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            clearProfileBtn.addEventListener('click', () => {
+                profileInput.value = '';
+                localStorage.removeItem('agency365_profile_pic');
+                profilePreview.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=12b76a&color=fff`;
+                clearProfileBtn.style.display = 'none';
+                document.querySelectorAll('.menu-user-avatar').forEach(img => img.src = profilePreview.src);
+            });
 
             logoInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];

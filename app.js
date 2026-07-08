@@ -302,8 +302,15 @@ function initNavigationHighlighting() {
         const user  = JSON.parse(sessionStorage.getItem('agency365_current_user')) || {};
         const nameEl  = document.getElementById('menu-user-name');
         const emailEl = document.getElementById('menu-user-email');
-        if (nameEl)  nameEl.textContent  = user.name || user.orgName || 'Admin';
+        const userName = user.name || user.orgName || 'Admin';
+        if (nameEl)  nameEl.textContent  = userName;
         if (emailEl) emailEl.textContent = user.email || '';
+
+        const savedProfilePic = localStorage.getItem('agency365_profile_pic');
+        const avatars = document.querySelectorAll('.menu-user-avatar');
+        avatars.forEach(img => {
+            img.src = savedProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=12b76a&color=fff`;
+        });
     } catch(e) {}
 }
 
