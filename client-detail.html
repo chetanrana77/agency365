@@ -1080,6 +1080,13 @@
         <button class="modal-close" id="close-edit-modal">&times;</button>
         <h2>✏️ Edit Client Details</h2>
         <form id="edit-client-form">
+            <div class="modal-form-group">
+                <label>Client Image</label>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <img id="edit-image-preview" src="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); display: none;">
+                    <input type="file" id="edit-client-image" accept="image/*" style="flex: 1; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem;">
+                </div>
+            </div>
             <div class="modal-form-group"><label>Client Name *</label><input type="text" id="edit-name" required></div>
             <div class="modal-row">
                 <div class="modal-form-group"><label>Contact Person</label><input type="text" id="edit-contact-person"></div>

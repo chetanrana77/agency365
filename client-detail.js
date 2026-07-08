@@ -773,6 +773,13 @@ function bindEvents() {
         client.priority      = document.getElementById('edit-priority').value;
         client.work          = document.getElementById('edit-work').value;
         client.referral      = document.getElementById('edit-referral').value;
+        
+        const imgPreview = document.getElementById('edit-image-preview');
+        if (imgPreview.dataset.newImage) {
+            client.image = imgPreview.dataset.newImage;
+            delete imgPreview.dataset.newImage;
+        }
+
         saveClients();
         closeModal('edit-modal');
         const slug = encodeURIComponent(client.name.toLowerCase().replace(/\s+/g, '-'));
@@ -861,10 +868,38 @@ function bindEvents() {
         closeModal('add-suggestion-modal');
         renderSuggestions();
     });
+
+    document.getElementById('edit-client-image')?.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const imgPreview = document.getElementById('edit-image-preview');
+                imgPreview.src = evt.target.result;
+                imgPreview.style.display = 'block';
+                imgPreview.dataset.newImage = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 }
 
 // ─── Helper: Open Edit Modal pre-filled ──────────────────────────
 function openEditModal() {
+    const imgPreview = document.getElementById('edit-image-preview');
+    const fileInput = document.getElementById('edit-client-image');
+    if (fileInput) fileInput.value = '';
+    if (imgPreview) {
+        delete imgPreview.dataset.newImage;
+        if (client.image) {
+            imgPreview.src = client.image;
+            imgPreview.style.display = 'block';
+        } else {
+            imgPreview.style.display = 'none';
+            imgPreview.src = '';
+        }
+    }
+
     document.getElementById('edit-name').value           = client.name         || '';
     document.getElementById('edit-contact-person').value = client.contactPerson || '';
     document.getElementById('edit-contact-email').value  = client.contactEmail  || '';
