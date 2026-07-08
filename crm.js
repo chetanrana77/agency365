@@ -124,23 +124,43 @@ function saveToStorage() {
 
 function renderClients() {
     const tbody = document.getElementById('client-list');
-    if(!tbody) return;
+    const lostTbody = document.getElementById('lost-client-list');
+    if(!tbody || !lostTbody) return;
+    
     tbody.innerHTML = '';
+    lostTbody.innerHTML = '';
 
-    const filteredClients = clients.filter(c => c.status === 'Lead');
+    const activeLeads = clients.filter(c => c.status === 'Lead');
+    const lostLeads = clients.filter(c => c.status === 'Inactive');
 
-    if(filteredClients.length === 0) {
+    if(activeLeads.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">No active leads in pipeline.</td></tr>`;
-        return;
+    } else {
+        renderRowsToTbody(activeLeads, tbody);
     }
 
-    filteredClients.forEach(c => {
+    if(lostLeads.length === 0) {
+        lostTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">No lost leads.</td></tr>`;
+    } else {
+        renderRowsToTbody(lostLeads, lostTbody);
+    }
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => editClient(e.target.dataset.id));
+    });
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => deleteClient(e.target.dataset.id));
+    });
+}
+
+function renderRowsToTbody(clientArray, tbody) {
+    clientArray.forEach(c => {
         const tr = document.createElement('tr');
         const statusClass = `status-${c.status.toLowerCase()}`;
         
         let leadInfo = '';
         if(c.status === 'Lead' && c.leadDate) {
-            leadInfo = `<br><small style="color:var(--text-secondary)">Lead: ${c.leadDate} ${c.leadTime}</small>`;
+            leadInfo = `<br><small style="color:var(--text-secondary)">Lead: ${c.leadDate} ${c.leadTime || ''}</small>`;
         }
         
         tr.innerHTML = `
@@ -153,19 +173,12 @@ function renderClients() {
             <td>
                 ${formatAmount(c.amount)}
             </td>
-            <td><span class="status-badge ${statusClass}">${c.status === 'Inactive' ? 'Old Client' : c.status}</span></td>
+            <td><span class="status-badge ${statusClass}">${c.status === 'Inactive' ? 'Lost' : c.status}</span></td>
             <td>
                 <button class="action-btn edit-btn" data-id="${c.id}">Edit</button>
                 <button class="action-btn delete delete-btn" data-id="${c.id}">Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
-    });
-
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => editClient(e.target.dataset.id));
-    });
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => deleteClient(e.target.dataset.id));
     });
 }
