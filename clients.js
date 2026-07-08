@@ -243,7 +243,7 @@ function renderClients() {
             <td style="display: flex; align-items: center; gap: 0.75rem;">
                 <img src="${c.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=f1f5f9&color=64748b`}" alt="avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
                 <div>
-                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none;"><strong>${c.name}</strong></a> ${healthBadge(c)}<br>
+                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none;"><strong>${c.name}</strong></a><br>
                     <small style="color:var(--text-secondary)">${c.phone || ''}</small>
                 </div>
             </td>
@@ -280,7 +280,6 @@ function renderClients() {
             </div>
             <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
                 <span style="font-size:0.7rem; padding:0.15rem 0.4rem; background:${pColor}15; color:${pColor}; border-radius:4px; font-weight:600;">${c.priority || 'Medium'} Priority</span>
-                ${healthBadge(c)}
             </div>
             <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; flex:1;">${c.work}</p>
             <div style="background:var(--bg-secondary); padding:0.75rem; border-radius:6px; margin-bottom:1rem;">
