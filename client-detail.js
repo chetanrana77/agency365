@@ -122,7 +122,6 @@ function renderAll() {
     renderWorkUpdates();
     renderCommunication();
     renderFinance();
-    renderSuggestions();
     updateTabCounts();
 }
 
@@ -166,11 +165,7 @@ function renderHero() {
     statusPill.className = `pill ${stClass}`;
     statusPill.textContent = stText;
 
-    // Priority pill
-    const priorityPill = document.getElementById('priority-pill');
-    const pMap = { 'High': 'pill-red', 'Medium': 'pill-yellow', 'Low': 'pill-green' };
-    priorityPill.className = `pill ${pMap[client.priority] || 'pill-yellow'}`;
-    priorityPill.textContent = (client.priority || 'Medium') + ' Priority';
+
 
     // Contact Info in Hero
     const heroContactRow = document.getElementById('hero-contact-row');
@@ -707,48 +702,7 @@ function bindEvents() {
         window.open(phone ? `https://wa.me/91${phone}?text=${msg}` : `https://wa.me/?text=${msg}`, '_blank');
     });
 
-    // ── Share Client Portal Link ──────────────────────────────
-    document.getElementById('portal-link-btn')?.addEventListener('click', async () => {
-        const token = btoa(client.id + ':' + Date.now()).replace(/=/g,'');
-        const link = window.location.origin + '/portal.html?client=' + token;
-        try {
-            const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-            const sb = createClient('https://nytzlivcfiflqmqnjivd.supabase.co','sb_publishable_xwTbIz3WpbtJIgExXtCA8g_GFBDLzu9');
-            const userJson = sessionStorage.getItem('agency365_current_user');
-            const user = userJson ? JSON.parse(userJson) : null;
-            if (user) {
-                await sb.from('portal_tokens').insert({ token, client_id: client.id, user_id: user.id });
-            }
-        } catch(e) {
-            console.warn('Portal token not saved to Supabase:', e);
-        }
-        await navigator.clipboard.writeText(link).catch(() => {});
-        alert('✅ Portal link copied!\n\n' + link);
-    });
 
-    // ── Generate Onboarding Link ──────────────────────────────
-    document.getElementById('onboarding-link-btn')?.addEventListener('click', async () => {
-        try {
-            const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-            const sb = createClient('https://nytzlivcfiflqmqnjivd.supabase.co','sb_publishable_xwTbIz3WpbtJIgExXtCA8g_GFBDLzu9');
-            const token = crypto.randomUUID();
-            const userJson = sessionStorage.getItem('agency365_current_user');
-            const user = userJson ? JSON.parse(userJson) : null;
-            if (user) {
-                await sb.from('onboarding_tokens').insert({
-                    token,
-                    client_id: client.id,
-                    user_id: user.id,
-                    expires_at: new Date(Date.now() + 7 * 864e5).toISOString()
-                });
-            }
-            const link = window.location.origin + '/onboarding.html?token=' + token;
-            await navigator.clipboard.writeText(link).catch(() => {});
-            alert('✅ Onboarding link copied! Valid for 7 days.\n\n' + link);
-        } catch(e) {
-            alert('Error generating link: ' + e.message);
-        }
-    });
 
     document.getElementById('edit-client-form')?.addEventListener('submit', e => {
         e.preventDefault();
