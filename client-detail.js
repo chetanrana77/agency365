@@ -152,7 +152,7 @@ function renderHero() {
     const statusPill = document.getElementById('status-pill');
     const statusMap = {
         'Active': ['● Active', 'pill-green'],
-        'Closed': ['● Closed', 'pill-gray'],
+        'Inactive': ['● Inactive', 'pill-gray'],
         'Lead':   ['● Lead',   'pill-yellow'],
     };
     const [stText, stClass] = statusMap[client.status] || ['● Active', 'pill-green'];

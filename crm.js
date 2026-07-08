@@ -153,7 +153,7 @@ function renderClients() {
             <td>
                 ${formatAmount(c.amount)}
             </td>
-            <td><span class="status-badge ${statusClass}">${c.status === 'Closed' ? 'Old Client' : c.status}</span></td>
+            <td><span class="status-badge ${statusClass}">${c.status === 'Inactive' ? 'Old Client' : c.status}</span></td>
             <td>
                 <button class="action-btn edit-btn" data-id="${c.id}">Edit</button>
                 <button class="action-btn delete delete-btn" data-id="${c.id}">Delete</button>

@@ -168,7 +168,7 @@ function renderTodaysFocus() {
             items.push({ icon:'✅', label:`Task due: <strong>${t.text}</strong>`, sub:client.name, href:`client-detail.html?id=${client.id}&tab=overview`, color:'#f79009' });
         });
         // Overdue invoices (payment due but amount outstanding)
-        if ((client.status === 'Active' || client.status === 'Closed') && client.amount) {
+        if ((client.status === 'Active' || client.status === 'Inactive') && client.amount) {
             const paid = (client.payments || []).filter(p=>!p.refund).reduce((s,p)=>s+p.amount,0);
             const due = client.amount - paid;
             if (due > 0) {

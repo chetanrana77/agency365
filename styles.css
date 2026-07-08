@@ -94,7 +94,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     display: flex;
     height: 100vh;
     width: 100vw;
-    background: var(--bg-secondary);
+    background: var(--bg-color);
     overflow: hidden;
 }
 
@@ -154,7 +154,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
 
 .icon-links a.active {
     color: var(--text-primary);
-    background: #f1f5f9;
+    background: var(--border-color);
 }
 
 .sidebar-icons-footer {
@@ -222,7 +222,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     padding: 1.5rem 1rem;
     z-index: 100;
     flex-shrink: 0;
-    height: 100%; background: transparent;
+    height: 100%;
     transition: width 0.3s ease;
 }
 
@@ -313,7 +313,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
 
 .menu-links a.active {
     color: var(--text-primary);
-    background: #f1f5f9;
+    background: var(--bg-color);
     font-weight: 600;
 }
 
@@ -328,7 +328,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     border-radius: 10px;
     font-size: 0.7rem;
     font-weight: 700;
-    background: #f1f5f9; color: var(--text-primary);
+    background: var(--border-color); color: var(--text-primary);
     color: var(--accent-color);
 }
 
@@ -434,7 +434,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
 }
 .tab-btn.active {
     color: var(--text-primary);
-    background: #ffffff;
+    background: var(--card-bg);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     font-weight: 600;
 }
@@ -541,11 +541,11 @@ h1, h2, h3, h4, h5, h6, .serif-font {
 
 .status-lead { background: rgba(245, 158, 11, 0.1); color: #d97706; }
 .status-active { background: rgba(16, 185, 129, 0.1); color: #059669; }
-.status-closed { background: rgba(107, 114, 128, 0.1); color: #4b5563; }
+.status-inactive { background: rgba(107, 114, 128, 0.1); color: #4b5563; }
 
 [data-theme="dark"] .status-lead { color: #fcd34d; background: rgba(245, 158, 11, 0.2); }
 [data-theme="dark"] .status-active { color: #6ee7b7; background: rgba(16, 185, 129, 0.2); }
-[data-theme="dark"] .status-closed { color: #d1d5db; background: rgba(107, 114, 128, 0.2); }
+[data-theme="dark"] .status-inactive { color: #d1d5db; background: rgba(107, 114, 128, 0.2); }
 
 .action-btn {
     background: transparent;
@@ -839,7 +839,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     line-height: 1;
 }
 .change-badge.badge-green {
-    background: #f1f5f9; color: var(--text-primary);
+    background: var(--border-color); color: var(--text-primary);
     color: var(--accent-color);
 }
 .dashboard-header-controls {
@@ -1199,7 +1199,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: #f1f5f9;
+    background: var(--border-color);
     transition: all 0.2s ease;
 }
 
@@ -1212,7 +1212,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
 }
 .graph-col:hover .graph-label {
     background: var(--text-primary);
-    color: #ffffff;
+    color: var(--bg-secondary);
 }
 
 /* Top Clients Connect List */
@@ -1220,7 +1220,7 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
-    background: #ffffff;
+    background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 100px;
     margin-bottom: 0.75rem;

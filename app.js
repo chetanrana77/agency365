@@ -199,6 +199,22 @@ function initTheme() {
 // ── App Init ──────────────────────────────────────────────────
 async function initApp() {
     document.body.classList.remove('preload');
+    
+    // Migrate Closed to Inactive
+    let clients = JSON.parse(localStorage.getItem('agency365_clients'));
+    if (clients && clients.length > 0) {
+        let changed = false;
+        clients.forEach(c => {
+            if (c.status === 'Closed') {
+                c.status = 'Inactive';
+                changed = true;
+            }
+        });
+        if (changed) {
+            localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        }
+    }
+
     initTheme();
     await syncFromSupabase();
     checkAuthAndInit();

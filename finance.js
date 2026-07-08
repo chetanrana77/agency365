@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add Payment header button → opens payment panel with client selection
     document.getElementById('add-payment-header-btn')?.addEventListener('click', () => {
-        const activeClients = clients.filter(c => c.status === 'Active' || c.status === 'Closed');
+        const activeClients = clients.filter(c => c.status === 'Active' || c.status === 'Inactive');
         if (activeClients.length === 0) { alert('No active clients. Convert a lead first.'); return; }
         openPaymentPanel(activeClients[0].id);
     });
@@ -125,7 +125,7 @@ function calculateOverview() {
 
     let totalDue = 0;
     clients.forEach(c => {
-        if (c.status === 'Active' || c.status === 'Closed') {
+        if (c.status === 'Active' || c.status === 'Inactive') {
             const amount = parseFloat(c.amount) || 0;
             const paid = (c.payments || []).reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
             const due = amount - paid;
@@ -164,7 +164,7 @@ function setupTabs() {
 function populateClientDropdown() {
     const sel = document.getElementById('exp-client');
     sel.innerHTML = '<option value="">Select a client...</option>';
-    clients.filter(c => c.status === 'Active' || c.status === 'Closed').forEach(c => {
+    clients.filter(c => c.status === 'Active' || c.status === 'Inactive').forEach(c => {
         sel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
     });
 }
@@ -188,7 +188,7 @@ function renderTable() {
             <tbody></tbody>
         `;
         const tbody = table.querySelector('tbody');
-        const activeClients = clients.filter(c => c.status === 'Active' || c.status === 'Closed');
+        const activeClients = clients.filter(c => c.status === 'Active' || c.status === 'Inactive');
         
         if(activeClients.length === 0) {
             tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No clients available for invoicing.</td></tr>`;
@@ -356,7 +356,7 @@ function openPaymentPanel(id) {
     const sel = document.getElementById('pay-client-select');
     if (sel) {
         sel.innerHTML = '';
-        clients.filter(c => c.status === 'Active' || c.status === 'Closed').forEach(c => {
+        clients.filter(c => c.status === 'Active' || c.status === 'Inactive').forEach(c => {
             sel.innerHTML += `<option value="${c.id}" ${c.id === id ? 'selected' : ''}>${c.name}</option>`;
         });
     }
