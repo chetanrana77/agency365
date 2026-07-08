@@ -130,10 +130,17 @@ function renderAll() {
 function renderHero() {
     document.getElementById('client-name-el').childNodes[0].textContent = client.name + ' ';
 
-    // Avatar initials
+    // Avatar initials or Image
     const avatarEl = document.getElementById('client-avatar-el');
-    const initials = client.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-    avatarEl.textContent = initials;
+    if (client.image) {
+        avatarEl.innerHTML = `<img src="${client.image}" alt="${client.name}">`;
+        avatarEl.style.background = 'transparent';
+    } else {
+        const initials = client.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+        avatarEl.innerHTML = '';
+        avatarEl.textContent = initials;
+        avatarEl.style.background = ''; // reset to default CSS
+    }
 
     // Domain link
     const domainLink = document.getElementById('client-domain-link');
