@@ -321,7 +321,7 @@
                         <td><span style="font-size:0.78rem; font-weight:600; text-transform:uppercase; background:var(--bg-secondary); padding:0.2rem 0.5rem; border-radius:4px;">${m.role}</span></td>
                         <td><span style="font-size:0.75rem; font-weight:600; color:${m.status === 'active' ? '#12b76a' : '#f79009'};">${m.status}</span></td>
                         <td>
-                            ${m.status === 'active' ? `<button class="secondary-btn" onclick="openEditRole('${m.id}', '${m.role}')" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Edit Role</button>` : `<button class="secondary-btn" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Cancel</button>`}
+                            ${m.role.toLowerCase() === 'admin' ? '<span style="font-size:0.75rem; color:var(--text-secondary);">Owner</span>' : (m.status === 'active' ? `<button class="secondary-btn" onclick="openEditRole('${m.id}', '${m.role}')" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Edit Role</button>` : `<button class="secondary-btn" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Cancel</button>`)}
                         </td>
                     </tr>
                 `).join('');
