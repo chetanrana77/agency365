@@ -228,6 +228,27 @@
         </div>
     </div>
 
+    <!-- Edit Role Modal -->
+    <div class="modal-overlay" id="edit-role-modal">
+        <div class="modal-box" style="max-width:400px;">
+            <button class="modal-close" id="close-edit-role-modal">&times;</button>
+            <h2>✏️ Edit Team Member Role</h2>
+            <form id="edit-role-form" style="margin-top:1rem;">
+                <input type="hidden" id="edit-member-id">
+                <div class="modal-form-group" style="margin-top:1rem;">
+                    <label>Role</label>
+                    <select id="edit-member-role" style="width:100%; padding:0.6rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-secondary); color:var(--text-primary);">
+                        <option value="Employee">Employee</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="primary-btn full-width" style="margin-top:1.5rem;">Save Role</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Mobile Nav Bar -->
     <nav class="mob-nav" id="mob-nav">
         <a href="dashboard.html" class="mob-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></a>
@@ -246,7 +267,7 @@
 
     <script type="module" src="app.js?v=1783864743"></script>
     <script type="module">
-        import { inviteTeamMember, getTeamMembers } from './supabaseClient.js?v=1783864743';
+        import { inviteTeamMember, getTeamMembers, updateTeamMemberRole } from './supabaseClient.js?v=1783864743';
 
         document.addEventListener('DOMContentLoaded', () => {
             const list = document.getElementById('team-list');
@@ -257,6 +278,35 @@
 
             inviteBtn?.addEventListener('click', () => modal.classList.add('show'));
             closeBtn?.addEventListener('click', () => modal.classList.remove('show'));
+
+            const editModal = document.getElementById('edit-role-modal');
+            const closeEditBtn = document.getElementById('close-edit-role-modal');
+            const editForm = document.getElementById('edit-role-form');
+            
+            closeEditBtn?.addEventListener('click', () => editModal.classList.remove('show'));
+
+            window.openEditRole = function(id, currentRole) {
+                document.getElementById('edit-member-id').value = id;
+                document.getElementById('edit-member-role').value = currentRole;
+                editModal.classList.add('show');
+            };
+
+            editForm?.addEventListener('submit', async e => {
+                e.preventDefault();
+                const id = document.getElementById('edit-member-id').value;
+                const role = document.getElementById('edit-member-role').value;
+                const submit = editForm.querySelector('button[type="submit"]');
+                submit.disabled = true; submit.textContent = 'Saving...';
+                
+                const { error } = await updateTeamMemberRole(id, role);
+                if (error) {
+                    alert('Error updating role: ' + error.message);
+                } else {
+                    editModal.classList.remove('show');
+                    renderTeam();
+                }
+                submit.disabled = false; submit.textContent = 'Save Role';
+            });
 
             async function renderTeam() {
                 const members = await getTeamMembers();
@@ -270,7 +320,9 @@
                         <td>${m.email}</td>
                         <td><span style="font-size:0.78rem; font-weight:600; text-transform:uppercase; background:var(--bg-secondary); padding:0.2rem 0.5rem; border-radius:4px;">${m.role}</span></td>
                         <td><span style="font-size:0.75rem; font-weight:600; color:${m.status === 'active' ? '#12b76a' : '#f79009'};">${m.status}</span></td>
-                        <td><button class="secondary-btn" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Cancel</button></td>
+                        <td>
+                            ${m.status === 'active' ? `<button class="secondary-btn" onclick="openEditRole('${m.id}', '${m.role}')" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Edit Role</button>` : `<button class="secondary-btn" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Cancel</button>`}
+                        </td>
                     </tr>
                 `).join('');
             }

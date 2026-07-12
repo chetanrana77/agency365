@@ -162,6 +162,14 @@ export async function getTeamMembers() {
     return data || [];
 }
 
+export async function updateTeamMemberRole(memberId, role) {
+    const { data, error } = await supabase
+        .from('team_members')
+        .update({ role })
+        .eq('id', memberId);
+    return { data, error };
+}
+
 // ── Onboarding Tokens ─────────────────────────────────────────
 export async function createOnboardingToken(clientId) {
     const user = await getUser();
