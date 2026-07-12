@@ -294,12 +294,30 @@ function checkAuthAndInit() {
         if (path.endsWith('login.html'))  initLogin();
         if (path.endsWith('signup.html')) initSignup();
     } else {
-        initDataManagement();
-        initNavigationHighlighting();
-        if (path.includes('crm.html'))        initCRM();
-        else if (path.includes('calendar.html'))   initCalendar();
-        else if (path.includes('dashboard.html'))  initDashboard();
-        else if (path.includes('proposals.html'))  initProposals();
+        document.addEventListener('DOMContentLoaded', () => {
+            initDataManagement();
+            initNavigationHighlighting();
+            initTheme();
+            const path = window.location.pathname;
+
+            if (path.includes('clients.html'))         initClients();
+            else if (path.includes('crm.html'))        initCRM();
+            else if (path.includes('finance.html'))    initFinance();
+            else if (path.includes('calendar.html'))   initCalendar();
+            else if (path.includes('dashboard.html'))  initDashboard();
+            else if (path.includes('proposals.html'))  initProposals();
+            
+            // Global listener for background Supabase sync completion
+            window.addEventListener('agency365_synced', () => {
+                initNavigationHighlighting();
+                if (path.includes('clients.html'))         initClients();
+                else if (path.includes('crm.html'))        initCRM();
+                else if (path.includes('finance.html'))    initFinance();
+                else if (path.includes('calendar.html'))   initCalendar();
+                else if (path.includes('dashboard.html'))  initDashboard();
+                else if (path.includes('proposals.html'))  initProposals();
+            });
+        });
     }
 }
 
@@ -314,9 +332,12 @@ function initNavigationHighlighting() {
     try {
         const clients   = JSON.parse(localStorage.getItem('agency365_clients'))   || [];
         const proposals = JSON.parse(localStorage.getItem('agency365_proposals')) || [];
+        const activeClients = clients.filter(c => c.status && c.status.toLowerCase() !== 'lead' && c.status.toLowerCase() !== 'inactive');
+        
         const cBadge = document.getElementById('badge-clients-count');
         const pBadge = document.getElementById('badge-proposals-count');
-        if (cBadge) cBadge.textContent = clients.length;
+        
+        if (cBadge) cBadge.textContent = activeClients.length;
         if (pBadge) pBadge.textContent = proposals.length;
     } catch(e) {}
     try {
@@ -333,6 +354,19 @@ function initNavigationHighlighting() {
             img.src = savedProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=12b76a&color=fff`;
         });
     } catch(e) {}
+}
+
+// ── Dashboard ──────────────────────────────────────────────────
+function initDashboard() {
+    const custBtn = document.getElementById('dashboard-customize-btn');
+    if (custBtn) {
+        // Remove old listeners by replacing node
+        const newCustBtn = custBtn.cloneNode(true);
+        custBtn.parentNode.replaceChild(newCustBtn, custBtn);
+        newCustBtn.addEventListener('click', () => {
+            alert('Dashboard Customization coming soon! You will be able to add custom widgets here.');
+        });
+    }
 }
 
 // ── Login ─────────────────────────────────────────────────────
