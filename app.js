@@ -38,9 +38,9 @@ export function applyBrandSettings() {
     
     if (brandContainer) {
         if (activeLogo) {
-            brandContainer.innerHTML = `<img id="brand-logo" class="logo-img" src="${activeLogo}" style="max-height: var(--logo-height, 30px); margin-bottom:0.5rem; object-fit:contain;">`;
+            brandContainer.innerHTML = `<a href="dashboard.html" style="display:flex; align-items:center; text-decoration:none;"><img src="${activeLogo}" alt="Agency Logo" style="max-height: var(--logo-height); width: auto; object-fit: contain;"></a>`;
         } else {
-            brandContainer.innerHTML = `<span class="brand-text-span" id="brand-text">${orgName}</span>`;
+            brandContainer.innerHTML = `<a href="dashboard.html" style="display:flex; align-items:center; text-decoration:none;"><h2 class="serif-font" style="margin:0; font-size:1.4rem;font-weight:700;color:var(--text-primary);letter-spacing:-0.03em;">agency<span style="color:var(--accent-color)">365</span></h2></a>`;
         }
     }
 }
