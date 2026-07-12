@@ -163,14 +163,24 @@
 
             <div class="tracker-container" style="max-width: 600px; margin-bottom: 2rem;">
                 <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Brand Customization</h2>
-                <div class="form-group">
-                    <label>Company Logo (For Dashboard & Invoices)</label>
-                    <input type="file" id="brand-logo-upload" accept="image/*" class="secondary-btn" style="width:100%; border:1px dashed var(--border-color); padding: 1rem;">
-                    <div id="logo-preview-container" style="margin-top: 1rem; display:none;">
-                        <img id="logo-preview" style="max-height: 50px; border-radius:4px; border:1px solid var(--border-color);">
-                        <button id="clear-logo-btn" class="secondary-btn" style="font-size:0.8rem; margin-left: 1rem; color:#ef4444;">Remove</button>
-                    </div>
-                </div>
+                        <div class="form-group row-group">
+                            <div class="half-width">
+                                <label>Light Mode Logo (Black/Dark)</label>
+                                <input type="file" id="brand-logo-upload-light" accept="image/*" class="secondary-btn" style="width:100%; border:1px dashed var(--border-color); padding: 1rem;">
+                                <div id="logo-preview-container-light" style="margin-top: 1rem; display:none; align-items:center;">
+                                    <img id="logo-preview-light" style="max-height: 50px; background:#fff; padding:5px; border-radius:4px; border:1px solid var(--border-color);">
+                                    <button id="clear-logo-btn-light" class="secondary-btn" style="font-size:0.8rem; margin-left: 1rem; color:#ef4444;">Remove</button>
+                                </div>
+                            </div>
+                            <div class="half-width">
+                                <label>Dark Mode Logo (White/Light)</label>
+                                <input type="file" id="brand-logo-upload-dark" accept="image/*" class="secondary-btn" style="width:100%; border:1px dashed var(--border-color); padding: 1rem;">
+                                <div id="logo-preview-container-dark" style="margin-top: 1rem; display:none; align-items:center;">
+                                    <img id="logo-preview-dark" style="max-height: 50px; background:#1b213b; padding:5px; border-radius:4px; border:1px solid var(--border-color);">
+                                    <button id="clear-logo-btn-dark" class="secondary-btn" style="font-size:0.8rem; margin-left: 1rem; color:#ef4444;">Remove</button>
+                                </div>
+                            </div>
+                        </div>
                 <div class="form-group row-group">
                     <div class="half-width">
                         <label>Primary Color</label>
@@ -242,10 +252,15 @@
         import { applyBrandSettings } from './app.js?v=1783864743';
         
         document.addEventListener('DOMContentLoaded', () => {
-            const logoInput = document.getElementById('brand-logo-upload');
-            const previewCont = document.getElementById('logo-preview-container');
-            const previewImg = document.getElementById('logo-preview');
-            const clearBtn = document.getElementById('clear-logo-btn');
+            const logoInputLight = document.getElementById('brand-logo-upload-light');
+            const previewContLight = document.getElementById('logo-preview-container-light');
+            const previewImgLight = document.getElementById('logo-preview-light');
+            const clearBtnLight = document.getElementById('clear-logo-btn-light');
+            
+            const logoInputDark = document.getElementById('brand-logo-upload-dark');
+            const previewContDark = document.getElementById('logo-preview-container-dark');
+            const previewImgDark = document.getElementById('logo-preview-dark');
+            const clearBtnDark = document.getElementById('clear-logo-btn-dark');
             
             const pColor = document.getElementById('brand-primary-color');
             const sColor = document.getElementById('brand-secondary-color');
@@ -264,14 +279,25 @@
             
             logoHeightInput.addEventListener('input', (e) => {
                 logoHeightVal.textContent = e.target.value;
-                if (previewImg.src) {
-                    previewImg.style.maxHeight = e.target.value + 'px';
-                }
+                if (previewImgLight.src) previewImgLight.style.maxHeight = e.target.value + 'px';
+                if (previewImgDark.src) previewImgDark.style.maxHeight = e.target.value + 'px';
             });
-            const savedLogo = localStorage.getItem('agency365_brand_logo');
-            if (savedLogo) {
-                previewImg.src = savedLogo;
-                previewCont.style.display = 'flex';
+            
+            const savedLogoLight = localStorage.getItem('agency365_brand_logo_light');
+            const savedLogoDark = localStorage.getItem('agency365_brand_logo_dark');
+            const oldSavedLogo = localStorage.getItem('agency365_brand_logo');
+            
+            if (savedLogoLight) {
+                previewImgLight.src = savedLogoLight;
+                previewContLight.style.display = 'flex';
+            } else if (oldSavedLogo) {
+                previewImgLight.src = oldSavedLogo;
+                previewContLight.style.display = 'flex';
+            }
+            
+            if (savedLogoDark) {
+                previewImgDark.src = savedLogoDark;
+                previewContDark.style.display = 'flex';
             }
 
             const currentUserStr = sessionStorage.getItem('agency365_current_user');
@@ -323,31 +349,55 @@
                 document.querySelectorAll('.menu-user-avatar').forEach(img => img.src = profilePreview.src);
             });
 
-            logoInput.addEventListener('change', (e) => {
+            logoInputLight.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(file) {
                     const reader = new FileReader();
                     reader.onload = (evt) => {
-                        previewImg.src = evt.target.result;
-                        previewCont.style.display = 'flex';
+                        previewImgLight.src = evt.target.result;
+                        previewContLight.style.display = 'flex';
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            clearBtn.addEventListener('click', () => {
-                logoInput.value = '';
-                previewImg.src = '';
-                previewCont.style.display = 'none';
+            clearBtnLight.addEventListener('click', () => {
+                logoInputLight.value = '';
+                previewImgLight.src = '';
+                previewContLight.style.display = 'none';
+                localStorage.removeItem('agency365_brand_logo_light');
                 localStorage.removeItem('agency365_brand_logo');
+            });
+
+            logoInputDark.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        previewImgDark.src = evt.target.result;
+                        previewContDark.style.display = 'flex';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            clearBtnDark.addEventListener('click', () => {
+                logoInputDark.value = '';
+                previewImgDark.src = '';
+                previewContDark.style.display = 'none';
+                localStorage.removeItem('agency365_brand_logo_dark');
             });
 
             saveBtn.addEventListener('click', () => {
                 localStorage.setItem('agency365_brand_primary', pColor.value);
                 localStorage.setItem('agency365_brand_secondary', sColor.value);
                 localStorage.setItem('agency365_logo_height', logoHeightInput.value);
-                if (previewImg.src) {
-                    localStorage.setItem('agency365_brand_logo', previewImg.src);
+                
+                if (previewImgLight.src && previewImgLight.src.startsWith('data:')) {
+                    localStorage.setItem('agency365_brand_logo_light', previewImgLight.src);
+                }
+                if (previewImgDark.src && previewImgDark.src.startsWith('data:')) {
+                    localStorage.setItem('agency365_brand_logo_dark', previewImgDark.src);
                 }
                 applyBrandSettings();
                 alert('Brand settings saved successfully!');

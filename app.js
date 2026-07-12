@@ -12,7 +12,24 @@ export function applyBrandSettings() {
     document.documentElement.style.setProperty('--logo-height', logoHeight + 'px');
 
     const brandContainer = document.querySelector('.sidebar-brand');
-    const savedLogo = localStorage.getItem('agency365_brand_logo');
+    const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('agency365_theme') || 'light';
+    const savedLogoLight = localStorage.getItem('agency365_brand_logo_light');
+    const savedLogoDark = localStorage.getItem('agency365_brand_logo_dark');
+    const oldSavedLogo = localStorage.getItem('agency365_brand_logo');
+    
+    let activeLogo = null;
+    if (currentTheme === 'dark' && savedLogoDark) {
+        activeLogo = savedLogoDark;
+    } else if (currentTheme === 'light' && savedLogoLight) {
+        activeLogo = savedLogoLight;
+    } else if (savedLogoLight) {
+        activeLogo = savedLogoLight;
+    } else if (savedLogoDark) {
+        activeLogo = savedLogoDark;
+    } else if (oldSavedLogo) {
+        activeLogo = oldSavedLogo;
+    }
+
     let orgName = 'Agency 365';
     try {
         const user = JSON.parse(sessionStorage.getItem('agency365_current_user'));
@@ -20,8 +37,8 @@ export function applyBrandSettings() {
     } catch(e) {}
     
     if (brandContainer) {
-        if (savedLogo) {
-            brandContainer.innerHTML = `<img id="brand-logo" class="logo-img" src="${savedLogo}" style="max-height: var(--logo-height, 30px); margin-bottom:0.5rem; object-fit:contain;">`;
+        if (activeLogo) {
+            brandContainer.innerHTML = `<img id="brand-logo" class="logo-img" src="${activeLogo}" style="max-height: var(--logo-height, 30px); margin-bottom:0.5rem; object-fit:contain;">`;
         } else {
             brandContainer.innerHTML = `<span class="brand-text-span" id="brand-text">${orgName}</span>`;
         }
@@ -184,6 +201,7 @@ function initTheme() {
             const newTheme = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('agency365_theme', newTheme);
+            applyBrandSettings();
             // Update mob toggle icon
             document.querySelectorAll('#mob-theme-toggle .mob-theme-icon').forEach(ic => ic.classList.toggle('hidden'));
         });
