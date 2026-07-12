@@ -18,15 +18,15 @@
 }
 
 [data-theme="dark"] {
-    --bg-color: #0c111d;
-    --bg-secondary: #101828;
-    --card-bg: #101828;
-    --text-primary: #f9fafb;
-    --text-secondary: #98a2b3;
-    --border-color: #1f242f;
-    --sidebar-bg: #101828;
-    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    --input-bg: #101828;
+    --bg-color: #09090b;
+    --bg-secondary: #18181b;
+    --card-bg: #18181b;
+    --text-primary: #fafafa;
+    --text-secondary: #a1a1aa;
+    --border-color: #27272a;
+    --sidebar-bg: #09090b;
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --input-bg: #18181b;
 }
 
 * {
