@@ -135,54 +135,91 @@
             <header class="view-header" style="margin-bottom: 1rem;">
                 <h1>CRM (Leads Pipeline)</h1>
                 <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div class="view-toggles" style="gap:0.25rem;">
+                        <button class="secondary-btn active" id="view-list-btn" style="padding:0.25rem 0.6rem; font-size:0.8rem;">Rows</button>
+                        <button class="secondary-btn" id="view-grid-btn" style="padding:0.25rem 0.6rem; font-size:0.8rem;">Columns</button>
+                    </div>
                     <button id="add-client-btn" class="primary-btn">+ New Lead</button>
                 </div>
             </header>
 
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Project Scope</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="client-list">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
+            <div class="tabs-container" style="margin-bottom: 1rem;">
+                <button class="tab-btn active" data-filter="Lead">Active Leads</button>
+                <button class="tab-btn" data-filter="Inactive">Lost Leads</button>
             </div>
 
-            <div class="tracker-container" style="margin-top: 2rem;">
-                <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem; color: var(--text-secondary);">Lost Leads</h2>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Project Scope</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lost-client-list">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
+            <div id="leads-view-container">
+                <div class="data-table-container" id="list-view-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Project Scope</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="client-list">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="grid-view-container" style="display:none; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; align-items: start;">
+                    <!-- Grid cards populated by JS -->
+                </div>
             </div>
         </main>
 
-        <!-- Slide-out Side Panel for Add/Edit -->
+        <!-- Slide-out Side Panel for Lead Details -->
         <aside id="client-side-panel" class="side-panel">
             <div class="side-panel-header">
-                <h2 id="panel-title">Add New Entry</h2>
+                <h2 id="panel-title">Lead Details</h2>
                 <button id="close-panel-btn" class="close-panel-btn">&times;</button>
             </div>
             <div class="side-panel-content">
-                <form id="client-form">
+                <div id="lead-details-content">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div class="leads-section" style="margin-top: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Sales Calls & Meetings</h3>
+                    </div>
+                    
+                    <form id="add-call-form" style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <input type="hidden" id="call-lead-id">
+                        <div class="form-group row-group">
+                            <div class="half-width">
+                                <label>Date</label>
+                                <input type="date" id="call-date" required>
+                            </div>
+                            <div class="half-width">
+                                <label>Meet Link</label>
+                                <input type="url" id="call-meet-link" placeholder="https://meet.google.com/..." style="font-size:0.8rem;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Call Notes / Summary</label>
+                            <textarea id="call-notes" required rows="2" style="min-height:60px;"></textarea>
+                        </div>
+                        <button type="submit" class="primary-btn" style="padding:0.4rem 1rem; font-size:0.85rem;">Add Call Record</button>
+                    </form>
+
+                    <div id="sales-calls-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <!-- Calls go here -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Add/Edit Lead Modal -->
+        <div class="modal-overlay" id="add-lead-modal">
+            <div class="modal-box" style="max-width: 600px;">
+                <button class="modal-close" id="close-add-modal">&times;</button>
+                <h2 id="modal-form-title">Add New Lead</h2>
+                <form id="client-form" style="margin-top: 1rem;">
+                    <input type="hidden" id="edit-lead-id">
                     <div class="form-group">
                         <label>Name / Company</label>
                         <input type="text" id="client-name" required>
@@ -203,30 +240,23 @@
                         </div>
                     </div>
 
-                    <div class="form-group row-group">
-                        <div class="half-width">
-                            <label>Contact Number</label>
-                            <input type="text" id="client-phone">
-                        </div>
-                        <div class="half-width">
-                            <label>GST Number</label>
-                            <input type="text" id="client-gst">
-                        </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="text" id="client-phone">
                     </div>
                     
                     <div class="form-group">
                         <label>Address</label>
-                        <textarea id="client-address" rows="2" style="min-height: 50px;"></textarea>
+                        <textarea id="client-address" rows="2" style="min-height: 40px;"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label>Project Scope / Details</label>
-                        <textarea id="client-work" required></textarea>
+                        <textarea id="client-work" required rows="2"></textarea>
                     </div>
 
-                    <!-- Leads Section -->
                     <div class="leads-section" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); margin-bottom: 1rem;">
-                        <h3>Lead Options</h3>
+                        <h3 style="font-size:0.95rem; margin-bottom:0.75rem;">Lead Options</h3>
                         <div class="form-group row-group">
                             <div class="half-width">
                                 <label>Lead Date</label>
@@ -234,47 +264,47 @@
                             </div>
                             <div class="half-width">
                                 <label>Lead Source</label>
-                                <input type="text" id="lead-source" placeholder="e.g. LinkedIn">
+                                <select id="lead-source">
+                                    <option value="Inbound">Inbound</option>
+                                    <option value="Outbound">Outbound</option>
+                                    <option value="Referral">Referral</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row-group">
+                            <div class="half-width">
+                                <label>Confidence Score</label>
+                                <select id="lead-confidence">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div class="half-width">
+                                <label>Referral Person</label>
+                                <input type="text" id="client-referral" placeholder="If referred...">
+                            </div>
+                        </div>
+                        <div class="form-group row-group">
+                            <div class="half-width">
+                                <label>Proposal Sent?</label>
+                                <input type="checkbox" id="client-proposal">
+                            </div>
+                            <div class="half-width">
+                                <label>Invoice Sent?</label>
+                                <input type="checkbox" id="client-invoice">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Confidence Score</label>
-                            <select id="lead-confidence">
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="High">High</option>
-                            </select>
+                            <label>Follow-up Date</label>
+                            <input type="date" id="client-followup">
                         </div>
                     </div>
 
-                    <div class="form-group row-group">
-                        <div class="half-width">
-                            <label>Proposal Sent?</label>
-                            <input type="checkbox" id="client-proposal">
-                        </div>
-                        <div class="half-width">
-                            <label>Invoice Sent?</label>
-                            <input type="checkbox" id="client-invoice">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Referral Person</label>
-                        <input type="text" id="client-referral">
-                    </div>
-                    <div class="form-group">
-                        <label>Sales Call Notes</label>
-                        <textarea id="client-notes"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Follow-up Date</label>
-                        <input type="date" id="client-followup">
-                    </div>
-                    
-                    <button type="submit" class="primary-btn full-width" style="margin-bottom: 0.5rem;">Save Lead Data</button>
+                    <button type="submit" class="primary-btn full-width">Save Lead</button>
                 </form>
             </div>
-        </aside>
+        </div>
     </div>
     
     <script type="module" src="app.js?v=1783864743"></script>
