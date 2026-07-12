@@ -228,11 +228,20 @@ async function initApp() {
     }
 
     initTheme();
-    await syncFromSupabase();
+    
+    const hasData = localStorage.getItem('agency365_clients') !== null || localStorage.getItem('agency365_proposals') !== null;
+    if (!hasData && sessionStorage.getItem('agency365_unlocked')) {
+        await syncFromSupabase();
+    }
+
     checkAuthAndInit();
     initKeyboardShortcuts();
     initNotificationBell();
     initPullToRefresh();
+    
+    if (hasData && sessionStorage.getItem('agency365_unlocked')) {
+        syncFromSupabase();
+    }
 }
 
 function initPullToRefresh() {

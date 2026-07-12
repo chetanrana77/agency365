@@ -96,6 +96,7 @@ localStorage.setItem = async function(key, value) {
 
 // Pull data from Supabase into localStorage on login/load
 export async function syncFromSupabase() {
+    if (isSyncing()) return;
     const user = await getUser();
     if (!user) return;
     try {
@@ -105,11 +106,17 @@ export async function syncFromSupabase() {
             supabase.from('events').select('data').eq('user_id', user.id),
             supabase.from('proposals').select('data').eq('user_id', user.id),
         ]);
-        if (clients.data?.length)   _origSet('agency365_clients',   JSON.stringify(clients.data.map(r => r.data)));
-        if (expenses.data?.length)  _origSet('agency365_expenses',  JSON.stringify(expenses.data.map(r => r.data)));
-        if (events.data?.length)    _origSet('agency365_events',    JSON.stringify(events.data.map(r => r.data)));
-        if (proposals.data?.length) _origSet('agency365_proposals', JSON.stringify(proposals.data.map(r => r.data)));
+        
+        if (isSyncing()) return;
+        
+        let changed = false;
+        if (clients.data?.length)   { _origSet('agency365_clients',   JSON.stringify(clients.data.map(r => r.data))); changed = true; }
+        if (expenses.data?.length)  { _origSet('agency365_expenses',  JSON.stringify(expenses.data.map(r => r.data))); changed = true; }
+        if (events.data?.length)    { _origSet('agency365_events',    JSON.stringify(events.data.map(r => r.data))); changed = true; }
+        if (proposals.data?.length) { _origSet('agency365_proposals', JSON.stringify(proposals.data.map(r => r.data))); changed = true; }
+        
         console.log('✅ Synced from Supabase:', user.email);
+        if (changed) window.dispatchEvent(new Event('agency365_synced'));
     } catch (err) {
         console.error('Supabase sync failed:', err);
     }
