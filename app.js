@@ -479,29 +479,6 @@ function applyRBAC() {
     const role = localStorage.getItem('agency365_mock_role') || 'Admin';
     const path = window.location.pathname;
     
-    // Inject Role Switcher (Mock UI)
-    const userInfoEl = document.querySelector('.menu-user-info');
-    if (userInfoEl && !document.getElementById('mock-role-switcher')) {
-        const select = document.createElement('select');
-        select.id = 'mock-role-switcher';
-        select.innerHTML = `
-            <option value="Admin">👑 Admin</option>
-            <option value="Manager">💼 Manager</option>
-            <option value="Finance">💰 Finance</option>
-            <option value="Employee">👷 Employee</option>
-        `;
-        select.value = role;
-        select.style.cssText = 'margin-top: 4px; font-size: 0.7rem; padding: 2px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); cursor: pointer;';
-        select.addEventListener('change', (e) => {
-            localStorage.setItem('agency365_mock_role', e.target.value);
-            // On switch, redirect to the safe default page
-            if (e.target.value === 'Employee') window.location.href = 'clients.html';
-            else if (e.target.value === 'Finance') window.location.href = 'finance.html';
-            else window.location.href = 'dashboard.html';
-        });
-        userInfoEl.appendChild(select);
-    }
-    
     // Inject Logout Button
     const userCard = document.querySelector('.menu-user-card');
     if (userCard && !document.getElementById('logout-btn')) {
