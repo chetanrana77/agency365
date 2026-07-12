@@ -52,6 +52,11 @@ body:has(#app) {
     transition: none !important;
 }
 
+body.preload {
+    opacity: 0;
+    pointer-events: none;
+}
+
 h1, h2, h3, h4, h5, h6, .serif-font {
     font-family: 'Outfit', sans-serif;
     letter-spacing: -0.03em;
