@@ -160,7 +160,6 @@
                         </div>
                     </div>
                 </div>
-                <button class="primary-btn" onclick="sessionStorage.clear(); window.location.href='login.html'">Log Out</button>
             </div>
 
             <div class="tracker-container" style="max-width: 600px; margin-bottom: 2rem;">
@@ -358,15 +357,15 @@
                 setTimeout(() => {
                     cropper = new Cropper(cropImg, {
                         viewMode: 1,
-                        dragMode: 'move',
-                        autoCropArea: 1,
+                        dragMode: 'crop',
+                        autoCropArea: 0.8,
                         restore: false,
                         guides: true,
                         center: true,
                         highlight: false,
                         cropBoxMovable: true,
                         cropBoxResizable: true,
-                        toggleDragModeOnDblclick: false,
+                        toggleDragModeOnDblclick: true,
                     });
                 }, 100);
             }
