@@ -146,6 +146,10 @@
             <div class="tracker-container" style="max-width: 600px; margin-bottom: 2rem;">
                 <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Profile</h2>
                 <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="profile-name" value="Loading...">
+                </div>
+                <div class="form-group">
                     <label>Email</label>
                     <input type="email" id="profile-email" value="Loading..." disabled>
                 </div>
@@ -160,6 +164,7 @@
                         </div>
                     </div>
                 </div>
+                <button id="save-profile-btn" class="primary-btn" style="margin-top: 1rem;">Save Profile</button>
             </div>
 
             <div class="tracker-container" style="max-width: 600px; margin-bottom: 2rem;">
@@ -321,9 +326,11 @@
                 try {
                     const user = JSON.parse(currentUserStr);
                     userName = user.name || user.orgName || 'Admin';
+                    document.getElementById('profile-name').value = userName;
                     document.getElementById('profile-email').value = user.email || 'admin@agency365.com';
                 } catch(e) {}
             } else {
+                document.getElementById('profile-name').value = 'Admin';
                 document.getElementById('profile-email').value = 'admin@agency365.com';
             }
 
@@ -472,6 +479,49 @@
                 applyBrandSettings();
                 alert('Brand settings saved successfully!');
             });
+        });
+    </script>
+    <script type="module">
+        import { supabase } from './supabaseClient.js';
+        
+        document.getElementById('save-profile-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('save-profile-btn');
+            const newName = document.getElementById('profile-name').value.trim();
+            if (!newName) return alert('Name cannot be empty.');
+            
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+            
+            try {
+                const currentUserStr = sessionStorage.getItem('agency365_current_user');
+                if (currentUserStr) {
+                    const user = JSON.parse(currentUserStr);
+                    if (user.id) {
+                        const { error } = await supabase.from('profiles').update({ full_name: newName }).eq('id', user.id);
+                        if (error) throw error;
+                    }
+                    user.name = newName;
+                    sessionStorage.setItem('agency365_current_user', JSON.stringify(user));
+                    
+                    // Update UI elements across the page
+                    document.querySelectorAll('.user-name').forEach(el => el.textContent = newName);
+                    
+                    // If no custom profile pic, update avatar initial
+                    const savedProfilePic = localStorage.getItem('agency365_profile_pic');
+                    if (!savedProfilePic) {
+                        const newAvatar = \`https://ui-avatars.com/api/?name=\${encodeURIComponent(newName)}&background=12b76a&color=fff\`;
+                        document.getElementById('profile-pic-preview').src = newAvatar;
+                        document.querySelectorAll('.menu-user-avatar').forEach(img => img.src = newAvatar);
+                    }
+                }
+                alert('Profile updated successfully!');
+            } catch (err) {
+                console.error(err);
+                alert('Failed to update profile.');
+            } finally {
+                btn.textContent = 'Save Profile';
+                btn.disabled = false;
+            }
         });
     </script>
     <script type="module" src="app.js?v=1783864743"></script>
