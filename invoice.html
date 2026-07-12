@@ -455,8 +455,8 @@
         });
     </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=1783864743"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=1783864743"></script>
 <script>
 document.getElementById('pdf-download-btn')?.addEventListener('click', async () => {
   const btn = document.getElementById('pdf-download-btn');
@@ -464,7 +464,7 @@ document.getElementById('pdf-download-btn')?.addEventListener('click', async () 
   btn.textContent = '⏳ Generating…';
   actionsBar.style.display = 'none';
   try {
-    const { jsPDF } = window.jspdf;
+    const { jsPDF } = window.js?v=1783864743pdf;
     const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const imgData = canvas.toDataURL('image/png');
@@ -485,7 +485,7 @@ document.getElementById('whatsapp-invoice-btn')?.addEventListener('click', () =>
   const amount = document.getElementById('st-due')?.textContent || '';
   const phone = document.getElementById('c-phone')?.textContent?.replace(/\D/g,'') || '';
   const message = encodeURIComponent(`Hi ${clientName},\n\nPlease find your invoice ${invoiceNum} for ${amount}.\n\nThank you for your business! 🙏\n\n— Agency 365`);
-  window.open(phone ? `https://wa.me/91${phone}?text=${message}` : `https://wa.me/?text=${message}`, '_blank');
+  window.open(phone ? `https://wa.me/${phone}?text=${message}` : `https://wa.me/?text=${message}`, '_blank');
 });
 </script>
 </body>

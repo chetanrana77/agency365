@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency 365 - Team Management</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="mobile-overrides.css">
+    <link rel="stylesheet" href="styles.css?v=1783864743">
+    <link rel="stylesheet" href="mobile-overrides.css?v=1783864743">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.js?v=1783864743on">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#12b76a">
@@ -244,9 +244,9 @@
         <a href="account.html" class="mob-sheet-item">⚙️ <span>Settings</span></a>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="app.js?v=1783864743"></script>
     <script type="module">
-        import { inviteTeamMember, getTeamMembers } from './supabaseClient.js';
+        import { inviteTeamMember, getTeamMembers } from './supabaseClient.js?v=1783864743';
 
         document.addEventListener('DOMContentLoaded', () => {
             const list = document.getElementById('team-list');
