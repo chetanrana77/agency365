@@ -294,29 +294,27 @@ function checkAuthAndInit() {
         if (path.endsWith('login.html'))  initLogin();
         if (path.endsWith('signup.html')) initSignup();
     } else {
-        document.addEventListener('DOMContentLoaded', () => {
-            initDataManagement();
-            initNavigationHighlighting();
-            initTheme();
-            const path = window.location.pathname;
+        initDataManagement();
+        initNavigationHighlighting();
+        initTheme();
+        const path = window.location.pathname;
 
+        if (path.includes('clients.html'))         initClients();
+        else if (path.includes('crm.html'))        initCRM();
+        else if (path.includes('finance.html'))    initFinance();
+        else if (path.includes('calendar.html'))   initCalendar();
+        else if (path.includes('dashboard.html'))  initDashboard();
+        else if (path.includes('proposals.html'))  initProposals();
+        
+        // Global listener for background Supabase sync completion
+        window.addEventListener('agency365_synced', () => {
+            initNavigationHighlighting();
             if (path.includes('clients.html'))         initClients();
             else if (path.includes('crm.html'))        initCRM();
             else if (path.includes('finance.html'))    initFinance();
             else if (path.includes('calendar.html'))   initCalendar();
             else if (path.includes('dashboard.html'))  initDashboard();
             else if (path.includes('proposals.html'))  initProposals();
-            
-            // Global listener for background Supabase sync completion
-            window.addEventListener('agency365_synced', () => {
-                initNavigationHighlighting();
-                if (path.includes('clients.html'))         initClients();
-                else if (path.includes('crm.html'))        initCRM();
-                else if (path.includes('finance.html'))    initFinance();
-                else if (path.includes('calendar.html'))   initCalendar();
-                else if (path.includes('dashboard.html'))  initDashboard();
-                else if (path.includes('proposals.html'))  initProposals();
-            });
         });
     }
 }
