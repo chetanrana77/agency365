@@ -299,21 +299,17 @@ function checkAuthAndInit() {
         initTheme();
         const path = window.location.pathname;
 
-        if (path.includes('clients.html'))         initClients();
-        else if (path.includes('crm.html'))        initCRM();
-        else if (path.includes('finance.html'))    initFinance();
+        if (path.includes('crm.html'))        initCRM();
         else if (path.includes('calendar.html'))   initCalendar();
-        else if (path.includes('dashboard.html'))  initDashboard();
+        else if (path.includes('dashboard.html'))  { initDashboard(); enhanceDashboardUI(); }
         else if (path.includes('proposals.html'))  initProposals();
         
         // Global listener for background Supabase sync completion
         window.addEventListener('agency365_synced', () => {
             initNavigationHighlighting();
-            if (path.includes('clients.html'))         initClients();
-            else if (path.includes('crm.html'))        initCRM();
-            else if (path.includes('finance.html'))    initFinance();
+            if (path.includes('crm.html'))        initCRM();
             else if (path.includes('calendar.html'))   initCalendar();
-            else if (path.includes('dashboard.html'))  initDashboard();
+            else if (path.includes('dashboard.html'))  { initDashboard(); enhanceDashboardUI(); }
             else if (path.includes('proposals.html'))  initProposals();
         });
     }
@@ -355,7 +351,7 @@ function initNavigationHighlighting() {
 }
 
 // ── Dashboard ──────────────────────────────────────────────────
-function initDashboard() {
+function enhanceDashboardUI() {
     const custBtn = document.getElementById('dashboard-customize-btn');
     if (custBtn) {
         // Remove old listeners by replacing node
