@@ -3,7 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agency365 - Simplified with AI</title>
+    <title>Agency 365 - AI Marketing Platform</title>
+    <!-- Emergency Cache Buster -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                let hasCleared = false;
+                for(let registration of registrations) {
+                    registration.unregister();
+                    hasCleared = true;
+                }
+                if(hasCleared && !sessionStorage.getItem('cache_cleared')) {
+                    sessionStorage.setItem('cache_cleared', 'true');
+                    window.location.reload(true);
+                }
+            });
+        }
+    </script>
     <link rel="stylesheet" href="styles.css?v=1784316365">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

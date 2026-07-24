@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agency365-v3';
+const CACHE_NAME = 'agency365-v4';
 const ASSETS = [
   '/',
   '/dashboard.html',
@@ -21,6 +21,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
+  self.skipWaiting(); // FORCE UPDATE: take over immediately
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
@@ -34,6 +35,7 @@ self.addEventListener('activate', e => {
       })
     ))
   );
+  return self.clients.claim(); // FORCE UPDATE: control all open clients immediately
 });
 
 self.addEventListener('fetch', e => {
