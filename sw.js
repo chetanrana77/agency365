@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agency365-v2';
+const CACHE_NAME = 'agency365-v3';
 const ASSETS = [
   '/',
   '/dashboard.html',
@@ -38,8 +38,17 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cachedResponse => {
-      return cachedResponse || fetch(e.request);
-    })
+    fetch(e.request)
+      .then(networkResponse => {
+        // Cache the newest version for offline use
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(e.request, networkResponse.clone());
+          return networkResponse;
+        });
+      })
+      .catch(() => {
+        // If offline, fallback to cache
+        return caches.match(e.request);
+      })
   );
 });

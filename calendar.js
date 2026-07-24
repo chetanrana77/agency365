@@ -12,7 +12,6 @@ export function initCalendar() {
     populateClientDropdown();
 
     let displayEvents = [...events];
-    const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     const todayStr = new Date().toISOString().slice(0, 10);
     
     clients.forEach(c => {
