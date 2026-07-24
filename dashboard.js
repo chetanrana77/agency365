@@ -1,5 +1,7 @@
-let clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
-let expenses = JSON.parse(localStorage.getItem('agency365_expenses')) || [];
+let clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
+let expenses = JSON.parse(sessionStorage.getItem('agency365_expenses')) || [];
+let proposals = JSON.parse(sessionStorage.getItem('agency365_proposals')) || [];
+let events = JSON.parse(sessionStorage.getItem('agency365_events')) || [];
 const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
 
 let activePeriod = 'yearly';
@@ -35,9 +37,10 @@ function getPreviousPeriodBounds(period) {
 }
 
 export function initDashboard() {
-    // Reload local data fresh
-    clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
-    expenses = JSON.parse(localStorage.getItem('agency365_expenses')) || [];
+    clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
+    expenses = JSON.parse(sessionStorage.getItem('agency365_expenses')) || [];
+    proposals = JSON.parse(sessionStorage.getItem('agency365_proposals')) || [];
+    events = JSON.parse(sessionStorage.getItem('agency365_events')) || [];
 
     calculateCards();
     renderConnectList();
@@ -46,6 +49,7 @@ export function initDashboard() {
     initHeaderTabs();
     renderTodaysFocus();
     renderDeadlines();
+    renderRenewals();
 }
 
 function initHeaderTabs() {
@@ -155,7 +159,7 @@ function renderTodaysFocus() {
     const todayFmt = today.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'short' });
     if (dateEl) dateEl.textContent = todayFmt;
 
-    const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+    const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     const items = [];
 
     clients.forEach(client => {
@@ -206,7 +210,7 @@ function renderTodaysFocus() {
 function renderDeadlines() {
     const container = document.getElementById('deadline-items');
     if (!container) return;
-    const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+    const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     const today = new Date(); today.setHours(0,0,0,0);
     const withDeadlines = clients
         .filter(c => c.deadline && c.status === 'Active')
@@ -221,6 +225,59 @@ function renderDeadlines() {
           <span style="font-size:0.85rem;color:var(--text-primary);font-weight:500;">${c.name}</span>
           <span style="font-size:0.78rem;background:${color}18;color:${color};padding:0.2rem 0.6rem;border-radius:12px;font-weight:700;">${label}</span>
         </a>`;
+    }).join('');
+}
+
+function renderRenewals() {
+    const container = document.getElementById('renewals-items');
+    if (!container) return;
+    
+    const today = new Date(); today.setHours(0,0,0,0);
+    let upcoming = [];
+    
+    clients.forEach(c => {
+        if (c.status === 'Active' && c.services) {
+            c.services.forEach(s => {
+                if (s.status === 'Active' && s.renewalDate) {
+                    const d = new Date(s.renewalDate);
+                    const days = Math.ceil((d - today) / 86400000);
+                    if (days >= 0 && days <= 7) {
+                        upcoming.push({
+                            clientId: c.id,
+                            clientName: c.name,
+                            serviceName: s.name,
+                            daysLeft: days,
+                            price: s.price,
+                            phone: c.phone
+                        });
+                    }
+                }
+            });
+        }
+    });
+    
+    upcoming.sort((a,b) => a.daysLeft - b.daysLeft);
+    
+    if (upcoming.length === 0) { 
+        container.innerHTML = '<p style="color:var(--text-secondary);font-size:0.82rem;padding:0.5rem 0;">No renewals upcoming in the next 7 days.</p>'; 
+        return; 
+    }
+    
+    container.innerHTML = upcoming.map(u => {
+        const color = u.daysLeft === 0 ? '#f04438' : '#f79009';
+        const label = u.daysLeft === 0 ? 'Today' : `In ${u.daysLeft}d`;
+        
+        const phone = (u.phone || '').replace(/\\D/g, '');
+        const msg = encodeURIComponent(`Hi ${u.clientName},\n\nThis is a friendly reminder from Agency 365 that your ${u.serviceName} plan is about to expire in ${u.daysLeft} days.\n\nRenewal Amount: ₹${u.price.toLocaleString('en-IN')}\n\nPlease let us know if you need any assistance with the renewal.\n\nBest,\nAgency 365`);
+        const waLink = phone ? `https://wa.me/91${phone}?text=${msg}` : `https://wa.me/?text=${msg}`;
+
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;border-radius:8px;margin-bottom:0.4rem;background:var(--bg-secondary); border-left:3px solid ${color};">
+          <div>
+              <span style="font-size:0.85rem;color:var(--text-primary);font-weight:500;display:flex;align-items:center;gap:0.4rem;">${u.serviceName} <span style="font-size:0.7rem;background:${color}18;color:${color};padding:0.1rem 0.4rem;border-radius:12px;font-weight:700;">${label}</span></span>
+              <a href="client-detail.html?id=${u.clientId}&tab=services" style="font-size:0.75rem;color:var(--text-secondary);text-decoration:none;">${u.clientName} · ${fmt.format(u.price)}</a>
+          </div>
+          <a href="${waLink}" target="_blank" class="primary-btn" style="font-size:0.75rem; padding:0.35rem 0.6rem; text-decoration:none; display:inline-block; background:#12b76a; border:none;">Send Reminder</a>
+        </div>`;
     }).join('');
 }
 

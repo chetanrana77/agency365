@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency 365 - Clients</title>
-    <link rel="stylesheet" href="styles.css?v=1783864743">
-    <link rel="stylesheet" href="mobile-overrides.css?v=1783864743">
+    <link rel="stylesheet" href="styles.css?v=1784316365">
+    <link rel="stylesheet" href="mobile-overrides.css?v=1784316365">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.js?v=1783864743on">
+    <link rel="manifest" href="manifest.js?v=1784316365on">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Agency 365">
@@ -143,9 +143,13 @@
                 </div>
             </header>
 
-            <div class="tabs-container" style="margin-bottom: 1rem;">
-                <button class="tab-btn active" data-filter="Active">Active Clients</button>
-                <button class="tab-btn" data-filter="Inactive">Inactive Clients</button>
+            <div class="tabs-container" style="margin-bottom: 1rem; overflow-x: auto; white-space: nowrap;">
+                <button class="tab-btn active" data-filter="Active">Active</button>
+                <button class="tab-btn" data-filter="Inactive">Inactive</button>
+                <button class="tab-btn" data-filter="Web Design">Web Design</button>
+                <button class="tab-btn" data-filter="Partner Agency">Partner Agency</button>
+                <button class="tab-btn" data-filter="Digital Marketing">Digital Marketing</button>
+                <button class="tab-btn" data-filter="Other">Other</button>
             </div>
 
             <div id="clients-view-container">
@@ -217,6 +221,15 @@
                         <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary); font-weight: 500;">Client Name *</label>
                         <input type="text" id="add-client-name" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; box-sizing: border-box;">
                     </div>
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary); font-weight: 500;">Client Category</label>
+                        <select id="add-client-category" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; box-sizing: border-box;">
+                            <option value="Web Design" selected>Web Design</option>
+                            <option value="Partner Agency">Partner Agency</option>
+                            <option value="Digital Marketing">Digital Marketing</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
                     <div style="display:flex; gap:0.5rem; margin-bottom: 0.75rem;">
                         <div class="form-group" style="flex:1;">
                             <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary); font-weight: 500;">Phone</label>
@@ -270,8 +283,8 @@
         [data-theme="dark"] .modal-box { background: #1e293b !important; }
     </style>
 
-    <script type="module" src="app.js?v=1783864743"></script>
-    <script type="module" src="clients.js?v=1783864743"></script>
+    <script type="module" src="app.js?v=1784316365"></script>
+    <script type="module" src="clients.js?v=1784316365"></script>
 
 <!-- ═══ MOBILE NAV ════════════════════════════════════════════ -->
 <nav class="mob-nav" id="mob-nav">
@@ -321,7 +334,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js?v=1783864743').catch(() => {});
+  navigator.serviceWorker.register('/sw.js?v=1784316365').catch(() => {});
 }
 </script>
 </body>

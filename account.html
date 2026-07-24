@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency 365 - Account</title>
-    <link rel="stylesheet" href="styles.css?v=1783864743">
-    <link rel="stylesheet" href="mobile-overrides.css?v=1783864743">
+    <link rel="stylesheet" href="styles.css?v=1784316365">
+    <link rel="stylesheet" href="mobile-overrides.css?v=1784316365">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <link rel="manifest" href="manifest.js?v=1783864743on">
+    <link rel="manifest" href="manifest.js?v=1784316365on">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Agency 365">
@@ -158,6 +158,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>Digital Signature (For Invoices)</label>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div id="signature-preview-container" style="display: none; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 8px; background: #fff;">
+                            <img id="signature-preview" style="max-height: 50px; object-fit: contain;">
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="file" id="signature-upload" accept="image/*" class="secondary-btn" style="width:100%; border:1px dashed var(--border-color); padding: 0.5rem; font-size: 0.8rem;">
+                            <button id="clear-signature-btn" class="secondary-btn" style="font-size:0.75rem; margin-top: 0.5rem; color:#ef4444; display: none; padding: 0.3rem 0.6rem;">Remove Signature</button>
+                        </div>
+                    </div>
+                </div>
                 <button id="save-profile-btn" class="primary-btn" style="margin-top: 1rem;">Save Profile</button>
             </div>
 
@@ -213,7 +225,18 @@
                         <p style="font-size: 0.8rem; color: var(--text-secondary);">Restore data from a JSON backup. (Warning: Overwrites current data).</p>
                     </div>
                     <button id="import-btn" class="secondary-btn">Import JSON</button>
-                    <input type="file" id="import-file" accept=".js?v=1783864743on" style="display:none;">
+                    <input type="file" id="import-file" accept=".js?v=1784316365on" style="display:none;">
+                </div>
+            </div>
+
+            <div class="tracker-container" style="max-width: 600px; margin-bottom: 2rem; border: 1px solid #fee2e2; background-color: #fef2f2;">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem; color: #dc2626;">Danger Zone</h2>
+                <div class="timeline-item">
+                    <div>
+                        <strong style="color: #dc2626;">Delete Account Data</strong>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">Permanently delete all your clients, projects, and data from this device and cloud.</p>
+                    </div>
+                    <button id="delete-account-btn" class="secondary-btn" style="color: #dc2626; border-color: #fecaca; background: #fff;">Delete Data</button>
                 </div>
             </div>
 
@@ -228,14 +251,67 @@
                 </div>
             </div>
 
-            <div class="tracker-container" style="max-width: 600px; margin-bottom: 2rem;">
-                <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Team Settings</h2>
-                <div class="timeline-item">
-                    <div>
-                        <strong>Manage Team</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-secondary);">Invite members and manage role-based access to your workspace.</p>
+            <div class="tracker-container" style="max-width: 800px; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.2rem; margin: 0;">Team & Permissions</h2>
+                    <button class="primary-btn" id="invite-btn">+ Invite Member</button>
+                </div>
+                <p style="color:var(--text-secondary); font-size:0.9rem; margin-top:-0.5rem; margin-bottom:1.5rem;">Invite your team members and manage role permissions.</p>
+
+                <div class="tabs-container" style="margin-bottom: 1rem;">
+                    <button class="tab-btn active">Active Team</button>
+                    <button class="tab-btn" style="opacity: 0.5; cursor: not-allowed;">Pending Invites</button>
+                </div>
+
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team-list">
+                            <tr>
+                                <td colspan="5" class="empty-state" style="text-align:center; padding:2rem; color:var(--text-secondary);">Loading team list...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <h3 style="font-size: 1.05rem; margin-bottom: 1rem; color: var(--text-primary); font-family: 'Outfit', sans-serif;">🔑 Role Permissions Matrix</h3>
+                    <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size:0.7rem; font-weight:600; text-transform:uppercase; background:rgba(18, 183, 106, 0.1); color:#12b76a; padding:0.2rem 0.5rem; border-radius:4px;">Admin</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Full access to edit client details, log payments, delete events, invite/remove team members.</p>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size:0.7rem; font-weight:600; text-transform:uppercase; background:rgba(37, 99, 235, 0.1); color:#2563eb; padding:0.2rem 0.5rem; border-radius:4px;">Manager</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Can add work updates, notes, schedule meetings, and create proposals. Cannot delete data.</p>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size:0.7rem; font-weight:600; text-transform:uppercase; background:rgba(245, 158, 11, 0.1); color:#f59e0b; padding:0.2rem 0.5rem; border-radius:4px;">Finance</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Can manage billing, invoices, and expenses. Cannot see client projects or work updates.</p>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size:0.7rem; font-weight:600; text-transform:uppercase; background:rgba(100, 116, 139, 0.1); color:#64748b; padding:0.2rem 0.5rem; border-radius:4px;">Employee</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Can add work updates and notes. Read-only access to client billing and settings.</p>
+                            </div>
+                        </div>
                     </div>
-                    <button class="secondary-btn" onclick="window.location.href='team.html'">Manage Access</button>
                 </div>
             </div>
 
@@ -274,7 +350,7 @@
     </div>
     
     <script type="module">
-        import { applyBrandSettings } from './app.js?v=1783864743';
+        import { applyBrandSettings } from './app.js?v=1784316365';
         import { supabase } from './supabaseClient.js';
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -353,6 +429,19 @@
                 profilePreview.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=12b76a&color=fff`;
             }
 
+            // Signature Logic
+            const sigInput = document.getElementById('signature-upload');
+            const sigPreviewCont = document.getElementById('signature-preview-container');
+            const sigPreview = document.getElementById('signature-preview');
+            const clearSigBtn = document.getElementById('clear-signature-btn');
+            
+            const savedSig = localStorage.getItem('agency365_signature');
+            if (savedSig) {
+                sigPreview.src = savedSig;
+                sigPreviewCont.style.display = 'block';
+                clearSigBtn.style.display = 'inline-block';
+            }
+
             // Cropper Logic
             let cropper = null;
             let currentCropTarget = null;
@@ -388,6 +477,7 @@
                 if (currentCropTarget === 'light') logoInputLight.value = '';
                 if (currentCropTarget === 'dark') logoInputDark.value = '';
                 if (currentCropTarget === 'profile') profileInput.value = '';
+                if (currentCropTarget === 'signature') sigInput.value = '';
             });
 
             document.getElementById('confirm-crop-btn').addEventListener('click', () => {
@@ -407,8 +497,14 @@
                 } else if (currentCropTarget === 'profile') {
                     profilePreview.src = base64Str;
                     clearProfileBtn.style.display = 'inline-block';
-                    localStorage.setItem('agency365_profile_pic', base64Str);
+                    sessionStorage.setItem('agency365_profile_pic', base64Str);
                     document.querySelectorAll('.menu-user-avatar').forEach(img => img.src = base64Str);
+                } else if (currentCropTarget === 'signature') {
+                    sigPreview.src = base64Str;
+                    sigPreviewCont.style.display = 'block';
+                    clearSigBtn.style.display = 'inline-block';
+                    localStorage.setItem('agency365_signature', base64Str);
+                    sessionStorage.setItem('agency365_signature', base64Str);
                 }
                 
                 document.getElementById('crop-modal').classList.remove('show');
@@ -432,6 +528,26 @@
                 profilePreview.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=12b76a&color=fff`;
                 clearProfileBtn.style.display = 'none';
                 document.querySelectorAll('.menu-user-avatar').forEach(img => img.src = profilePreview.src);
+            });
+
+            sigInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        openCropper(evt.target.result, 'signature');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            clearSigBtn.addEventListener('click', () => {
+                sigInput.value = '';
+                localStorage.removeItem('agency365_signature');
+                sessionStorage.removeItem('agency365_signature');
+                sigPreview.src = '';
+                sigPreviewCont.style.display = 'none';
+                clearSigBtn.style.display = 'none';
             });
 
             logoInputLight.addEventListener('change', (e) => {
@@ -472,15 +588,15 @@
             });
 
             saveBtn.addEventListener('click', () => {
-                localStorage.setItem('agency365_brand_primary', pColor.value);
-                localStorage.setItem('agency365_brand_secondary', sColor.value);
-                localStorage.setItem('agency365_logo_height', logoHeightInput.value);
+                sessionStorage.setItem('agency365_brand_primary', pColor.value);
+                sessionStorage.setItem('agency365_brand_secondary', sColor.value);
+                sessionStorage.setItem('agency365_logo_height', logoHeightInput.value);
                 
                 if (previewImgLight.src && previewImgLight.src.startsWith('data:')) {
-                    localStorage.setItem('agency365_brand_logo_light', previewImgLight.src);
+                    sessionStorage.setItem('agency365_brand_logo_light', previewImgLight.src);
                 }
                 if (previewImgDark.src && previewImgDark.src.startsWith('data:')) {
-                    localStorage.setItem('agency365_brand_logo_dark', previewImgDark.src);
+                    sessionStorage.setItem('agency365_brand_logo_dark', previewImgDark.src);
                 }
                 applyBrandSettings();
                 alert('Brand settings saved successfully!');
@@ -529,8 +645,125 @@
                 btn.disabled = false;
             }
         });
+
+        document.getElementById('delete-account-btn').addEventListener('click', async () => {
+            if (await window.customConfirm('WARNING: This will permanently delete all your data. This action cannot be undone. Are you absolutely sure?')) {
+                const confirmText = await window.customPrompt('Type "DELETE" to confirm:', '');
+                if (confirmText === 'DELETE') {
+                    try {
+                        const currentUserStr = sessionStorage.getItem('agency365_current_user');
+                        if (currentUserStr) {
+                            const user = JSON.parse(currentUserStr);
+                            // Delete from Supabase
+                            await supabase.from('clients').delete().eq('user_id', user.id);
+                            await supabase.from('expenses').delete().eq('user_id', user.id);
+                            await supabase.from('events').delete().eq('user_id', user.id);
+                            await supabase.from('proposals').delete().eq('user_id', user.id);
+                        }
+                        
+                        // Clear storage and sign out
+                        sessionStorage.clear();
+                        localStorage.clear();
+                        const { signOut } = await import('./supabaseClient.js');
+                        await signOut();
+                        window.location.href = 'login.html';
+                    } catch (err) {
+                        alert('Error deleting data.');
+                    }
+                }
+            }
+        });
     </script>
-    <script type="module" src="app.js?v=1783864743"></script>
+    <script type="module">
+        import { inviteTeamMember, getTeamMembers, updateTeamMemberRole } from './supabaseClient.js?v=1784316365';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const list = document.getElementById('team-list');
+            const modal = document.getElementById('invite-modal');
+            const closeBtn = document.getElementById('close-invite-modal');
+            const inviteBtn = document.getElementById('invite-btn');
+            const form = document.getElementById('invite-form');
+
+            inviteBtn?.addEventListener('click', () => modal.classList.add('show'));
+            closeBtn?.addEventListener('click', () => modal.classList.remove('show'));
+
+            const editModal = document.getElementById('edit-role-modal');
+            const closeEditBtn = document.getElementById('close-edit-role-modal');
+            const editForm = document.getElementById('edit-role-form');
+            
+            closeEditBtn?.addEventListener('click', () => editModal.classList.remove('show'));
+
+            window.openEditRole = function(id, currentRole) {
+                document.getElementById('edit-member-id').value = id;
+                document.getElementById('edit-member-role').value = currentRole;
+                editModal.classList.add('show');
+            };
+
+            editForm?.addEventListener('submit', async e => {
+                e.preventDefault();
+                const id = document.getElementById('edit-member-id').value;
+                const role = document.getElementById('edit-member-role').value;
+                const submit = editForm.querySelector('button[type="submit"]');
+                submit.disabled = true; submit.textContent = 'Saving...';
+                
+                const { error } = await updateTeamMemberRole(id, role);
+                if (error) {
+                    alert('Error updating role: ' + error.message);
+                } else {
+                    editModal.classList.remove('show');
+                    renderTeam();
+                }
+                submit.disabled = false; submit.textContent = 'Save Role';
+            });
+
+            async function renderTeam() {
+                if (!list) return;
+                const members = await getTeamMembers();
+                if (members.length === 0) {
+                    list.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-secondary);">No team members invited yet. Add one above!</td></tr>`;
+                    return;
+                }
+                list.innerHTML = members.map(m => `
+                    <tr>
+                        <td><strong>${m.name || 'Invited User'}</strong></td>
+                        <td>${m.email}</td>
+                        <td><span style="font-size:0.78rem; font-weight:600; text-transform:uppercase; background:var(--bg-secondary); padding:0.2rem 0.5rem; border-radius:4px;">${m.role}</span></td>
+                        <td><span style="font-size:0.75rem; font-weight:600; color:${m.status === 'active' ? '#12b76a' : '#f79009'};">${m.status}</span></td>
+                        <td>
+                            ${m.role.toLowerCase() === 'admin' ? '<span style="font-size:0.75rem; color:var(--text-secondary);">Owner</span>' : (m.status === 'active' ? `<button class="secondary-btn" onclick="openEditRole('${m.id}', '${m.role}')" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Edit Role</button>` : `<button class="secondary-btn" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Cancel</button>`)}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            form?.addEventListener('submit', async e => {
+                e.preventDefault();
+                const email = document.getElementById('invite-email').value;
+                const role = document.getElementById('invite-role').value;
+                const submit = form.querySelector('button[type="submit"]');
+                submit.disabled = true; submit.textContent = 'Sending...';
+                const { data, error } = await inviteTeamMember(email, role);
+                if (error) {
+                    alert('Error: ' + error.message);
+                } else {
+                    alert('✅ Invitation sent to ' + email);
+                    modal.classList.remove('show');
+                    form.reset();
+                    renderTeam();
+                }
+                submit.disabled = false; submit.textContent = 'Send Invite';
+            });
+
+            const user = JSON.parse(sessionStorage.getItem('agency365_current_user') || '{}');
+            if (user.role === 'Admin' || user.role === 'admin') {
+                renderTeam();
+            } else {
+                const btn = document.getElementById('invite-btn');
+                if(btn) btn.closest('.tracker-container').style.display = 'none';
+            }
+        });
+    </script>
+    <script type="module" src="app.js?v=1784316365"></script>
 
 <!-- ═══ MOBILE NAV ════════════════════════════════════════════ -->
 <nav class="mob-nav" id="mob-nav">
@@ -580,7 +813,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js?v=1783864743').catch(() => {});
+  navigator.serviceWorker.register('/sw.js?v=1784316365').catch(() => {});
 }
 </script>
 </body>

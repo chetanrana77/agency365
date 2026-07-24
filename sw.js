@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agency365-v1';
+const CACHE_NAME = 'agency365-v2';
 const ASSETS = [
   '/',
   '/dashboard.html',

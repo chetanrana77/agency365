@@ -1,4 +1,4 @@
-let events = JSON.parse(localStorage.getItem('agency365_events')) || [];
+let events = JSON.parse(sessionStorage.getItem('agency365_events')) || [];
 let currentEventId = null;
 let calendar;
 
@@ -6,10 +6,13 @@ export function initCalendar() {
     const calendarEl = document.getElementById('calendar');
     if (!calendarEl) return;
 
+    events = JSON.parse(sessionStorage.getItem('agency365_events')) || [];
+    const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
+
     populateClientDropdown();
 
     let displayEvents = [...events];
-    const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+    const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     const todayStr = new Date().toISOString().slice(0, 10);
     
     clients.forEach(c => {
@@ -69,7 +72,7 @@ export function initCalendar() {
                 const generalTasks = JSON.parse(localStorage.getItem('agency365_general_tasks')) || [];
                 if(window.confirm(`Mark task "${generalTasks[idx].text}" as complete?`)) {
                     generalTasks[idx].done = true;
-                    localStorage.setItem('agency365_general_tasks', JSON.stringify(generalTasks));
+                    sessionStorage.setItem('agency365_general_tasks', JSON.stringify(generalTasks));
                     info.event.remove();
                 }
                 return;
@@ -120,7 +123,7 @@ export function initCalendar() {
 function populateClientDropdown() {
     const sel = document.getElementById('event-client');
     const taskSel = document.getElementById('task-client-select');
-    const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+    const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     
     if (sel) {
         sel.innerHTML = '<option value="">— No Client —</option>';
@@ -195,7 +198,7 @@ function saveEvent() {
     // If a client is selected, prepend client name to the title shown on calendar
     let displayTitle = title;
     if (clientId) {
-        const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+        const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
         const cl = clients.find(c => c.id === clientId);
         if (cl && !title.startsWith(cl.name)) {
             displayTitle = `${cl.name} — ${title}`;
@@ -226,7 +229,7 @@ function saveEvent() {
         calendar.addEvent(eventData);
     }
 
-    localStorage.setItem('agency365_events', JSON.stringify(events));
+    sessionStorage.setItem('agency365_events', JSON.stringify(events));
     closeEventPanel();
 }
 
@@ -236,7 +239,7 @@ async function deleteEvent(e) {
     const confirmed = await window.customConfirm('Are you sure you want to delete this event?');
     if(confirmed) {
         events = events.filter(e => String(e.id) !== String(currentEventId));
-        localStorage.setItem('agency365_events', JSON.stringify(events));
+        sessionStorage.setItem('agency365_events', JSON.stringify(events));
         
         const calEvent = calendar.getEventById(String(currentEventId));
         if(calEvent) calEvent.remove();
@@ -251,11 +254,11 @@ function updateEventDates(calEvent) {
         const clientId = parts[1];
         const taskIdx = parseInt(parts[2]);
         
-        const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+        const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
         const client = clients.find(c => c.id === clientId);
         if (client && client.tasks && client.tasks[taskIdx]) {
             client.tasks[taskIdx].dueDate = calEvent.startStr;
-            localStorage.setItem('agency365_clients', JSON.stringify(clients));
+            sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         }
         return;
     }
@@ -264,7 +267,7 @@ function updateEventDates(calEvent) {
         const generalTasks = JSON.parse(localStorage.getItem('agency365_general_tasks')) || [];
         if (generalTasks[idx]) {
             generalTasks[idx].dueDate = calEvent.startStr;
-            localStorage.setItem('agency365_general_tasks', JSON.stringify(generalTasks));
+            sessionStorage.setItem('agency365_general_tasks', JSON.stringify(generalTasks));
         }
         return;
     }
@@ -273,7 +276,7 @@ function updateEventDates(calEvent) {
     if(idx > -1) {
         events[idx].start = calEvent.startStr;
         events[idx].end = calEvent.endStr || null;
-        localStorage.setItem('agency365_events', JSON.stringify(events));
+        sessionStorage.setItem('agency365_events', JSON.stringify(events));
     }
 }
 
@@ -293,17 +296,17 @@ function saveTask() {
     const dueDate = document.getElementById('task-due').value;
 
     if (clientId) {
-        const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+        const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
         const client = clients.find(c => c.id === clientId);
         if (client) {
             if (!client.tasks) client.tasks = [];
             client.tasks.push({ text: title, done: false, dueDate: dueDate || null });
-            localStorage.setItem('agency365_clients', JSON.stringify(clients));
+            sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         }
     } else {
         const generalTasks = JSON.parse(localStorage.getItem('agency365_general_tasks')) || [];
         generalTasks.push({ text: title, done: false, dueDate: dueDate || null });
-        localStorage.setItem('agency365_general_tasks', JSON.stringify(generalTasks));
+        sessionStorage.setItem('agency365_general_tasks', JSON.stringify(generalTasks));
     }
 
     closeTaskPanel();

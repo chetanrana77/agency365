@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency 365 - Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=1783864743">
-    <link rel="stylesheet" href="mobile-overrides.css?v=1783864743">
+    <link rel="stylesheet" href="styles.css?v=1784316365">
+    <link rel="stylesheet" href="mobile-overrides.css?v=1784316365">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.js?v=1783864743on">
+    <link rel="manifest" href="manifest.js?v=1784316365on">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Agency 365">
@@ -221,6 +221,12 @@
               <div id="focus-empty" style="color:var(--text-secondary);font-size:0.85rem;padding:0.5rem 0;display:none;">✅ All clear! No urgent items for today.</div>
             </div>
 
+            <!-- Upcoming Renewals Widget -->
+            <div id="upcoming-renewals-tracker" style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;">
+              <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;">🔁 Upcoming Renewals (Next 7 Days)</h3>
+              <div id="renewals-items"></div>
+            </div>
+
             <!-- Project Deadlines Widget -->
             <div id="deadline-tracker" style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;">
               <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;">📅 Project Deadlines</h3>
@@ -292,9 +298,9 @@
             </div>
         </main>
     </div>
-    <script src="https://cdn.js?v=1783864743delivr.net/npm/chart.js?v=1783864743"></script>
-    <script type="module" src="app.js?v=1783864743"></script>
-    <script type="module" src="dashboard.js?v=1783864743"></script>
+    <script src="https://cdn.js?v=1784316365delivr.net/npm/chart.js?v=1784316365"></script>
+    <script type="module" src="app.js?v=1784316365"></script>
+    <script type="module" src="dashboard.js?v=1784316365"></script>
 
 <!-- ═══ MOBILE NAV ════════════════════════════════════════════ -->
 <nav class="mob-nav" id="mob-nav">
@@ -344,7 +350,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js?v=1783864743').catch(() => {});
+  navigator.serviceWorker.register('/sw.js?v=1784316365').catch(() => {});
 }
 </script>
 </body>

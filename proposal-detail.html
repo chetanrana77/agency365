@@ -501,7 +501,7 @@
                 window.location.href = `proposals.html?edit=${id}`;
             });
 
-            let proposals = JSON.parse(localStorage.getItem('agency365_proposals')) || [];
+            let proposals = JSON.parse(sessionStorage.getItem('agency365_proposals')) || [];
             let proposal = proposals.find(p => p.id === id);
             if (!proposal) {
                 alert('Proposal not found.');
@@ -620,7 +620,7 @@
             // Add Print action button for agency in status banner
             if (isUnlocked === 'true') {
                 const badge = document.createElement('span');
-                badge.style.css?v=1783864743Text = 'font-size:0.75rem; padding:0.25rem 0.5rem; background:rgba(0,0,0,0.05); border-radius:4px; font-weight:600; text-transform:uppercase;';
+                badge.style.css?v=1784316365Text = 'font-size:0.75rem; padding:0.25rem 0.5rem; background:rgba(0,0,0,0.05); border-radius:4px; font-weight:600; text-transform:uppercase;';
                 badge.textContent = `Status: ${proposal.status}`;
                 statusBanner.appendChild(badge);
             }
@@ -649,7 +649,7 @@
                 const index = proposals.findIndex(p => p.id === id);
                 if (index !== -1) {
                     proposals[index] = proposal;
-                    localStorage.setItem('agency365_proposals', JSON.stringify(proposals));
+                    sessionStorage.setItem('agency365_proposals', JSON.stringify(proposals));
                 }
             }
         });

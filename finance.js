@@ -1,5 +1,5 @@
-let clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
-let expenses = JSON.parse(localStorage.getItem('agency365_expenses')) || [];
+let clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
+let expenses = JSON.parse(sessionStorage.getItem('agency365_expenses')) || [];
 let activeTab = 'Invoices';
 let currentClientId = null;
 let activeCatFilter = 'all';
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clientId: document.getElementById('exp-type').value === 'Project' ? document.getElementById('exp-client').value : null
         };
         expenses.push(exp);
-        localStorage.setItem('agency365_expenses', JSON.stringify(expenses));
+        sessionStorage.setItem('agency365_expenses', JSON.stringify(expenses));
         
         document.getElementById('expense-side-panel').classList.remove('open');
         document.getElementById('expense-form').reset();
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(idx > -1) {
                 if(!clients[idx].payments) clients[idx].payments = [];
                 clients[idx].payments.push({ date: d, amount: parseFloat(a) });
-                localStorage.setItem('agency365_clients', JSON.stringify(clients));
+                sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
                 
                 document.getElementById('new-payment-date').value = '';
                 document.getElementById('new-payment-amount').value = '';
@@ -95,8 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 let counter = parseInt(localStorage.getItem('agency365_invoice_counter') || '1000');
                 counter++;
                 clients[idx].invoiceNumber = `TM-${counter}`;
-                localStorage.setItem('agency365_invoice_counter', counter.toString());
-                localStorage.setItem('agency365_clients', JSON.stringify(clients));
+                sessionStorage.setItem('agency365_invoice_counter', counter.toString());
+                sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
                 if(activeTab === 'Invoices') renderTable();
             }
             window.open(`invoice.html?id=${currentClientId}`, '_blank');
@@ -287,11 +287,11 @@ function renderTable() {
                         const cIdx = clients.findIndex(c => c.id === clientId);
                         if (cIdx > -1 && clients[cIdx].expenses) {
                             clients[cIdx].expenses.splice(idx, 1);
-                            localStorage.setItem('agency365_clients', JSON.stringify(clients));
+                            sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
                         }
                     } else {
                         expenses = expenses.filter(exp => String(exp.id) !== targetId);
-                        localStorage.setItem('agency365_expenses', JSON.stringify(expenses));
+                        sessionStorage.setItem('agency365_expenses', JSON.stringify(expenses));
                     }
                     calculateOverview();
                     renderTable();
@@ -314,7 +314,7 @@ function renderTable() {
                 if (newName) exp.name = newName;
                 if (newAmount && !isNaN(parseFloat(newAmount))) exp.amount = parseFloat(newAmount);
                 if (newDate) exp.date = newDate;
-                localStorage.setItem('agency365_expenses', JSON.stringify(expenses));
+                sessionStorage.setItem('agency365_expenses', JSON.stringify(expenses));
                 calculateOverview();
                 renderTable();
             });
@@ -375,7 +375,7 @@ function renderPaymentList(client) {
         
         if (newAmount && !isNaN(parseFloat(newAmount))) client.payments[idx].amount = parseFloat(newAmount);
         if (newDate) client.payments[idx].date = newDate;
-        localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         renderPaymentList(client); calculateOverview(); if(activeTab === 'Invoices') renderTable();
     }));
     
@@ -384,7 +384,7 @@ function renderPaymentList(client) {
         const confirmed = await window.customConfirm('Delete this payment?');
         if (confirmed) {
             client.payments.splice(idx, 1);
-            localStorage.setItem('agency365_clients', JSON.stringify(clients));
+            sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
             renderPaymentList(client); calculateOverview(); if(activeTab === 'Invoices') renderTable();
         }
     }));

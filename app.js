@@ -200,7 +200,7 @@ function initTheme() {
             const current = document.documentElement.getAttribute('data-theme');
             const newTheme = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('agency365_theme', newTheme);
+            sessionStorage.setItem('agency365_theme', newTheme);
             applyBrandSettings();
             // Update mob toggle icon
             document.querySelectorAll('#mob-theme-toggle .mob-theme-icon').forEach(ic => ic.classList.toggle('hidden'));
@@ -213,7 +213,7 @@ async function initApp() {
     document.body.classList.remove('preload');
     
     // Migrate Closed to Inactive
-    let clients = JSON.parse(localStorage.getItem('agency365_clients'));
+    let clients = JSON.parse(sessionStorage.getItem('agency365_clients'));
     if (clients && clients.length > 0) {
         let changed = false;
         clients.forEach(c => {
@@ -223,13 +223,13 @@ async function initApp() {
             }
         });
         if (changed) {
-            localStorage.setItem('agency365_clients', JSON.stringify(clients));
+            sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         }
     }
 
     initTheme();
     
-    const hasData = localStorage.getItem('agency365_clients') !== null || localStorage.getItem('agency365_proposals') !== null;
+    const hasData = sessionStorage.getItem('agency365_clients') !== null || sessionStorage.getItem('agency365_proposals') !== null;
     if (!hasData && sessionStorage.getItem('agency365_unlocked')) {
         await syncFromSupabase();
     }
@@ -287,7 +287,8 @@ function checkAuthAndInit() {
     }
     if (isPublicPage) {
         if (isUnlocked && (path.endsWith('login.html') || path.endsWith('signup.html'))) {
-            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+            const currentUserData = JSON.parse(sessionStorage.getItem('agency365_current_user') || '{}');
+            const role = currentUserData.role || 'Admin';
             window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
             return;
         }
@@ -324,8 +325,8 @@ function initNavigationHighlighting() {
         if (href && path.includes(href)) link.classList.add('active');
     });
     try {
-        const clients   = JSON.parse(localStorage.getItem('agency365_clients'))   || [];
-        const proposals = JSON.parse(localStorage.getItem('agency365_proposals')) || [];
+        const clients   = JSON.parse(sessionStorage.getItem('agency365_clients'))   || [];
+        const proposals = JSON.parse(sessionStorage.getItem('agency365_proposals')) || [];
         const activeClients = clients.filter(c => c.status && c.status.toLowerCase() !== 'lead' && c.status.toLowerCase() !== 'inactive');
         
         const cBadge = document.getElementById('badge-clients-count');
@@ -389,15 +390,8 @@ function initLogin() {
                 role: data.user.user_metadata?.role || 'admin',
             }));
             await syncFromSupabase();
-            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
-            window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
-            return;
-        }
-
-        // Fallback: local dev backdoor
-        if (email === 'admin@agency365.com' && pass === 'password') {
-            sessionStorage.setItem('agency365_unlocked', 'true');
-            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+            const currentUserData = JSON.parse(sessionStorage.getItem('agency365_current_user') || '{}');
+            const role = currentUserData.role || 'Admin';
             window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
             return;
         }
@@ -438,7 +432,8 @@ function initSignup() {
             sessionStorage.setItem('agency365_current_user', JSON.stringify({
                 id: data.user.id, email, name, orgName, role: 'admin'
             }));
-            const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+            const currentUserData = JSON.parse(sessionStorage.getItem('agency365_current_user') || '{}');
+            const role = currentUserData.role || 'Admin';
             window.location.href = role === 'Employee' ? 'clients.html' : 'dashboard.html';
         } else {
             errorMsg.textContent = '✅ Check your email to confirm your account, then log in.';
@@ -457,10 +452,10 @@ function initDataManagement() {
     if (exportBtn) {
         exportBtn.addEventListener('click', () => {
             const data = {
-                agency365_clients:   localStorage.getItem('agency365_clients'),
-                agency365_expenses:  localStorage.getItem('agency365_expenses'),
-                agency365_events:    localStorage.getItem('agency365_events'),
-                agency365_proposals: localStorage.getItem('agency365_proposals'),
+                agency365_clients:   sessionStorage.getItem('agency365_clients'),
+                agency365_expenses:  sessionStorage.getItem('agency365_expenses'),
+                agency365_events:    sessionStorage.getItem('agency365_events'),
+                agency365_proposals: sessionStorage.getItem('agency365_proposals'),
                 agency365_theme:     localStorage.getItem('agency365_theme'),
                 agency365_start_date:     localStorage.getItem('agency365_start_date'),
                 agency365_invoice_counter: localStorage.getItem('agency365_invoice_counter'),
@@ -480,7 +475,7 @@ function initDataManagement() {
             reader.onload = ev => {
                 try {
                     const data = JSON.parse(ev.target.result);
-                    Object.keys(data).forEach(key => { if (data[key]) localStorage.setItem(key, data[key]); });
+                    Object.keys(data).forEach(key => { if (data[key]) sessionStorage.setItem(key, data[key]); });
                     alert('Data imported! Reloading…');
                     window.location.reload();
                 } catch { alert('Invalid backup file.'); }
@@ -504,7 +499,8 @@ function initDataManagement() {
 
 // ── RBAC Logic ──────────────────────────────────────────────
 function applyRBAC() {
-    const role = localStorage.getItem('agency365_mock_role') || 'Admin';
+    const currentUserData = JSON.parse(sessionStorage.getItem('agency365_current_user') || '{}');
+            const role = currentUserData.role || 'Admin';
     const path = window.location.pathname;
     
     // Inject Logout Button
@@ -571,3 +567,12 @@ function applyRBAC() {
         }
     }
 }
+
+// ── Security Utilities ───────────────────────────────────────
+export function sanitizeHTML(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+window.sanitizeHTML = sanitizeHTML;

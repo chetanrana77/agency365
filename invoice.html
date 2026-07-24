@@ -279,6 +279,7 @@
 </head>
 <body class="preload">
 <div class="invoice-actions" style="display:flex;gap:1rem;padding:1rem 2rem;background:var(--bg-secondary, #f9fafb);border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center;">
+  <button id="edit-invoice-btn" style="padding:0.6rem 1.25rem;background:#f59e0b;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">✏️ Edit Invoice</button>
   <button onclick="window.print()" style="padding:0.6rem 1.25rem;background:#12b76a;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">🖨️ Print Invoice</button>
   <button id="pdf-download-btn" style="padding:0.6rem 1.25rem;background:#0f1117;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">⬇️ Download PDF</button>
   <button id="whatsapp-invoice-btn" style="padding:0.6rem 1.25rem;background:#25d366;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">📱 Send via WhatsApp</button>
@@ -359,8 +360,8 @@
             <div class="footer-content">
                 <div class="thank-you">Thank you for your business with us</div>
                 <div class="signature">
-                    <!-- Placeholder signature -->
-                    <svg viewBox="0 0 200 60" width="150" height="40" style="margin-left: -10px;">
+                    <img id="inv-signature-img" style="display:none; max-width: 150px; object-fit: contain;">
+                    <svg id="inv-signature-placeholder" viewBox="0 0 200 60" width="150" height="40" style="margin-left: -10px;">
                         <path d="M20,40 Q40,10 60,35 T90,30 T120,45 T160,25" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
                         <path d="M50,20 L60,40" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
                     </svg>
@@ -417,7 +418,7 @@
             const id = params.get('id');
             if(!id) return;
 
-            const clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+            const clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
             const client = clients.find(c => c.id === id);
             if(!client) return;
 
@@ -452,11 +453,63 @@
             
             const due = (client.amount || 0) - totalPaid;
             document.getElementById('st-due').textContent = fmt.format(due < 0 ? 0 : due);
+
+            // Load Signature
+            const savedSig = localStorage.getItem('agency365_signature');
+            if(savedSig) {
+                document.getElementById('inv-signature-img').src = savedSig;
+                document.getElementById('inv-signature-img').style.display = 'block';
+                document.getElementById('inv-signature-placeholder').style.display = 'none';
+            }
+
+            // Edit Mode Logic
+            const editBtn = document.getElementById('edit-invoice-btn');
+            let isEditing = false;
+            const editableElements = [
+                'inv-date', 'inv-no', 'c-name', 'c-phone', 'c-address', 'c-gst',
+                't-work', 't-price', 't-total', 'st-total', 'st-paid', 'st-due'
+            ];
+            
+            editBtn.addEventListener('click', () => {
+                isEditing = !isEditing;
+                if(isEditing) {
+                    editBtn.textContent = '💾 Save Edits';
+                    editBtn.style.background = '#3b82f6';
+                    editableElements.forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el) {
+                            el.contentEditable = true;
+                            el.style.border = '1px dashed #3b82f6';
+                            el.style.padding = '2px';
+                            el.style.borderRadius = '4px';
+                            el.style.minWidth = '50px';
+                            el.style.display = 'inline-block';
+                        }
+                    });
+                } else {
+                    editBtn.textContent = '✏️ Edit Invoice';
+                    editBtn.style.background = '#f59e0b';
+                    editableElements.forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el) {
+                            el.contentEditable = false;
+                            el.style.border = 'none';
+                            el.style.padding = '0';
+                            if(id === 'c-name' || id === 'c-phone' || id === 'c-address' || id === 'c-gst' || id === 't-work' || id === 't-price' || id === 't-total') {
+                                el.style.display = 'block'; // Reset block
+                                if(id !== 'c-name') el.style.display = 'inline'; // those are spans
+                            } else {
+                                el.style.display = 'inline';
+                            }
+                        }
+                    });
+                }
+            });
         });
     </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=1783864743"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=1783864743"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=1784316365"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=1784316365"></script>
 <script>
 document.getElementById('pdf-download-btn')?.addEventListener('click', async () => {
   const btn = document.getElementById('pdf-download-btn');
@@ -464,7 +517,7 @@ document.getElementById('pdf-download-btn')?.addEventListener('click', async () 
   btn.textContent = '⏳ Generating…';
   actionsBar.style.display = 'none';
   try {
-    const { jsPDF } = window.js?v=1783864743pdf;
+    const { jsPDF } = window.js?v=1784316365pdf;
     const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const imgData = canvas.toDataURL('image/png');

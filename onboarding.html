@@ -123,8 +123,9 @@
 </div>
 
 <script type="module">
-import { createClient } from 'https://cdn.js?v=1783864743delivr.net/npm/@supabase/supabase-js/+esm';
-const supabase = createClient('https://nytzlivcfiflqmqnjivd.supabase.co', 'sb_publishable_xwTbIz3WpbtJIgExXtCA8g_GFBDLzu9');
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get('token');

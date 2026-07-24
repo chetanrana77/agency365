@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency 365 - Client Details</title>
-    <link rel="stylesheet" href="styles.css?v=1783864743">
-    <link rel="stylesheet" href="mobile-overrides.css?v=1783864743">
+    <link rel="stylesheet" href="styles.css?v=1784316365">
+    <link rel="stylesheet" href="mobile-overrides.css?v=1784316365">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.js?v=1783864743on">
+    <link rel="manifest" href="manifest.js?v=1784316365on">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Agency 365">
@@ -878,6 +878,9 @@
             <button class="client-tab" data-tab="finance">
                 💰 Finance
             </button>
+            <button class="client-tab" data-tab="services">
+                🔁 Services & Subscriptions <span class="tab-count" id="tab-count-services">0</span>
+            </button>
         </div>
 
         <!-- ─── Tab: Overview ─────────────────────────────────── -->
@@ -1050,6 +1053,23 @@
                 </div>
             </div>
         </div>
+
+        <!-- ─── Tab: Services & Subscriptions ─────────────────── -->
+        <div class="tab-panel" id="panel-services">
+            <div class="add-btn-row">
+                <button class="add-entry-btn" id="add-service-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add Service / Renewal
+                </button>
+            </div>
+            <div id="services-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <div class="empty-icon">🔁</div>
+                    <div>No services or renewals added yet.</div>
+                    <div style="font-size:0.82rem; margin-top:0.35rem;">Track Elementor, Domain, Hosting, and other recurring plans.</div>
+                </div>
+            </div>
+        </div>
     </main>
 </div>
 
@@ -1210,9 +1230,55 @@
     </div>
 </div>
 
+<!-- Add Service Modal -->
+<div class="modal-overlay" id="add-service-modal">
+    <div class="modal-box" style="max-width:480px;">
+        <button class="modal-close" id="close-service-modal">&times;</button>
+        <h2>🔁 Add Service / Renewal</h2>
+        <form id="add-service-form">
+            <input type="hidden" id="svc-id">
+            <div class="modal-form-group">
+                <label>Service Name *</label>
+                <input type="text" id="svc-name" required placeholder="e.g. Domain Renewal, Elementor Pro">
+            </div>
+            <div class="modal-row">
+                <div class="modal-form-group">
+                    <label>Category</label>
+                    <select id="svc-category">
+                        <option value="Domain">Domain</option>
+                        <option value="Hosting">Hosting</option>
+                        <option value="Software">Software / Plugin</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="modal-form-group">
+                    <label>Renewal Date *</label>
+                    <input type="date" id="svc-renewal-date" required>
+                </div>
+            </div>
+            <div class="modal-row">
+                <div class="modal-form-group">
+                    <label>Price (₹) *</label>
+                    <input type="number" id="svc-price" required>
+                </div>
+                <div class="modal-form-group">
+                    <label>Status</label>
+                    <select id="svc-status">
+                        <option value="Active">Active</option>
+                        <option value="Expired">Expired</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="primary-btn full-width" style="margin-top:0.5rem;">Save Service</button>
+        </form>
+    </div>
+</div>
 
-<script type="module" src="app.js?v=1783864743"></script>
-<script type="module" src="client-detail.js?v=1783864743"></script>
+
+<script type="module" src="app.js?v=1784316365"></script>
+<script type="module" src="client-detail.js?v=1784316365"></script>
 
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -1305,7 +1371,7 @@
 </script>
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js?v=1783864743').catch(() => {});
+  navigator.serviceWorker.register('/sw.js?v=1784316365').catch(() => {});
 }
 </script>
 </body>

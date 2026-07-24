@@ -4,3 +4,7 @@ __pycache__/
 .gemini/
 .vercel
 .vercel/
+
+# Secrets
+.env
+config.js

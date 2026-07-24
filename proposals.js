@@ -1,13 +1,15 @@
 // proposals.js - Proposals State & Logic for Agency 365
 
-let proposals = JSON.parse(localStorage.getItem('agency365_proposals')) || [];
-let clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+let proposals = JSON.parse(sessionStorage.getItem('agency365_proposals')) || [];
+let clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
 const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
 
 let activeFilter = 'All';
-let searchQuery = '';
+let editDocId = null;
 
 export function initProposals() {
+    clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
+    proposals = JSON.parse(sessionStorage.getItem('agency365_proposals')) || [];
     setupDOM();
     populateClientsDropdown();
     renderProposals();
@@ -97,7 +99,7 @@ function populateClientsDropdown() {
     }
 
     // Load clients
-    clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+    clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     clients.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
@@ -296,7 +298,7 @@ function renderProposals() {
             const confirm = await window.customConfirm(`Are you sure you want to delete proposal "${p.title}"?`);
             if (confirm) {
                 proposals = proposals.filter(x => x.id !== p.id);
-                localStorage.setItem('agency365_proposals', JSON.stringify(proposals));
+                sessionStorage.setItem('agency365_proposals', JSON.stringify(proposals));
                 renderProposals();
             }
         });
@@ -383,7 +385,7 @@ function handleFormSubmit(e) {
         proposals.push(proposalData);
     }
 
-    localStorage.setItem('agency365_proposals', JSON.stringify(proposals));
+    sessionStorage.setItem('agency365_proposals', JSON.stringify(proposals));
     closeSidePanel();
     renderProposals();
 }

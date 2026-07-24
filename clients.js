@@ -1,5 +1,13 @@
 // Clients State
-let clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+
+function esc(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+let clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
 let activeFilter = 'Active';
 let currentView = 'list';
 let currentClientId = null;
@@ -43,7 +51,8 @@ function healthBadge(client) {
     return `<span title="Health Score: ${score}/100" style="font-size:0.72rem;background:${color}18;color:${color};padding:0.15rem 0.45rem;border-radius:20px;font-weight:600;border:1px solid ${color}40;">${label} ${score}</span>`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+export function initClients() {
+    clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     setupTabs();
     setupViewToggles();
     renderClients();
@@ -70,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newClient = {
             id: Date.now().toString(),
             name: document.getElementById('add-client-name').value,
+            category: document.getElementById('add-client-category')?.value || 'Web Design',
             phone: document.getElementById('add-client-phone').value,
             gst: document.getElementById('add-client-gst').value,
             amount: parseFloat(document.getElementById('add-client-amount').value) || 0,
@@ -82,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             payments: [],
             meetings: [],
             tasks: [],
+            services: [],
             order: clients.length
         };
         
@@ -121,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveAndRenderNewClient(clientData) {
         clients.push(clientData);
-        localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         document.getElementById('add-client-modal').classList.remove('show');
         // Switch tab to the new client's status if needed
         activeFilter = clientData.status;
@@ -141,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(idx > -1) {
                 if(!clients[idx].meetings) clients[idx].meetings = [];
                 clients[idx].meetings.push({ date: d, note: n });
-                localStorage.setItem('agency365_clients', JSON.stringify(clients));
+                sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
                 
                 document.getElementById('new-meeting-date').value = '';
                 document.getElementById('new-meeting-note').value = '';
@@ -220,7 +231,7 @@ function handleDrop(e) {
         const item = filtered.splice(draggedIndex, 1)[0];
         filtered.splice(targetIndex, 0, item);
         filtered.forEach((c, i) => c.order = i);
-        localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         renderClients();
     }
     return false;
@@ -252,7 +263,13 @@ function renderClients() {
         gridContainer.style.display = 'grid';
     }
 
-    let filtered = clients.filter(c => c.status === activeFilter);
+    let filtered = clients;
+    if (['Active', 'Inactive', 'Lead'].includes(activeFilter)) {
+        filtered = clients.filter(c => c.status === activeFilter);
+    } else {
+        filtered = clients.filter(c => c.category === activeFilter);
+    }
+    
     // Assign order if missing
     filtered.forEach((c, i) => { if(c.order === undefined) c.order = i; });
     filtered.sort((a, b) => a.order - b.order);
@@ -289,7 +306,7 @@ function renderClients() {
                 <span style="color:var(--text-secondary); opacity:0.5; font-size:1.2rem;">⋮⋮</span>
                 <img src="${c.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=f1f5f9&color=64748b`}" alt="avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
                 <div>
-                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none;"><strong>${c.name}</strong></a><br>
+                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none;"><strong>${esc(c.name)}</strong></a><br>
                     <small style="color:var(--text-secondary)">${c.phone || ''}</small>
                 </div>
             </td>
@@ -315,14 +332,14 @@ function renderClients() {
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <img src="${c.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=f1f5f9&color=64748b`}" alt="avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none; font-size:1.1rem;"><strong>${c.name}</strong></a>
+                    <a href="client-detail.html?id=${c.id}&slug=${slug}" style="color:var(--text-primary); text-decoration:none; font-size:1.1rem;"><strong>${esc(c.name)}</strong></a>
                 </div>
                 <span class="status-badge ${statusClass}" style="font-size:0.7rem;">${c.status}</span>
             </div>
             <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
                 <span style="font-size:0.7rem; padding:0.15rem 0.4rem; background:${pColor}15; color:${pColor}; border-radius:4px; font-weight:600;">${c.priority || 'Medium'} Priority</span>
             </div>
-            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; flex:1;">${c.work}</p>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; flex:1;">${esc(c.work)}</p>
             <div style="background:var(--bg-secondary); padding:0.75rem; border-radius:6px; margin-bottom:1rem;">
                 <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;">
                     <span>Project:</span> <strong>${formatAmount(c.amount)}</strong>
@@ -359,7 +376,7 @@ function openPanel(id) {
 
     document.getElementById('detail-name').textContent = client.name;
     document.getElementById('detail-contact').innerHTML = `
-        ${client.phone ? `📞 ${client.phone}` : ''} <br>
+        ${client.phone ? `📞 ${esc(client.phone)}` : ''} <br>
         ${client.gst ? `📄 GST: ${client.gst}` : ''}
     `;
     document.getElementById('detail-address').textContent = client.address || '';

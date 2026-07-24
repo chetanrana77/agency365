@@ -1,9 +1,7 @@
 // supabaseClient.js — Agency 365 Live Supabase Connection
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-const SUPABASE_URL = 'https://nytzlivcfiflqmqnjivd.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_xwTbIz3WpbtJIgExXtCA8g_GFBDLzu9';
-
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── Auth helpers ──────────────────────────────────────────────
@@ -39,7 +37,7 @@ const SYNC_TABLES = {
     'agency365_proposals': 'proposals',
 };
 
-const _origSet = localStorage.setItem.bind(localStorage);
+const _origSet = sessionStorage.setItem.bind(sessionStorage);
 
 // Mutex queues for debounced, non-blocking syncs
 const syncMutex = {};
@@ -49,8 +47,8 @@ export function isSyncing() {
     return Object.values(syncMutex).some(isLocked => isLocked) || Object.values(pendingSyncData).some(data => data !== null);
 }
 
-// Override localStorage.setItem to auto-sync safely to Supabase
-localStorage.setItem = async function(key, value) {
+// Override sessionStorage.setItem to auto-sync safely to Supabase
+sessionStorage.setItem = async function(key, value) {
     _origSet(key, value); // instant local save
     
     const table = SYNC_TABLES[key];
@@ -115,7 +113,7 @@ export async function syncFromSupabase() {
         if (events.data?.length)    { _origSet('agency365_events',    JSON.stringify(events.data.map(r => r.data))); changed = true; }
         if (proposals.data?.length) { _origSet('agency365_proposals', JSON.stringify(proposals.data.map(r => r.data))); changed = true; }
         
-        console.log('✅ Synced from Supabase:', user.email);
+        console.log('✅ Synced from Supabase: [REDACTED EMAIL]');
         if (changed) window.dispatchEvent(new Event('agency365_synced'));
     } catch (err) {
         console.error('Supabase sync failed:', err);

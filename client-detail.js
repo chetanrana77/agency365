@@ -2,7 +2,7 @@
 //  Client Command Center — client-detail.js  v2
 // ──────────────────────────────────────────────────────────────────
 
-let clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+let clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
 let client = null;
 let clientIdx = -1;
 let currentUser = '';
@@ -11,6 +11,13 @@ let activeWorkFilter = 'all'; // 'today' | 'week' | 'all'
 const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
 
 // ─── Helpers ─────────────────────────────────────────────────────
+
+function esc(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
 const today = () => new Date().toISOString().split('T')[0];
 
 function uid() {
@@ -42,7 +49,7 @@ function daysDiff(dateStr) {
 
 function saveClients() {
     clients[clientIdx] = client;
-    localStorage.setItem('agency365_clients', JSON.stringify(clients));
+    sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
 }
 
 function getWorkUpdateCategoryStyle(cat) {
@@ -98,13 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!client.suggestions)    client.suggestions    = [];
     if (!client.clientType)     client.clientType     = 'one-time';
     if (!client.phases)         client.phases         = [];
+    if (!client.services)       client.services       = [];
 
     // Update URL slug
     const slug = encodeURIComponent(client.name.toLowerCase().replace(/\s+/g, '-'));
     const tabParam = params.get('tab');
     const tabString = tabParam ? `&tab=${tabParam}` : '';
     window.history.replaceState(null, '', `client-detail.html?id=${id}&slug=${slug}${tabString}`);
-    document.title = `${client.name} — Agency 365`;
+    document.title = `${esc(client.name)} — Agency 365`;
 
     renderAll();
     bindTabNav();
@@ -123,6 +131,7 @@ function renderAll() {
     renderWorkUpdates();
     renderCommunication();
     renderFinance();
+    renderServices();
     updateTabCounts();
 }
 
@@ -133,7 +142,7 @@ function renderHero() {
     // Avatar initials or Image
     const avatarEl = document.getElementById('client-avatar-el');
     if (client.image) {
-        avatarEl.innerHTML = `<img src="${client.image}" alt="${client.name}">`;
+        avatarEl.innerHTML = `<img src="${esc(client.image)}" alt="${esc(client.name)}">`;
         avatarEl.style.background = 'transparent';
     } else {
         const initials = client.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -172,10 +181,10 @@ function renderHero() {
     const heroContactRow = document.getElementById('hero-contact-row');
     if (heroContactRow) {
         let contactHtml = '';
-        if (client.contactPerson) contactHtml += `<span title="Founder / Contact Person">👤 <strong>${client.contactPerson}</strong></span>`;
-        if (client.phone) contactHtml += `<span title="Contact Number">📞 ${client.phone}</span>`;
-        if (client.address) contactHtml += `<span title="Office Address">📍 ${client.address}</span>`;
-        if (client.gst) contactHtml += `<span title="GST Number">🧾 GST: ${client.gst}</span>`;
+        if (client.contactPerson) contactHtml += `<span title="Founder / Contact Person">👤 <strong>${esc(client.contactPerson)}</strong></span>`;
+        if (client.phone) contactHtml += `<span title="Contact Number">📞 ${esc(client.phone)}</span>`;
+        if (client.address) contactHtml += `<span title="Office Address">📍 ${esc(client.address)}</span>`;
+        if (client.gst) contactHtml += `<span title="GST Number">🧾 GST: ${esc(client.gst)}</span>`;
         heroContactRow.innerHTML = contactHtml;
     }
 
@@ -204,14 +213,14 @@ function renderHero() {
 function renderOverview() {
     // Contact Info
     const infoRows = [
-        ['Contact Person', client.contactPerson || client.name],
-        ['Email',          client.contactEmail  || '—'],
-        ['Phone',          client.phone         || '—'],
-        ['GST Number',     client.gst           || '—'],
-        ['Industry',       client.industry      || '—'],
+        ['Contact Person', esc(client.contactPerson || client.name)],
+        ['Email',          esc(client.contactEmail) || '—'],
+        ['Phone',          esc(client.phone) || '—'],
+        ['GST Number',     esc(client.gst) || '—'],
+        ['Industry',       esc(client.industry) || '—'],
         ['Website',        client.website ? `<a href="${client.website.startsWith('http') ? client.website : 'https://'+client.website}" target="_blank" style="color:var(--accent-color);">${client.website}</a>` : '—'],
-        ['Address',        client.address       || '—'],
-        ['Referral',       client.referral      || '—'],
+        ['Address',        esc(client.address) || '—'],
+        ['Referral',       esc(client.referral) || '—'],
     ];
     document.getElementById('client-info-rows').innerHTML = infoRows.map(([l, v]) =>
         `<div class="info-row"><span class="info-label">${l}</span><span class="info-value">${v}</span></div>`
@@ -223,7 +232,7 @@ function renderOverview() {
         phasesList.innerHTML = client.phases.map(p => `
             <div style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:8px; padding:0.75rem; display:flex; flex-direction:column; gap:0.25rem;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="color:var(--text-primary); font-size:0.95rem;">${p.name}</strong>
+                    <strong style="color:var(--text-primary); font-size:0.95rem;">${esc(p.name)}</strong>
                     <span style="color:#059669; font-weight:700;">${fmt.format(p.amount)}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-secondary); margin-top:0.2rem;">
@@ -243,7 +252,7 @@ function renderOverview() {
         ['Total Received', `<span style="color:#059669;font-weight:700;">${fmt.format(totalPaid)}</span>`],
         ['Total Expenses', `<span style="color:#dc2626;font-weight:700;">-${fmt.format(totalExp)}</span>`],
         ['Net Profit',     `<span style="color:${profit >= 0 ? '#059669' : '#dc2626'};font-weight:700;">${fmt.format(profit)}</span>`],
-        ['Invoice No.',    client.invoiceNumber || 'Not raised'],
+        ['Invoice No.',    esc(client.invoiceNumber) || 'Not raised'],
     ];
     document.getElementById('project-info-rows').innerHTML = projRows.map(([l, v]) =>
         `<div class="info-row"><span class="info-label">${l}</span><span class="info-value">${v}</span></div>`
@@ -269,8 +278,8 @@ function renderTasks() {
         <div class="task-item-row">
             <div class="task-left">
                 <input type="checkbox" class="task-check" data-idx="${i}" ${t.done ? 'checked' : ''} style="cursor:pointer; accent-color:var(--accent-color);">
-                <span class="${t.done ? 'task-text-done' : ''}">${t.text}</span>
-                ${t.dueDate ? `<span class="task-due-chip">📅 ${t.dueDate}</span>` : ''}
+                <span class="${t.done ? 'task-text-done' : ''}">${esc(t.text)}</span>
+                ${t.dueDate ? `<span class="task-due-chip">📅 ${esc(t.dueDate)}</span>` : ''}
             </div>
             <button class="del-btn task-del" data-idx="${i}" title="Delete task">✕</button>
         </div>
@@ -321,10 +330,10 @@ function renderMeetings() {
         <div class="meeting-card" data-mid="${m.id}">
             <div class="meeting-card-header">
                 <div>
-                    <div class="meeting-title">${m.title}</div>
+                    <div class="meeting-title">${esc(m.title)}</div>
                     <div class="meeting-meta">
                         📆 ${dateLabel(m.date)}${m.time ? ' · ⏰ ' + m.time : ''}
-                        ${m.addedBy ? ` · <span style="color:var(--accent-color);font-weight:600;">by ${m.addedBy}</span>` : ''}
+                        ${m.addedBy ? ` · <span style="color:var(--accent-color);font-weight:600;">by ${esc(m.addedBy)}</span>` : ''}
                     </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:0.5rem;">
@@ -334,12 +343,12 @@ function renderMeetings() {
                     <button class="del-btn meeting-del-btn" data-mid="${m.id}" title="Delete">✕</button>
                 </div>
             </div>
-            ${m.agenda ? `<div class="meeting-agenda">${m.agenda.replace(/\n/g, '<br>')}</div>` : ''}
+            ${m.agenda ? `<div class="meeting-agenda">${esc(m.agenda).replace(/\n/g, '<br>')}</div>` : ''}
             <div class="meeting-footer">
                 ${recordingBtn}
-                ${m.attendees ? `<span class="meeting-attendees">👥 ${m.attendees}</span>` : ''}
+                ${m.attendees ? `<span class="meeting-attendees">👥 ${esc(m.attendees)}</span>` : ''}
             </div>
-            ${m.notes ? `<div class="meeting-notes-text">📋 ${m.notes.replace(/\n/g, '<br>')}</div>` : ''}
+            ${m.notes ? `<div class="meeting-notes-text">📋 ${esc(m.notes).replace(/\n/g, '<br>')}</div>` : ''}
         </div>`;
     }).join('');
 
@@ -401,11 +410,11 @@ function renderWorkUpdates(filter) {
                     ${!isLast ? '<div class="wu-line"></div>' : ''}
                 </div>
                 <div class="wu-body">
-                    <div class="wu-text">${u.text.replace(/\n/g, '<br>')}</div>
+                    <div class="wu-text">${esc(u.text).replace(/\n/g, '<br>')}</div>
                     <div class="wu-footer">
                         <span class="wu-cat-chip" style="background:${st.bg};color:${st.color};">${st.label}</span>
                         ${u.date ? `<span class="wu-time">📅 ${dateLabel(u.date)}</span>` : ''}
-                        ${u.author ? `<span class="wu-author">by <strong>${u.author}</strong></span>` : ''}
+                        ${u.author ? `<span class="wu-author">by <strong>${esc(u.author)}</strong></span>` : ''}
                         <button class="del-btn wu-del-btn" data-uid="${u.id}" title="Delete" style="margin-left:auto;">✕</button>
                     </div>
                 </div>
@@ -455,8 +464,8 @@ function renderCommunication() {
                         <button class="del-btn comm-del-btn" data-cid="${c.id}" title="Delete">✕</button>
                     </div>
                 </div>
-                <div class="comm-text">${c.text.replace(/\n/g, '<br>')}</div>
-                ${c.author ? `<div class="comm-author">— ${c.author}</div>` : ''}
+                <div class="comm-text">${esc(c.text).replace(/\n/g, '<br>')}</div>
+                ${c.author ? `<div class="comm-author">— ${esc(c.author)}</div>` : ''}
             </div>
         </div>`;
     }).join('');
@@ -491,7 +500,7 @@ function renderFinance() {
     payEl.innerHTML = pays.length ? pays.map(p => `
         <div class="finance-row">
             <div>
-                <div style="font-weight:600;font-size:0.88rem;">${p.date}</div>
+                <div style="font-weight:600;font-size:0.88rem;">${esc(p.date)}</div>
                 ${p.refund ? '<div class="finance-row-label" style="color:#d97706;">(Refund)</div>' : ''}
             </div>
             <span style="font-weight:700;color:${p.refund ? '#d97706' : '#059669'};">${p.refund ? '-' : ''}${fmt.format(p.amount)}</span>
@@ -503,7 +512,7 @@ function renderFinance() {
     expEl.innerHTML = exps.length ? exps.map((ex, i) => `
         <div class="finance-row">
             <div>
-                <div style="font-weight:600;font-size:0.88rem;">${ex.desc}</div>
+                <div style="font-weight:600;font-size:0.88rem;">${esc(ex.desc)}</div>
             </div>
             <div style="display:flex;align-items:center;gap:0.5rem;">
                 <span style="font-weight:700;color:#dc2626;">-${fmt.format(ex.amount)}</span>
@@ -518,6 +527,90 @@ function renderFinance() {
                 client.expenses.splice(+e.currentTarget.dataset.idx, 1);
                 saveClients(); renderFinance(); renderHero(); renderOverview();
             }
+        })
+    );
+}
+
+// ─── Services & Subscriptions Tab ─────────────────────────────────
+function renderServices() {
+    const svcs = client.services || [];
+    const el = document.getElementById('services-list');
+    
+    if (svcs.length === 0) {
+        el.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><div class="empty-icon">🔁</div><div>No services or renewals added yet.</div><div style="font-size:0.82rem;margin-top:0.35rem;">Track Elementor, Domain, Hosting, and other recurring plans.</div></div>`;
+        return;
+    }
+
+    const catIcons = {
+        'Domain': '🌐',
+        'Hosting': '🖥',
+        'Software': '⚙️',
+        'Maintenance': '🔧',
+        'Other': '📦'
+    };
+
+    const statusStyles = {
+        'Active': { color: '#059669', bg: 'rgba(5, 150, 105, 0.1)' },
+        'Expired': { color: '#dc2626', bg: 'rgba(220, 38, 38, 0.1)' },
+        'Cancelled': { color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' }
+    };
+
+    el.innerHTML = svcs.sort((a,b) => new Date(a.renewalDate) - new Date(b.renewalDate)).map(s => {
+        const st = statusStyles[s.status] || statusStyles['Active'];
+        const icon = catIcons[s.category] || '📦';
+        
+        // Check if expiring in next 7 days
+        const daysToExpiry = daysDiff(s.renewalDate) * -1; // positive if in future
+        let expiryAlert = '';
+        if (s.status === 'Active' && daysToExpiry >= 0 && daysToExpiry <= 7) {
+            expiryAlert = `<div style="font-size:0.75rem; color:#dc2626; font-weight:600; margin-top:0.5rem; background:rgba(220,38,38,0.1); padding:0.25rem 0.5rem; border-radius:4px;">⚠️ Expiring in ${daysToExpiry} days</div>`;
+        } else if (s.status === 'Active' && daysToExpiry < 0) {
+            expiryAlert = `<div style="font-size:0.75rem; color:#dc2626; font-weight:600; margin-top:0.5rem; background:rgba(220,38,38,0.1); padding:0.25rem 0.5rem; border-radius:4px;">⚠️ Overdue by ${Math.abs(daysToExpiry)} days</div>`;
+        }
+
+        return `
+        <div class="section-card" style="padding: 1.25rem; display: flex; flex-direction: column;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 0.5rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <span style="font-size: 1.2rem;">${icon}</span>
+                    <strong style="font-size: 1rem; color: var(--text-primary);">${esc(s.name)}</strong>
+                </div>
+                <div style="display:flex; gap:0.5rem; align-items:center;">
+                    <span style="font-size: 0.7rem; font-weight:600; padding: 0.15rem 0.5rem; border-radius:20px; background:${st.bg}; color:${st.color};">${s.status}</span>
+                    <button class="del-btn svc-edit-btn" data-sid="${s.id}" title="Edit" style="font-size: 0.9rem;">✏️</button>
+                    <button class="del-btn svc-del-btn" data-sid="${s.id}" title="Delete" style="font-size: 0.9rem;">✕</button>
+                </div>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Category: <strong>${s.category}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; background: var(--bg-color); padding: 0.5rem; border-radius: 6px; margin-top: auto;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.75rem;">Renewal Date</div>
+                    <strong style="color: var(--text-primary);">${dateLabel(s.renewalDate)}</strong>
+                </div>
+                <div style="text-align:right;">
+                    <div style="color: var(--text-secondary); font-size: 0.75rem;">Price</div>
+                    <strong style="color: #059669;">${fmt.format(s.price)}</strong>
+                </div>
+            </div>
+            ${expiryAlert}
+        </div>`;
+    }).join('');
+
+    el.querySelectorAll('.svc-del-btn').forEach(btn =>
+        btn.addEventListener('click', async e => {
+            if (await window.customConfirm?.('Delete this service?') ?? confirm('Delete this service?')) {
+                client.services = client.services.filter(s => s.id !== e.currentTarget.dataset.sid);
+                saveClients(); renderServices(); updateTabCounts();
+            }
+        })
+    );
+    
+    el.querySelectorAll('.svc-edit-btn').forEach(btn =>
+        btn.addEventListener('click', e => {
+            const svc = client.services.find(s => s.id === e.currentTarget.dataset.sid);
+            if(svc) openServiceModal(svc);
         })
     );
 }
@@ -577,6 +670,8 @@ function updateTabCounts() {
     document.getElementById('tab-count-meetings').textContent = (client.meetings || []).length;
     document.getElementById('tab-count-work').textContent     = (client.workUpdates || []).length;
     document.getElementById('tab-count-comm').textContent     = (client.communications || []).length;
+    const sBadge = document.getElementById('tab-count-services');
+    if (sBadge) sBadge.textContent = (client.services || []).length;
 }
 
 // ─── Tab Navigation ───────────────────────────────────────────────
@@ -687,7 +782,7 @@ function bindEvents() {
             let counter = parseInt(localStorage.getItem('agency365_invoice_counter') || '1000');
             counter++;
             client.invoiceNumber = `TM-${counter}`;
-            localStorage.setItem('agency365_invoice_counter', counter.toString());
+            sessionStorage.setItem('agency365_invoice_counter', counter.toString());
             saveClients(); renderHero(); renderOverview();
         }
         window.open(`invoice.html?id=${client.id}`, '_blank');
@@ -695,8 +790,8 @@ function bindEvents() {
 
     // ── Send Invoice by Email ───────────────────────────────────
     document.getElementById('send-invoice-btn')?.addEventListener('click', () => {
-        const subject = encodeURIComponent(`Invoice ${client.invoiceNumber || ''} - ${client.name}`);
-        const body    = encodeURIComponent(`Hi ${client.contactPerson || client.name},\n\nPlease find your invoice attached.\n\nInvoice No.: ${client.invoiceNumber || 'Pending'}\nAmount: ${fmt.format(client.amount)}\n\nThank you for your business!\n\nBest,\nAgency 365`);
+        const subject = encodeURIComponent(`Invoice ${client.invoiceNumber || ''} - ${esc(client.name)}`);
+        const body    = encodeURIComponent(`Hi ${esc(client.contactPerson || client.name)},\n\nPlease find your invoice attached.\n\nInvoice No.: ${client.invoiceNumber || 'Pending'}\nAmount: ${fmt.format(client.amount)}\n\nThank you for your business!\n\nBest,\nAgency 365`);
         window.open(`https://mail.hostinger.com/?action=compose&to=${encodeURIComponent(client.contactEmail || '')}&subject=${subject}&body=${body}`, '_blank');
     });
 
@@ -714,7 +809,7 @@ function bindEvents() {
         const phone = (client.phone || '').replace(/\D/g, '');
         const paid = (client.payments || []).filter(p => !p.refund).reduce((s, p) => s + p.amount, 0);
         const due = (client.amount || 0) - paid;
-        const msg = encodeURIComponent(`Hi ${client.name},\n\nHope you're doing well! Just a quick update from Agency 365.\n\nProject: ${client.work || 'Your Project'}\nContract Value: ₹${client.amount?.toLocaleString('en-IN') || 0}\nAmount Due: ₹${due.toLocaleString('en-IN')}\n\nLet us know if you have any questions. 🙏`);
+        const msg = encodeURIComponent(`Hi ${esc(client.name)},\n\nHope you're doing well! Just a quick update from Agency 365.\n\nProject: ${client.work || 'Your Project'}\nContract Value: ₹${client.amount?.toLocaleString('en-IN') || 0}\nAmount Due: ₹${due.toLocaleString('en-IN')}\n\nLet us know if you have any questions. 🙏`);
         window.open(phone ? `https://wa.me/91${phone}?text=${msg}` : `https://wa.me/?text=${msg}`, '_blank');
     });
 
@@ -772,7 +867,7 @@ function bindEvents() {
         closeModal('edit-modal');
         const slug = encodeURIComponent(client.name.toLowerCase().replace(/\s+/g, '-'));
         window.history.replaceState(null, '', `client-detail.html?id=${client.id}&slug=${slug}`);
-        document.title = `${client.name} — Agency 365`;
+        document.title = `${esc(client.name)} — Agency 365`;
         renderAll();
     });
 
@@ -839,6 +934,35 @@ function bindEvents() {
         document.getElementById('add-comm-form').reset();
         closeModal('add-comm-modal');
         renderCommunication(); updateTabCounts();
+    });
+    
+    // ── Add Service Modal ───────────────────────────────────────
+    document.getElementById('add-service-btn')?.addEventListener('click', () => openServiceModal());
+    bindModalClose('add-service-modal', 'close-service-modal');
+
+    document.getElementById('add-service-form')?.addEventListener('submit', e => {
+        e.preventDefault();
+        const sid = document.getElementById('svc-id').value;
+        const svcData = {
+            id: sid || uid(),
+            name: document.getElementById('svc-name').value,
+            category: document.getElementById('svc-category').value,
+            renewalDate: document.getElementById('svc-renewal-date').value,
+            price: parseFloat(document.getElementById('svc-price').value) || 0,
+            status: document.getElementById('svc-status').value
+        };
+        
+        if (sid) {
+            const idx = client.services.findIndex(s => s.id === sid);
+            if(idx > -1) client.services[idx] = svcData;
+        } else {
+            client.services.push(svcData);
+        }
+        
+        saveClients();
+        document.getElementById('add-service-form').reset();
+        closeModal('add-service-modal');
+        renderServices(); updateTabCounts();
     });
 
     // ── Custom Suggestion Modal ─────────────────────────────────
@@ -918,6 +1042,22 @@ function openCommModal(type) {
     document.getElementById('comm-type').value = type || 'note';
     document.getElementById('comm-date').value = today();
     openModal('add-comm-modal');
+}
+
+function openServiceModal(svc = null) {
+    if (svc) {
+        document.getElementById('svc-id').value = svc.id;
+        document.getElementById('svc-name').value = svc.name;
+        document.getElementById('svc-category').value = svc.category;
+        document.getElementById('svc-renewal-date').value = svc.renewalDate;
+        document.getElementById('svc-price').value = svc.price;
+        document.getElementById('svc-status').value = svc.status;
+    } else {
+        document.getElementById('add-service-form').reset();
+        document.getElementById('svc-id').value = '';
+        document.getElementById('svc-renewal-date').value = today();
+    }
+    openModal('add-service-modal');
 }
 
 function switchTab(tabName) {

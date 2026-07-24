@@ -1,5 +1,5 @@
 // CRM State
-let clients = JSON.parse(localStorage.getItem('agency365_clients')) || [];
+let clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
 let activeFilter = 'Lead';
 let currentView = 'list';
 let currentLeadId = null;
@@ -8,6 +8,7 @@ let draggedIndex = null;
 let draggedStatus = null;
 
 export function initCRM() {
+    clients = JSON.parse(sessionStorage.getItem('agency365_clients')) || [];
     setupTabs();
     setupViewToggles();
     renderClients();
@@ -131,7 +132,7 @@ function saveClient() {
         clients.push(client);
     }
 
-    localStorage.setItem('agency365_clients', JSON.stringify(clients));
+    sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
     document.getElementById('add-lead-modal').classList.remove('show');
     renderClients();
     
@@ -145,7 +146,7 @@ export async function deleteClient(id) {
     const confirmed = await window.customConfirm("Are you sure you want to delete this record?");
     if(!confirmed) return;
     clients = clients.filter(c => c.id !== id);
-    localStorage.setItem('agency365_clients', JSON.stringify(clients));
+    sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
     renderClients();
     if(currentLeadId === id) closePanel();
 }
@@ -242,7 +243,7 @@ function saveCallRecord() {
     if(idx > -1) {
         if(!clients[idx].calls) clients[idx].calls = [];
         clients[idx].calls.push({ date, meetLink, notes, id: Date.now().toString() });
-        localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         
         document.getElementById('add-call-form').reset();
         renderSalesCalls(clients[idx]);
@@ -312,7 +313,7 @@ function handleDrop(e) {
         const item = filtered.splice(draggedIndex, 1)[0];
         filtered.splice(targetIndex, 0, item);
         filtered.forEach((c, i) => c.order = i);
-        localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         renderClients();
     }
     return false;
@@ -334,7 +335,7 @@ window.moveLead = function(id, direction) {
         filtered[idx] = filtered[targetIdx];
         filtered[targetIdx] = temp;
         filtered.forEach((c, i) => c.order = i);
-        localStorage.setItem('agency365_clients', JSON.stringify(clients));
+        sessionStorage.setItem('agency365_clients', JSON.stringify(clients));
         renderClients();
     }
 };
