@@ -283,6 +283,11 @@
   <button onclick="window.print()" style="padding:0.6rem 1.25rem;background:#12b76a;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">🖨️ Print Invoice</button>
   <button id="pdf-download-btn" style="padding:0.6rem 1.25rem;background:#0f1117;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">⬇️ Download PDF</button>
   <button id="whatsapp-invoice-btn" style="padding:0.6rem 1.25rem;background:#25d366;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;">📱 Send via WhatsApp</button>
+  <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto;border-left:1px solid #ddd;padding-left:1rem;">
+    <label style="font-size:0.8rem;font-weight:600;color:#666;">Brand Colors:</label>
+    <input type="color" id="inv-primary-color" title="Primary Color" value="#151e3a" style="width:30px;height:30px;padding:0;border:none;border-radius:4px;cursor:pointer;">
+    <input type="color" id="inv-secondary-color" title="Secondary Color" value="#7c3aed" style="width:30px;height:30px;padding:0;border:none;border-radius:4px;cursor:pointer;">
+  </div>
   <a href="javascript:history.back()" style="padding:0.6rem 1rem;color:var(--text-secondary,#666);text-decoration:none;font-size:0.9rem;">← Back</a>
 </div>
 
@@ -405,6 +410,20 @@
             const secondaryColor = localStorage.getItem('agency365_brand_secondary') || '#7c3aed';
             document.documentElement.style.setProperty('--primary', primaryColor);
             document.documentElement.style.setProperty('--secondary', secondaryColor);
+
+            const pInput = document.getElementById('inv-primary-color');
+            const sInput = document.getElementById('inv-secondary-color');
+            if (pInput) pInput.value = primaryColor;
+            if (sInput) sInput.value = secondaryColor;
+
+            pInput?.addEventListener('input', (e) => {
+                document.documentElement.style.setProperty('--primary', e.target.value);
+                localStorage.setItem('agency365_brand_primary', e.target.value);
+            });
+            sInput?.addEventListener('input', (e) => {
+                document.documentElement.style.setProperty('--secondary', e.target.value);
+                localStorage.setItem('agency365_brand_secondary', e.target.value);
+            });
 
             const savedLogo = localStorage.getItem('agency365_brand_logo');
             if(savedLogo) {

@@ -193,16 +193,7 @@
                                 </div>
                             </div>
                         </div>
-                <div class="form-group row-group">
-                    <div class="half-width">
-                        <label>Primary Color</label>
-                        <input type="color" id="brand-primary-color" value="#1b213b" style="height: 50px; padding: 0.2rem;">
-                    </div>
-                    <div class="half-width">
-                        <label>Secondary Color</label>
-                        <input type="color" id="brand-secondary-color" value="#facc15" style="height: 50px; padding: 0.2rem;">
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <label>Logo Height (<span id="logo-height-val">30</span>px)</label>
                     <input type="range" id="logo-height-input" min="20" max="80" value="30" style="width: 100%;">
@@ -364,16 +355,14 @@
             const previewImgDark = document.getElementById('logo-preview-dark');
             const clearBtnDark = document.getElementById('clear-logo-btn-dark');
             
-            const pColor = document.getElementById('brand-primary-color');
-            const sColor = document.getElementById('brand-secondary-color');
+
             const saveBtn = document.getElementById('save-brand-btn');
             
             const logoHeightInput = document.getElementById('logo-height-input');
             const logoHeightVal = document.getElementById('logo-height-val');
 
             // Load saved settings
-            pColor.value = localStorage.getItem('agency365_brand_primary') || '#1b213b';
-            sColor.value = localStorage.getItem('agency365_brand_secondary') || '#facc15';
+
             
             const savedHeight = localStorage.getItem('agency365_logo_height') || '30';
             logoHeightInput.value = savedHeight;
@@ -588,8 +577,7 @@
             });
 
             saveBtn.addEventListener('click', () => {
-                sessionStorage.setItem('agency365_brand_primary', pColor.value);
-                sessionStorage.setItem('agency365_brand_secondary', sColor.value);
+
                 sessionStorage.setItem('agency365_logo_height', logoHeightInput.value);
                 
                 if (previewImgLight.src && previewImgLight.src.startsWith('data:')) {
