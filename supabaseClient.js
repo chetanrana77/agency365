@@ -1,7 +1,9 @@
 // supabaseClient.js — Agency 365 Live Supabase Connection
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+const SUPABASE_URL = 'https://nytzlivcfiflqmqnjivd.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_xwTbIz3WpbtJIgExXtCA8g_GFBDLzu9';
+
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── Auth helpers ──────────────────────────────────────────────
